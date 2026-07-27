@@ -1,0 +1,59 @@
+project_id = "the-witness"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage"]
+extra_search_path = ["public"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 16
+
+[db.pooler]
+enabled = false
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000"]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = true
+
+# OAuth providers — Milestone 2. Client ID/secret come from environment
+# variables, never hardcoded here (this file is committed to the repo).
+# See docs/AUTHENTICATION.md "Configuring OAuth providers" for the exact
+# Google Cloud Console / GitHub OAuth App setup steps and which redirect
+# URI to register with each provider.
+[auth.external.google]
+enabled = true
+client_id = "env(SUPABASE_AUTH_GOOGLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_GOOGLE_SECRET)"
+
+[auth.external.github]
+enabled = true
+client_id = "env(SUPABASE_AUTH_GITHUB_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_GITHUB_SECRET)"
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[edge_functions]
+enabled = true
+
+# Migrations in ./migrations run in filename order via `supabase db reset`
+# / `supabase db push`. See README "Provisioning Supabase" for the full
+# local-dev and cloud-project workflow. These 12 files were authored and
+# validated against a live PostgreSQL 16 + pgvector instance as part of
+# the Database Schema Design deliverable — see that document's Section 10
+# for what was tested.

@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* The Witness design tokens — source of truth for color, type, spacing,
+   radii, shadows, motion, and the shadcn/ui HSL variable aliases. See
+   Design System document Section 1.1. Do not hand-edit token values
+   anywhere else; edit this file (or its source of truth,
+   witness-design-system/tokens/design-tokens.css) and every consumer
+   (Tailwind utilities, shadcn components, both themes) updates together. */
+@import "../styles/design-tokens.css";
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-surface-page text-foreground;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.625;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+  }
+
+  /* Respect the platform-wide reduced-motion accessibility requirement
+     (Design System Section 14) rather than leaving it to each component. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* Editorial reading measure — long-form issue/article body copy.
+     Design System Section 4. */
+  .prose-reading {
+    max-width: var(--container-reading);
+  }
+}
