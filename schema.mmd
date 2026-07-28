@@ -1,0 +1,234 @@
+%% The Witness — Entity-Relationship Diagram (Mermaid)
+%% Core domain tables shown with primary keys, key attributes, and
+%% relationships. Reference-library leaf tables (books, papers, courses,
+%% videos, podcasts, github_repositories, sources) and the generic
+%% knowledge_graph_edges / entity_tags tables are summarized in the
+%% narrative rather than fully expanded here to keep the diagram legible;
+%% their shape is identical to `technologies`/`companies` below.
+%% Render with: mmdc -i schema.mmd -o schema.png   (or paste into any
+%% Mermaid-compatible viewer, e.g. the Mermaid Live Editor).
+
+erDiagram
+    PROFILES ||--o{ PUBLICATION_MEMBERS : "holds role on"
+    PROFILES ||--o{ ORGANIZATION_MEMBERS : "belongs to"
+    PROFILES ||--o{ ISSUES : "authors"
+    PROFILES ||--o{ ARTICLES : "authors"
+    PROFILES ||--o{ AI_JOBS : "triggers"
+    PROFILES ||--o{ WISDOM_ENTRIES : "authors"
+    PROFILES ||--o{ NOTIFICATIONS : "receives"
+
+    ORGANIZATIONS ||--o{ ORGANIZATION_MEMBERS : "has"
+    ORGANIZATIONS ||--o{ SUBSCRIBERS : "provisions seats for"
+
+    PUBLICATIONS ||--o{ PUBLICATION_MEMBERS : "staffed by"
+    PUBLICATIONS ||--o{ PUBLICATION_TEMPLATES : "configures"
+    PUBLICATIONS ||--o{ ISSUES : "publishes"
+    PUBLICATIONS ||--o{ ARTICLES : "publishes"
+    PUBLICATIONS ||--o{ AI_JOBS : "scopes"
+    PUBLICATIONS ||--o{ SUBSCRIPTIONS : "has subscribers via"
+    PUBLICATIONS ||--o{ ANALYTICS_EVENTS : "measured by"
+    PUBLICATIONS ||--o{ SETTINGS : "configured by"
+
+    ISSUES ||--o{ SECTIONS : "contains"
+    ISSUES ||--o{ ISSUE_REVISIONS : "snapshots to"
+    ISSUES ||--o{ AI_JOBS : "generated via"
+    ISSUES ||--o{ DELIVERY_LOGS : "delivered via"
+    ISSUES ||--o{ SCHEDULED_JOBS : "auto-publishes via"
+
+    ARTICLES ||--o{ SECTIONS : "contains"
+    ARTICLES ||--o{ ARTICLE_TECHNOLOGIES : "tags"
+    ARTICLES ||--o{ ARTICLE_COMPANIES : "tags"
+
+    SECTIONS ||--o{ BLOCKS : "orders"
+
+    BLOCKS ||--o{ AI_JOBS : "regenerated via"
+
+    TECHNOLOGIES ||--o{ ARTICLE_TECHNOLOGIES : "tagged on"
+    TECHNOLOGIES ||--o{ TECHNOLOGY_COMPANIES : "related to"
+    COMPANIES ||--o{ ARTICLE_COMPANIES : "tagged on"
+    COMPANIES ||--o{ TECHNOLOGY_COMPANIES : "related to"
+
+    WISDOM_CATEGORIES ||--o{ WISDOM_ENTRIES : "classifies"
+    WISDOM_ENTRIES ||--o{ WISDOM_REFLECTION_QUESTIONS : "includes"
+    WISDOM_ENTRIES ||--o{ WISDOM_EXERCISES : "includes"
+    WISDOM_ENTRIES ||--o| SUBHASHITAMS : "specializes as"
+    WISDOM_ENTRIES ||--o| GITA_VERSES : "specializes as"
+    WISDOM_ENTRIES ||--o| ADVAITA_PRINCIPLES : "specializes as"
+
+    SUBSCRIBERS ||--o{ SUBSCRIPTIONS : "subscribes via"
+    SUBSCRIBERS ||--o{ DELIVERY_LOGS : "receives"
+
+    PROFILES {
+        uuid id PK
+        text full_name
+        platform_role role
+        timestamptz created_at
+    }
+    ORGANIZATIONS {
+        uuid id PK
+        text name
+        organization_type type
+        uuid created_by FK
+    }
+    PUBLICATIONS {
+        uuid id PK
+        text name
+        text slug UK
+        jsonb theme
+        jsonb branding
+        publication_status status
+    }
+    PUBLICATION_MEMBERS {
+        uuid publication_id PK,FK
+        uuid user_id PK,FK
+        membership_role role
+    }
+    ISSUES {
+        uuid id PK
+        uuid publication_id FK
+        text title
+        issue_status status
+        timestamptz scheduled_at
+        timestamptz published_at
+        uuid created_by FK
+    }
+    ARTICLES {
+        uuid id PK
+        uuid publication_id FK
+        text title
+        issue_status status
+        uuid created_by FK
+    }
+    SECTIONS {
+        uuid id PK
+        uuid issue_id FK
+        uuid article_id FK
+        integer position
+    }
+    BLOCKS {
+        uuid id PK
+        uuid section_id FK
+        block_type type
+        integer position
+        jsonb payload
+        boolean ai_generated
+        vector embedding
+    }
+    ISSUE_REVISIONS {
+        uuid id PK
+        uuid issue_id FK
+        jsonb snapshot
+        timestamptz created_at
+    }
+    AI_JOBS {
+        uuid id PK
+        uuid publication_id FK
+        uuid issue_id FK
+        uuid block_id FK
+        ai_job_status status
+        ai_provider provider
+        numeric cost_usd
+    }
+    WISDOM_CATEGORIES {
+        uuid id PK
+        text name UK
+    }
+    WISDOM_ENTRIES {
+        uuid id PK
+        uuid category_id FK
+        text title
+        wisdom_source_type source_type
+        wisdom_review_status review_status
+        vector embedding
+    }
+    SUBHASHITAMS {
+        uuid wisdom_entry_id PK,FK
+        text meter
+    }
+    GITA_VERSES {
+        uuid wisdom_entry_id PK,FK
+        integer chapter
+        integer verse
+    }
+    ADVAITA_PRINCIPLES {
+        uuid wisdom_entry_id PK,FK
+        text source_work
+    }
+    TECHNOLOGIES {
+        uuid id PK
+        text name
+        text slug UK
+        vector embedding
+    }
+    COMPANIES {
+        uuid id PK
+        text name
+        text slug UK
+    }
+    ARTICLE_TECHNOLOGIES {
+        uuid article_id PK,FK
+        uuid technology_id PK,FK
+    }
+    ARTICLE_COMPANIES {
+        uuid article_id PK,FK
+        uuid company_id PK,FK
+    }
+    TECHNOLOGY_COMPANIES {
+        uuid technology_id PK,FK
+        uuid company_id PK,FK
+        text relationship
+    }
+    SUBSCRIBERS {
+        uuid id PK
+        text email UK
+        uuid profile_id FK
+        uuid organization_id FK
+    }
+    SUBSCRIPTIONS {
+        uuid id PK
+        uuid subscriber_id FK
+        uuid publication_id FK
+        subscription_status status
+    }
+    DELIVERY_LOGS {
+        uuid id PK
+        uuid issue_id FK
+        uuid subscriber_id FK
+        delivery_channel channel
+        delivery_status status
+    }
+    SCHEDULED_JOBS {
+        uuid id PK
+        uuid issue_id FK
+        timestamptz run_at
+        scheduled_job_status status
+    }
+    ANALYTICS_EVENTS {
+        uuid id PK
+        text event_type
+        reference_entity_type entity_type
+        uuid entity_id
+        uuid publication_id FK
+    }
+    NOTIFICATIONS {
+        uuid id PK
+        uuid user_id FK
+        text type
+        timestamptz read_at
+    }
+    SETTINGS {
+        uuid id PK
+        uuid publication_id FK
+        text key
+        jsonb value
+    }
+    PUBLICATION_TEMPLATES {
+        uuid id PK
+        uuid publication_id FK
+        template_channel channel
+    }
+    ORGANIZATION_MEMBERS {
+        uuid organization_id PK,FK
+        uuid user_id PK,FK
+        organization_role role
+    }
