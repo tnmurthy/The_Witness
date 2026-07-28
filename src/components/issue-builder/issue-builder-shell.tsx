@@ -14,6 +14,8 @@ import { BlockCanvas } from "./block-canvas";
 import { AutosaveIndicator } from "./autosave-indicator";
 import { PresenceBar } from "./presence-bar";
 import { VersionHistorySheet } from "./version-history-sheet";
+import { GenerateIssueDialog } from "@/components/ai-workspace/generate-issue-dialog";
+import { AIAssistantSheet } from "@/components/ai-workspace/ai-assistant-sheet";
 import { ErrorBoundary } from "@/components/error/error-boundary";
 
 interface IssueBuilderShellProps {
@@ -56,6 +58,11 @@ export function IssueBuilderShell({ issue, initialSections, initialBlocks, curre
   }, [issue.id, currentUserId, currentUserName, applyRemoteBlockChange]);
 
   const publicationName = Array.isArray(issue.publications) ? issue.publications[0]?.name : issue.publications?.name;
+  // Live store state, not the initialSections prop — a section added via
+  // "Add section" after the initial page load must be selectable as a
+  // Generate Issue target without a full page reload.
+  const sections = useIssueBuilderStore((s) => s.sections);
+  const firstSectionId = sections.slice().sort((a, b) => a.position - b.position)[0]?.id;
 
   async function handleAddSection() {
     try {
@@ -95,6 +102,8 @@ export function IssueBuilderShell({ issue, initialSections, initialBlocks, curre
         <div className="flex items-center gap-3">
           <AutosaveIndicator />
           <PresenceBar users={presenceUsers} currentUserId={currentUserId} />
+          <AIAssistantSheet publicationId={issue.publication_id} publicationName={publicationName ?? "The Witness"} issueId={issue.id} />
+          {firstSectionId && <GenerateIssueDialog issueId={issue.id} sectionId={firstSectionId} />}
           <VersionHistorySheet issueId={issue.id} />
         </div>
       </div>
