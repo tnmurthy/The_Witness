@@ -26,7 +26,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Publications", href: "/publications", icon: Newspaper },
-  { label: "Issue Builder", href: "/dashboard/issues", icon: FileEdit },
+  { label: "Issue Builder", href: "/issues", icon: FileEdit },
   { label: "AI Workspace", href: "/dashboard/ai-workspace", icon: Sparkles },
   { label: "Wisdom Engine", href: "/dashboard/wisdom", icon: BookOpen },
   { label: "Knowledge Graph", href: "/dashboard/knowledge-graph", icon: Share2 },
