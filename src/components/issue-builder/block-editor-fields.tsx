@@ -9,11 +9,14 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { WisdomPickerDialog } from "@/components/wisdom/wisdom-picker-dialog";
 
 interface BlockEditorFieldsProps {
   type: string;
   payload: Record<string, unknown>;
   onChange: (payload: Record<string, unknown>) => void;
+  /** Only required for block types that need a server round trip from within the editor itself (currently just todays_wisdom's "Pick from Wisdom Engine") — every other block type edits purely in local state via onChange. */
+  blockId?: string;
 }
 
 function set(payload: Record<string, unknown>, patch: Record<string, unknown>) {
@@ -47,7 +50,7 @@ function StringListEditor({ label, items, onChange }: { label: string; items: st
  * component stays a pure, uncontrolled-feeling form with no network
  * awareness of its own.
  */
-export function BlockEditorFields({ type, payload, onChange }: BlockEditorFieldsProps) {
+export function BlockEditorFields({ type, payload, onChange, blockId }: BlockEditorFieldsProps) {
   switch (type as ImplementedBlockType) {
     case "heading":
       return (
@@ -258,6 +261,9 @@ export function BlockEditorFields({ type, payload, onChange }: BlockEditorFields
     case "todays_wisdom":
       return (
         <div className="space-y-2">
+          {blockId && (
+            <WisdomPickerDialog blockId={blockId} onAttached={(attachedPayload) => onChange(attachedPayload)} />
+          )}
           <Textarea placeholder="Source text (original language, optional)" rows={2} value={(payload.sourceText as string) ?? ""} onChange={(e) => onChange(set(payload, { sourceText: e.target.value }))} />
           <Input placeholder="IAST transliteration (optional)" value={(payload.iast as string) ?? ""} onChange={(e) => onChange(set(payload, { iast: e.target.value }))} />
           <Textarea autoFocus rows={2} placeholder="Translation" value={(payload.translation as string) ?? ""} onChange={(e) => onChange(set(payload, { translation: e.target.value }))} />

@@ -8,6 +8,7 @@ import { generateLinkedInPostFunction } from "./generate-linkedin-post";
 import { generateEmailFunction } from "./generate-email";
 import { generatePdfContentFunction } from "./generate-pdf-content";
 import { generateSeoMetadataFunction } from "./generate-seo-metadata";
+import { recommendWisdomFunction } from "./recommend-wisdom";
 import type { AIFunctionDefinition } from "./types";
 
 /**
@@ -35,6 +36,7 @@ export const AI_FUNCTIONS_REGISTRY: Record<string, AIFunctionDefinition<unknown,
   generate_email: generateEmailFunction,
   generate_pdf_content: generatePdfContentFunction,
   generate_seo_metadata: generateSeoMetadataFunction,
+  recommend_wisdom: recommendWisdomFunction,
 } as unknown as Record<string, AIFunctionDefinition<unknown, unknown>>;
 
 export type AIFunctionId = keyof typeof AI_FUNCTIONS_REGISTRY;

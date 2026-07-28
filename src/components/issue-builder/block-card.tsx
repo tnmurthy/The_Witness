@@ -120,7 +120,7 @@ export function BlockCard({ block }: { block: BlockRow }) {
 
         <ErrorBoundary boundaryName={`${definition?.label ?? block.type} block`}>
           {isEditing ? (
-            <BlockEditorFields type={block.type} payload={block.payload} onChange={handlePayloadChange} />
+            <BlockEditorFields type={block.type} payload={block.payload} onChange={handlePayloadChange} blockId={block.id} />
           ) : (
             <div onClick={() => setIsEditing(true)} className="cursor-text">
               <BlockRenderer type={block.type} payload={block.payload} />
