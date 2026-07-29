@@ -10,6 +10,7 @@ import { generatePdfContentFunction } from "./generate-pdf-content";
 import { generateSeoMetadataFunction } from "./generate-seo-metadata";
 import { recommendWisdomFunction } from "./recommend-wisdom";
 import { suggestGraphConnectionsFunction } from "./suggest-graph-connections";
+import { recommendRelatedEntitiesFunction } from "./recommend-related-entities";
 import type { AIFunctionDefinition } from "./types";
 
 /**
@@ -39,6 +40,7 @@ export const AI_FUNCTIONS_REGISTRY: Record<string, AIFunctionDefinition<unknown,
   generate_seo_metadata: generateSeoMetadataFunction,
   recommend_wisdom: recommendWisdomFunction,
   suggest_graph_connections: suggestGraphConnectionsFunction,
+  recommend_related_entities: recommendRelatedEntitiesFunction,
 } as unknown as Record<string, AIFunctionDefinition<unknown, unknown>>;
 
 export type AIFunctionId = keyof typeof AI_FUNCTIONS_REGISTRY;
