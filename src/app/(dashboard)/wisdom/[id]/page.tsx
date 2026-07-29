@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { WisdomEntryForm } from "@/components/wisdom/wisdom-entry-form";
+import { RelatedContentPanel } from "@/components/graph/related-content-panel";
 import { WisdomReviewActions } from "@/components/wisdom/wisdom-review-actions";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { H1 } from "@/components/ui/typography";
@@ -125,6 +126,10 @@ export default async function WisdomEntryDetailPage({ params }: { params: Promis
         }}
         initialSourceFields={toCamelCaseFields(sourceFieldsRow)}
       />
+
+      <div className="max-w-3xl">
+        <RelatedContentPanel entityType="wisdom_entry" entityId={id} />
+      </div>
     </div>
   );
 }

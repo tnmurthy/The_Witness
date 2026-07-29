@@ -21,8 +21,8 @@ import { AIProviderError } from "@/lib/ai/types";
  */
 
 describe("AI_FUNCTIONS_REGISTRY", () => {
-  it("has the 10 Milestone 6 functions plus Milestone 7's recommend_wisdom", () => {
-    expect(AI_FUNCTION_IDS).toHaveLength(11);
+  it("has the 10 Milestone 6 functions plus recommend_wisdom and suggest_graph_connections", () => {
+    expect(AI_FUNCTION_IDS).toHaveLength(12);
     expect(AI_FUNCTION_IDS.slice().sort()).toEqual(
       [
         "generate_issue",
@@ -36,6 +36,7 @@ describe("AI_FUNCTIONS_REGISTRY", () => {
         "generate_pdf_content",
         "generate_seo_metadata",
         "recommend_wisdom",
+        "suggest_graph_connections",
       ].sort()
     );
   });

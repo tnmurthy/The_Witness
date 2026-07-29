@@ -17,6 +17,7 @@ import { VersionHistorySheet } from "./version-history-sheet";
 import { GenerateIssueDialog } from "@/components/ai-workspace/generate-issue-dialog";
 import { AIAssistantSheet } from "@/components/ai-workspace/ai-assistant-sheet";
 import { WisdomRecommendationsPanel } from "@/components/wisdom/wisdom-recommendations-panel";
+import { IssueGraphPanel } from "@/components/graph/issue-graph-panel";
 import { ErrorBoundary } from "@/components/error/error-boundary";
 
 interface IssueBuilderShellProps {
@@ -105,6 +106,7 @@ export function IssueBuilderShell({ issue, initialSections, initialBlocks, curre
           <PresenceBar users={presenceUsers} currentUserId={currentUserId} />
           <AIAssistantSheet publicationId={issue.publication_id} publicationName={publicationName ?? "The Witness"} issueId={issue.id} />
           <WisdomRecommendationsPanel issueId={issue.id} />
+          <IssueGraphPanel issueId={issue.id} />
           {firstSectionId && <GenerateIssueDialog issueId={issue.id} sectionId={firstSectionId} />}
           <VersionHistorySheet issueId={issue.id} />
         </div>

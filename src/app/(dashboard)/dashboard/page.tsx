@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 import { RecentAiJobs } from "@/components/ai-workspace/recent-ai-jobs";
+import { KnowledgeGraphSummary } from "@/components/graph/knowledge-graph-summary";
 
 export const metadata = { title: "Dashboard" };
 
@@ -43,12 +44,7 @@ export default function DashboardPage() {
         <CardContent className="text-sm text-muted-foreground">Wired up in Milestone 3 — Publication Management.</CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Knowledge graph</CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm text-muted-foreground">Wired up in Milestone 7 — Knowledge Graph.</CardContent>
-      </Card>
+      <KnowledgeGraphSummary />
 
       <Card>
         <CardHeader>
