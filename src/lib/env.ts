@@ -68,4 +68,5 @@ function parseEnv() {
 
 // In test environments, allow a lazily-mocked env rather than requiring
 // every unit test to stub a full Supabase project.
-export const env = process.env.NODE_ENV === "test" ? (process.env as unknown as ReturnType<typeof parseEnv>) : parseEnv();
+export const env =
+  process.env.NODE_ENV === "test" ? (process.env as unknown as ReturnType<typeof parseEnv>) : parseEnv();

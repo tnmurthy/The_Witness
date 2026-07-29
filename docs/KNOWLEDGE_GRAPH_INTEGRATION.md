@@ -89,7 +89,7 @@ them wasn't what was asked.
 ## Testing
 
 - **Migration 020**: a single, minimal addition (`recommend_related_
-  entities` added to the `ai_function` enum) — applied cleanly against
+entities` added to the `ai_function` enum) — applied cleanly against
   live PostgreSQL as part of the full 20-migration chain.
 - **9 new tests**: candidate-category validation (rejecting a candidate
   outside the 6 named types), prompt composition (candidates genuinely

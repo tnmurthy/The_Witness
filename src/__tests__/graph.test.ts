@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { GRAPH_ENTITY_TYPES, GRAPH_ENTITY_LABELS, GRAPH_ENTITY_TABLE, GRAPH_RELATION_TYPES } from "@/lib/graph/types";
+import {
+  GRAPH_ENTITY_TYPES,
+  GRAPH_ENTITY_LABELS,
+  GRAPH_ENTITY_TABLE,
+  GRAPH_RELATION_TYPES,
+} from "@/lib/graph/types";
 import { createEdgeSchema, createPersonSchema, retrieveQuerySchema } from "@/lib/validation/graph";
 import { suggestGraphConnectionsFunction } from "@/lib/ai/functions/suggest-graph-connections";
 import { AI_FUNCTION_IDS } from "@/lib/ai/functions/registry";
@@ -123,7 +128,13 @@ describe("suggestGraphConnectionsFunction", () => {
     const input = suggestGraphConnectionsFunction.inputSchema.parse({
       sourceEntityType: "issue",
       sourceLabel: "The return of on-premise AI",
-      candidates: [{ entityType: "technology", entityId: "11111111-1111-1111-1111-111111111111", label: "Vector Databases" }],
+      candidates: [
+        {
+          entityType: "technology",
+          entityId: "11111111-1111-1111-1111-111111111111",
+          label: "Vector Databases",
+        },
+      ],
     });
     const { prompt } = suggestGraphConnectionsFunction.buildPrompt(input);
     expect(prompt).toContain("11111111-1111-1111-1111-111111111111");
@@ -133,7 +144,9 @@ describe("suggestGraphConnectionsFunction", () => {
     const input = suggestGraphConnectionsFunction.inputSchema.parse({
       sourceEntityType: "issue",
       sourceLabel: "X",
-      candidates: [{ entityType: "technology", entityId: "11111111-1111-1111-1111-111111111111", label: "Y" }],
+      candidates: [
+        { entityType: "technology", entityId: "11111111-1111-1111-1111-111111111111", label: "Y" },
+      ],
     });
     const { system } = suggestGraphConnectionsFunction.buildPrompt(input);
     for (const relation of GRAPH_RELATION_TYPES) {

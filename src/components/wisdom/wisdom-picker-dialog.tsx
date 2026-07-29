@@ -7,7 +7,14 @@ import { BookOpen, Search } from "lucide-react";
 import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Muted } from "@/components/ui/typography";
 
 interface WisdomEntrySummary {
@@ -24,7 +31,13 @@ interface WisdomEntrySummary {
  * editor, for content that isn't in the curated library). Only fetches
  * once the dialog opens, not on every Issue Builder page load.
  */
-export function WisdomPickerDialog({ blockId, onAttached }: { blockId: string; onAttached: (payload: Record<string, unknown>) => void }) {
+export function WisdomPickerDialog({
+  blockId,
+  onAttached,
+}: {
+  blockId: string;
+  onAttached: (payload: Record<string, unknown>) => void;
+}) {
   const [open, setOpen] = React.useState(false);
   const [entries, setEntries] = React.useState<WisdomEntrySummary[]>([]);
   const [loading, setLoading] = React.useState(false);

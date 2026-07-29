@@ -75,7 +75,10 @@ describe("rewriteFunction", () => {
   });
 
   it("buildPrompt includes both the instruction and the text", () => {
-    const input = rewriteFunction.inputSchema.parse({ text: "Original text", instruction: "Make it punchier" });
+    const input = rewriteFunction.inputSchema.parse({
+      text: "Original text",
+      instruction: "Make it punchier",
+    });
     const { prompt } = rewriteFunction.buildPrompt(input);
     expect(prompt).toContain("Make it punchier");
     expect(prompt).toContain("Original text");
@@ -138,18 +141,29 @@ describe("generateSeoMetadataFunction", () => {
       ogDescription: "OG D",
     });
     const result = generateSeoMetadataFunction.parseResult(raw);
-    expect(result).toEqual({ metaTitle: "T", metaDescription: "D", keywords: ["a", "b"], ogTitle: "OG T", ogDescription: "OG D" });
+    expect(result).toEqual({
+      metaTitle: "T",
+      metaDescription: "D",
+      keywords: ["a", "b"],
+      ogTitle: "OG T",
+      ogDescription: "OG D",
+    });
   });
 });
 
 describe("generateIssueFunction", () => {
   it("defaults blockTypes to a starter set of three", () => {
-    const input = generateIssueFunction.inputSchema.parse({ publicationName: "The Witness", topic: "AI infrastructure" });
+    const input = generateIssueFunction.inputSchema.parse({
+      publicationName: "The Witness",
+      topic: "AI infrastructure",
+    });
     expect(input.blockTypes).toEqual(["hero_story", "signal_card", "career_insight"]);
   });
 
   it("rejects an unimplemented or unknown block type in blockTypes", () => {
-    expect(() => generateIssueFunction.inputSchema.parse({ publicationName: "X", topic: "Y", blockTypes: ["chart"] })).toThrow();
+    expect(() =>
+      generateIssueFunction.inputSchema.parse({ publicationName: "X", topic: "Y", blockTypes: ["chart"] })
+    ).toThrow();
   });
 
   it("parseResult validates each drafted block against its own payload schema and separates valid from rejected", () => {
@@ -168,11 +182,17 @@ describe("generateIssueFunction", () => {
 
   it("buildPrompt includes the editorial guidelines when provided, and omits them when not", () => {
     const withGuidelines = generateIssueFunction.buildPrompt(
-      generateIssueFunction.inputSchema.parse({ publicationName: "X", topic: "Y", editorialGuidelines: "Never use exclamation points." })
+      generateIssueFunction.inputSchema.parse({
+        publicationName: "X",
+        topic: "Y",
+        editorialGuidelines: "Never use exclamation points.",
+      })
     );
     expect(withGuidelines.system).toContain("Never use exclamation points");
 
-    const withoutGuidelines = generateIssueFunction.buildPrompt(generateIssueFunction.inputSchema.parse({ publicationName: "X", topic: "Y" }));
+    const withoutGuidelines = generateIssueFunction.buildPrompt(
+      generateIssueFunction.inputSchema.parse({ publicationName: "X", topic: "Y" })
+    );
     expect(withoutGuidelines.system).not.toContain("Editorial guidelines");
   });
 });

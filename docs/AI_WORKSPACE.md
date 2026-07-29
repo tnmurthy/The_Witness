@@ -8,7 +8,7 @@ Every AI function (`src/lib/ai/functions/*`) and the orchestrator
 `@anthropic-ai/sdk` directly. Adding a third provider means:
 
 1. Write one new file implementing `AIProvider` (`generateText(params):
-   Promise<GenerateTextResult>`), following `providers/openai.ts` or
+Promise<GenerateTextResult>`), following `providers/openai.ts` or
    `providers/anthropic.ts` as a template.
 2. Register it in `registry.ts`'s `getProvider()`.
 3. Add its pricing to `pricing.ts`.
@@ -94,7 +94,7 @@ milestone.
   to both SDKs' request `signal` option.
 - **Retry**: exponential backoff (3 attempts, 500ms base delay, doubling),
   but only for errors the provider implementation marked `retryable:
-  true` — a 429 or 5xx, not a 401 or a malformed-request 400. Retrying an
+true` — a 429 or 5xx, not a 401 or a malformed-request 400. Retrying an
   auth failure three times just triples the latency before failing the
   same way a first attempt would have; the `retryable` flag on
   `AIProviderError` is what prevents that.

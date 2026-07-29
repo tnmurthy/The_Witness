@@ -23,7 +23,11 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const search = searchParams.get("search");
 
-  let query = supabase.from("people").select("id, full_name, slug, bio, avatar_url").order("full_name").limit(100);
+  let query = supabase
+    .from("people")
+    .select("id, full_name, slug, bio, avatar_url")
+    .order("full_name")
+    .limit(100);
   if (search) query = query.textSearch("search_vector", search, { type: "websearch" });
 
   const { data, error } = await query;

@@ -40,7 +40,10 @@ export interface RunAIFunctionResult<T = unknown> {
  * calling API route), not a platform-administrative operation like a
  * role change.
  */
-export async function runAIFunction<T = unknown>(supabase: SupabaseClient, params: RunAIFunctionParams): Promise<RunAIFunctionResult<T>> {
+export async function runAIFunction<T = unknown>(
+  supabase: SupabaseClient,
+  params: RunAIFunctionParams
+): Promise<RunAIFunctionResult<T>> {
   const definition = AI_FUNCTIONS_REGISTRY[params.functionId];
   if (!definition) {
     throw new Error(`Unknown AI function: ${params.functionId}`);
@@ -101,11 +104,20 @@ export async function runAIFunction<T = unknown>(supabase: SupabaseClient, param
       })
       .eq("id", job.id);
 
-    logger.info("AI function completed", { functionId: params.functionId, jobId: job.id, costUsd: result.costUsd });
+    logger.info("AI function completed", {
+      functionId: params.functionId,
+      jobId: job.id,
+      costUsd: result.costUsd,
+    });
 
     return { jobId: job.id, output, tokenUsage: result.tokenUsage, costUsd: result.costUsd };
   } catch (error) {
-    const message = error instanceof AIProviderError ? error.message : error instanceof Error ? error.message : "Unknown error";
+    const message =
+      error instanceof AIProviderError
+        ? error.message
+        : error instanceof Error
+          ? error.message
+          : "Unknown error";
 
     await supabase
       .from("ai_jobs")

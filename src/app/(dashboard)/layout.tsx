@@ -28,10 +28,18 @@ export default async function DashboardLayout({ children }: { children: React.Re
   // NOTE: untyped for now — `supabase gen types typescript` gets wired up
   // once a real Supabase project exists (see README), which will replace
   // this `any`-typed .from() call with a fully typed one.
-  const { data: profile } = await supabase.from("profiles").select("full_name, role").eq("id", user.id).single();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name, role")
+    .eq("id", user.id)
+    .single();
 
   return (
-    <AppShell userEmail={user.email ?? ""} userFullName={profile?.full_name} showAdmin={profile?.role === "super_admin"}>
+    <AppShell
+      userEmail={user.email ?? ""}
+      userFullName={profile?.full_name}
+      showAdmin={profile?.role === "super_admin"}
+    >
       {children}
     </AppShell>
   );

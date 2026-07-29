@@ -42,7 +42,8 @@ export function usePerson(id: string) {
 export function useCreatePerson() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: CreatePersonInput) => apiPost<{ person: { id: string; full_name: string } }>("/api/people", input),
+    mutationFn: (input: CreatePersonInput) =>
+      apiPost<{ person: { id: string; full_name: string } }>("/api/people", input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: peopleKeys.all });
     },

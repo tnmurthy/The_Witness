@@ -57,7 +57,10 @@ export async function POST(request: Request, { params }: RouteParams) {
 
   if (!entry) return NextResponse.json({ error: "Wisdom entry not found" }, { status: 404 });
   if (entry.review_status !== "approved") {
-    return NextResponse.json({ error: "Only approved wisdom entries can be attached to a block" }, { status: 422 });
+    return NextResponse.json(
+      { error: "Only approved wisdom entries can be attached to a block" },
+      { status: 422 }
+    );
   }
 
   const referencesList = entry.references_json as unknown as { label?: string }[] | null;

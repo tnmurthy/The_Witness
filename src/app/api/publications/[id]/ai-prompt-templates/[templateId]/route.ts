@@ -45,7 +45,10 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
   if (error || !template) {
     const status = error?.code === "23505" ? 409 : 500;
-    const message = error?.code === "23505" ? "An active template for this block type already exists." : "Failed to update template";
+    const message =
+      error?.code === "23505"
+        ? "An active template for this block type already exists."
+        : "Failed to update template";
     logger.error("Failed to update AI prompt template", { error, publicationId: id, templateId });
     return NextResponse.json({ error: message }, { status });
   }
@@ -65,7 +68,11 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { error } = await supabase.from("prompt_templates").delete().eq("id", templateId).eq("publication_id", id);
+  const { error } = await supabase
+    .from("prompt_templates")
+    .delete()
+    .eq("id", templateId)
+    .eq("publication_id", id);
 
   if (error) {
     logger.error("Failed to delete AI prompt template", { error, publicationId: id, templateId });

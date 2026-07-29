@@ -44,7 +44,10 @@ export function UserMenu({ email, fullName }: UserMenuProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="rounded-full focus-visible:outline-none focus-visible:shadow-focus-gold" aria-label="User menu">
+      <DropdownMenuTrigger
+        className="rounded-full focus-visible:shadow-focus-gold focus-visible:outline-none"
+        aria-label="User menu"
+      >
         <Avatar>
           <AvatarFallback>{initialsFrom(fullName, email)}</AvatarFallback>
         </Avatar>

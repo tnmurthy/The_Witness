@@ -1,4 +1,6 @@
 import { createServerClient, type SetAllCookies } from "@supabase/ssr";
+// Database generic intentionally not applied — same reason as
+// server.ts and client.ts.
 import { NextResponse, type NextRequest } from "next/server";
 import { env } from "@/lib/env";
 
@@ -62,7 +64,8 @@ export async function updateSession(request: NextRequest) {
   const isProtectedRoute = protectedPrefixes.some(
     (prefix) => request.nextUrl.pathname === prefix || request.nextUrl.pathname.startsWith(`${prefix}/`)
   );
-  const isAuthRoute = request.nextUrl.pathname.startsWith("/sign-in") || request.nextUrl.pathname.startsWith("/sign-up");
+  const isAuthRoute =
+    request.nextUrl.pathname.startsWith("/sign-in") || request.nextUrl.pathname.startsWith("/sign-up");
 
   if (!user && isProtectedRoute) {
     const redirectUrl = new URL("/sign-in", request.url);

@@ -35,7 +35,10 @@ export interface GeneratePdfContentOutput {
  * editor reviews and places it, a later milestone's rendering pipeline
  * turns it into an actual PDF file. See docs/AI_WORKSPACE.md.
  */
-export const generatePdfContentFunction: AIFunctionDefinition<GeneratePdfContentInput, GeneratePdfContentOutput> = {
+export const generatePdfContentFunction: AIFunctionDefinition<
+  GeneratePdfContentInput,
+  GeneratePdfContentOutput
+> = {
   id: "generate_pdf_content",
   label: "Generate PDF Content",
   description: "Draft a cover title, pull quote, and print-formatted sections for the issue's PDF edition",

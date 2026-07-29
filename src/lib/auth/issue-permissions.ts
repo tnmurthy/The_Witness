@@ -7,11 +7,19 @@ import type { MembershipRole, PlatformRole } from "@/lib/auth/roles";
  * researcher who authored the (still-draft) issue. Same defense-in-depth
  * relationship to RLS as canEditPublication — see docs/RBAC.md.
  */
-export async function canEditIssue(supabase: SupabaseClient, issueId: string, userId: string): Promise<boolean> {
+export async function canEditIssue(
+  supabase: SupabaseClient,
+  issueId: string,
+  userId: string
+): Promise<boolean> {
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", userId).single();
   if ((profile?.role as PlatformRole | undefined) === "super_admin") return true;
 
-  const { data: issue } = await supabase.from("issues").select("publication_id, created_by").eq("id", issueId).single();
+  const { data: issue } = await supabase
+    .from("issues")
+    .select("publication_id, created_by")
+    .eq("id", issueId)
+    .single();
   if (!issue) return false;
 
   const { data: membership } = await supabase

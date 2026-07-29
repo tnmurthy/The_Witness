@@ -47,7 +47,12 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   if (parsed.data.avatarUrl !== undefined) update.avatar_url = parsed.data.avatarUrl || null;
   if (parsed.data.externalLinks !== undefined) update.external_links = parsed.data.externalLinks;
 
-  const { data: person, error } = await supabase.from("people").update(update).eq("id", id).select("id, full_name").single();
+  const { data: person, error } = await supabase
+    .from("people")
+    .update(update)
+    .eq("id", id)
+    .select("id, full_name")
+    .single();
   if (error || !person) {
     logger.error("Failed to update person", { error, personId: id });
     return NextResponse.json({ error: "Failed to update person" }, { status: 500 });

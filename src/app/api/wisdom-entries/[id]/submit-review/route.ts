@@ -24,7 +24,10 @@ export async function POST(_request: Request, { params }: RouteParams) {
 
   if (error || !entry) {
     logger.error("Failed to submit wisdom entry for review", { error, entryId: id, userId: user.id });
-    return NextResponse.json({ error: "Failed to submit for review — you may not be its author" }, { status: 403 });
+    return NextResponse.json(
+      { error: "Failed to submit for review — you may not be its author" },
+      { status: 403 }
+    );
   }
 
   return NextResponse.json({ entry });

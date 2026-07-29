@@ -55,7 +55,11 @@ export async function POST(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: "Invalid input", issues: parsed.error.issues }, { status: 422 });
   }
 
-  const { data: issue } = await supabase.from("issues").select("publication_id, title").eq("id", issueId).single();
+  const { data: issue } = await supabase
+    .from("issues")
+    .select("publication_id, title")
+    .eq("id", issueId)
+    .single();
   if (!issue) return NextResponse.json({ error: "Issue not found" }, { status: 404 });
 
   const { data: blocks } = await supabase
@@ -82,12 +86,21 @@ export async function POST(request: Request, { params }: RouteParams) {
     .limit(MAX_CANDIDATES);
 
   if (!candidateRows || candidateRows.length === 0) {
-    return NextResponse.json({ error: "No approved wisdom entries exist yet to recommend from" }, { status: 422 });
+    return NextResponse.json(
+      { error: "No approved wisdom entries exist yet to recommend from" },
+      { status: 422 }
+    );
   }
 
   const candidates = candidateRows.map((c) => {
     const category = Array.isArray(c.wisdom_categories) ? c.wisdom_categories[0] : c.wisdom_categories;
-    return { id: c.id, title: c.title, translation: c.translation, category: category?.name, keywords: c.keywords ?? undefined };
+    return {
+      id: c.id,
+      title: c.title,
+      translation: c.translation,
+      category: category?.name,
+      keywords: c.keywords ?? undefined,
+    };
   });
 
   try {
@@ -116,12 +129,19 @@ export async function POST(request: Request, { params }: RouteParams) {
       );
     }
 
-    return NextResponse.json({ jobId: result.jobId, recommendations: validRecommendations, costUsd: result.costUsd });
+    return NextResponse.json({
+      jobId: result.jobId,
+      recommendations: validRecommendations,
+      costUsd: result.costUsd,
+    });
   } catch (error) {
     logger.error("Wisdom recommendation failed", { error, issueId, userId: user.id });
     if (error instanceof AIProviderError) {
       return NextResponse.json({ error: error.message, retryable: error.retryable }, { status: 502 });
     }
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Recommendation failed" }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Recommendation failed" },
+      { status: 500 }
+    );
   }
 }

@@ -70,7 +70,10 @@ export async function GET(request: Request, { params }: RouteParams) {
   await Promise.all(
     Array.from(idsByType.entries()).map(async ([t, ids]) => {
       const { table, titleColumn } = GRAPH_ENTITY_TABLE[t];
-      const { data } = await supabase.from(table).select(`id, ${titleColumn}` as "id").in("id", Array.from(ids));
+      const { data } = await supabase
+        .from(table)
+        .select(`id, ${titleColumn}` as "id")
+        .in("id", Array.from(ids));
       for (const row of (data ?? []) as Record<string, unknown>[]) {
         labelById.set(`${t}:${row.id}`, row[titleColumn] as string);
       }

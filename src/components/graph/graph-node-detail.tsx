@@ -102,13 +102,15 @@ export function GraphNodeDetail({ node, onNavigate }: GraphNodeDetailProps) {
                   <button
                     type="button"
                     onClick={() => onNavigate(neighbor.entityType, neighbor.entityId, neighbor.label)}
-                    className="flex w-full items-center justify-between gap-3 rounded-md border border-neutral-200 p-3 text-left hover:border-neutral-300 hover:bg-secondary focus-visible:outline-none focus-visible:shadow-focus-gold"
+                    className="flex w-full items-center justify-between gap-3 rounded-md border border-neutral-200 p-3 text-left hover:border-neutral-300 hover:bg-secondary focus-visible:shadow-focus-gold focus-visible:outline-none"
                   >
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-foreground">{neighbor.label}</p>
                       <Muted className="text-xs">
-                        {neighbor.relationType ? (RELATION_LABEL[neighbor.relationType] ?? neighbor.relationType) : "connected"} ·{" "}
-                        {neighbor.depth} hop{neighbor.depth === 1 ? "" : "s"} away
+                        {neighbor.relationType
+                          ? (RELATION_LABEL[neighbor.relationType] ?? neighbor.relationType)
+                          : "connected"}{" "}
+                        · {neighbor.depth} hop{neighbor.depth === 1 ? "" : "s"} away
                       </Muted>
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
@@ -127,18 +129,32 @@ export function GraphNodeDetail({ node, onNavigate }: GraphNodeDetailProps) {
   );
 }
 
-export function GraphBreadcrumbTrail({ trail, onJump }: { trail: SelectedNode[]; onJump: (index: number) => void }) {
+export function GraphBreadcrumbTrail({
+  trail,
+  onJump,
+}: {
+  trail: SelectedNode[];
+  onJump: (index: number) => void;
+}) {
   if (trail.length <= 1) return null;
 
   return (
-    <nav aria-label="Graph navigation trail" className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
+    <nav
+      aria-label="Graph navigation trail"
+      className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground"
+    >
       {trail.map((node, i) => (
         <span key={`${node.entityType}:${node.entityId}`} className="flex items-center gap-1">
           {i > 0 && <span aria-hidden="true">/</span>}
           {i === trail.length - 1 ? (
             <span className="font-medium text-foreground">{node.label}</span>
           ) : (
-            <Button variant="ghost" size="sm" className="h-auto px-1.5 py-0.5 text-sm text-muted-foreground" onClick={() => onJump(i)}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-auto px-1.5 py-0.5 text-sm text-muted-foreground"
+              onClick={() => onJump(i)}
+            >
               {node.label}
             </Button>
           )}

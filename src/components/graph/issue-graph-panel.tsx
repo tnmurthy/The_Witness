@@ -12,7 +12,14 @@ import { RelatedContentPanel } from "./related-content-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import { Muted } from "@/components/ui/typography";
 
 interface RelatedEntitySuggestion {
@@ -23,7 +30,14 @@ interface RelatedEntitySuggestion {
   label: string;
 }
 
-const CATEGORY_ORDER: RelatedEntityCategory[] = ["company", "technology", "paper", "github_repository", "wisdom_entry", "article"];
+const CATEGORY_ORDER: RelatedEntityCategory[] = [
+  "company",
+  "technology",
+  "paper",
+  "github_repository",
+  "wisdom_entry",
+  "article",
+];
 
 /**
  * The Knowledge Graph, inside the Issue Builder. Three things in one
@@ -42,7 +56,11 @@ const CATEGORY_ORDER: RelatedEntityCategory[] = ["company", "technology", "paper
  */
 export function IssueGraphPanel({ issueId }: { issueId: string }) {
   const [search, setSearch] = React.useState("");
-  const [selectedEntity, setSelectedEntity] = React.useState<{ entityType: GraphEntityType; entityId: string; label: string } | null>(null);
+  const [selectedEntity, setSelectedEntity] = React.useState<{
+    entityType: GraphEntityType;
+    entityId: string;
+    label: string;
+  } | null>(null);
   const [relationType, setRelationType] = React.useState<string>("related");
   const [suggestions, setSuggestions] = React.useState<RelatedEntitySuggestion[]>([]);
   const [isSuggesting, setIsSuggesting] = React.useState(false);
@@ -54,13 +72,17 @@ export function IssueGraphPanel({ issueId }: { issueId: string }) {
   async function handleGetSuggestions() {
     setIsSuggesting(true);
     try {
-      const body = await apiPost<{ suggestions: RelatedEntitySuggestion[]; note?: string }>(`/api/issues/${issueId}/graph/recommend-related`, {
-        perCategoryCount: 3,
-      });
+      const body = await apiPost<{ suggestions: RelatedEntitySuggestion[]; note?: string }>(
+        `/api/issues/${issueId}/graph/recommend-related`,
+        {
+          perCategoryCount: 3,
+        }
+      );
       setSuggestions(body.suggestions);
       setHasSuggested(true);
       if (body.note) toast.info(body.note);
-      else if (body.suggestions.length === 0) toast.info("No strong matches found for this issue's current content");
+      else if (body.suggestions.length === 0)
+        toast.info("No strong matches found for this issue's current content");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Something went wrong");
     } finally {
@@ -117,7 +139,9 @@ export function IssueGraphPanel({ issueId }: { issueId: string }) {
       <SheetContent className="w-full max-w-md space-y-6 overflow-y-auto sm:max-w-md">
         <SheetHeader>
           <SheetTitle>Knowledge Graph</SheetTitle>
-          <SheetDescription>Connect this issue to the technologies, companies, and other entities it covers.</SheetDescription>
+          <SheetDescription>
+            Connect this issue to the technologies, companies, and other entities it covers.
+          </SheetDescription>
         </SheetHeader>
 
         <RelatedContentPanel entityType="issue" entityId={issueId} title="Currently connected" />
@@ -126,25 +150,43 @@ export function IssueGraphPanel({ issueId }: { issueId: string }) {
           <div>
             <Muted className="text-xs font-semibold uppercase tracking-wide">Suggested for this issue</Muted>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              Companies, technologies, research, GitHub repositories, wisdom, and articles — based on what you&apos;ve
-              written so far.
+              Companies, technologies, research, GitHub repositories, wisdom, and articles — based on what
+              you&apos;ve written so far.
             </p>
           </div>
-          <Button variant="signal" size="sm" className="w-full" disabled={isSuggesting} onClick={handleGetSuggestions}>
-            <Sparkles className="h-4 w-4" /> {isSuggesting ? "Thinking…" : hasSuggested ? "Suggest again" : "Get suggestions"}
+          <Button
+            variant="signal"
+            size="sm"
+            className="w-full"
+            disabled={isSuggesting}
+            onClick={handleGetSuggestions}
+          >
+            <Sparkles className="h-4 w-4" />{" "}
+            {isSuggesting ? "Thinking…" : hasSuggested ? "Suggest again" : "Get suggestions"}
           </Button>
 
           {suggestionsByCategory.length > 0 && (
             <div className="space-y-4">
               {suggestionsByCategory.map(({ category, items }) => (
                 <div key={category}>
-                  <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{GRAPH_ENTITY_LABELS[category]}</p>
+                  <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    {GRAPH_ENTITY_LABELS[category]}
+                  </p>
                   <div className="space-y-2">
                     {items.map((s) => (
-                      <div key={`${s.entityType}:${s.entityId}`} className="rounded-md border border-neutral-200 p-3">
+                      <div
+                        key={`${s.entityType}:${s.entityId}`}
+                        className="rounded-md border border-neutral-200 p-3"
+                      >
                         <p className="text-sm font-medium text-foreground">{s.label}</p>
                         <p className="mt-0.5 text-xs italic text-gold-700">{s.rationale}</p>
-                        <Button size="sm" variant="outline" className="mt-2" disabled={createEdge.isPending} onClick={() => acceptSuggestion(s)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="mt-2"
+                          disabled={createEdge.isPending}
+                          onClick={() => acceptSuggestion(s)}
+                        >
                           <Plus className="h-3.5 w-3.5" /> Add connection
                         </Button>
                       </div>

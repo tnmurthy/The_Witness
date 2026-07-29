@@ -32,16 +32,29 @@ export const WISDOM_SOURCE_LABELS: Record<WisdomSourceType, string> = {
 };
 
 const gitaVerseFieldsSchema = z.object({ chapter: z.number().int().min(1), verse: z.number().int().min(1) });
-const advaitaFieldsSchema = z.object({ sourceWork: z.string().max(200).optional(), traditionNote: z.string().max(1000).optional() });
-const subhashitamFieldsSchema = z.object({ meter: z.string().max(100).optional(), attributedTo: z.string().max(200).optional() });
-const upanishadFieldsSchema = z.object({ upanishadName: z.string().min(1).max(200), chapter: z.number().int().min(1).optional(), verse: z.number().int().min(1).optional() });
+const advaitaFieldsSchema = z.object({
+  sourceWork: z.string().max(200).optional(),
+  traditionNote: z.string().max(1000).optional(),
+});
+const subhashitamFieldsSchema = z.object({
+  meter: z.string().max(100).optional(),
+  attributedTo: z.string().max(200).optional(),
+});
+const upanishadFieldsSchema = z.object({
+  upanishadName: z.string().min(1).max(200),
+  chapter: z.number().int().min(1).optional(),
+  verse: z.number().int().min(1).optional(),
+});
 const chanakyaFieldsSchema = z.object({ chapter: z.number().int().min(1), verse: z.number().int().min(1) });
 const panchatantraFieldsSchema = z.object({
   tantraNumber: z.number().int().min(1).max(5),
   tantraName: z.string().min(1).max(200),
   taleTitle: z.string().min(1).max(300),
 });
-const hitopadeshaFieldsSchema = z.object({ sectionName: z.string().min(1).max(200), storyTitle: z.string().min(1).max(300) });
+const hitopadeshaFieldsSchema = z.object({
+  sectionName: z.string().min(1).max(200),
+  storyTitle: z.string().min(1).max(300),
+});
 
 export function sourceFieldsSchemaFor(sourceType: WisdomSourceType) {
   switch (sourceType) {

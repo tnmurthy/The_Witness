@@ -25,7 +25,6 @@ export const platformRoleSchema = z.enum(PLATFORM_ROLES);
 /** Role a user holds within a specific publication. Mirrors `membership_role`. */
 export const MEMBERSHIP_ROLES = ["editor_in_chief", "editor", "writer", "researcher"] as const;
 export type MembershipRole = (typeof MEMBERSHIP_ROLES)[number];
-export const membershipRoleSchema = z.enum(MEMBERSHIP_ROLES);
 
 /** Role within an organization. Mirrors `organization_role`. "Organization
  * Admin" (from the Milestone 2 role list) is this role, scoped to one
@@ -36,7 +35,6 @@ export const membershipRoleSchema = z.enum(MEMBERSHIP_ROLES);
  * docs/RBAC.md for the full rationale. */
 export const ORGANIZATION_ROLES = ["admin", "member"] as const;
 export type OrganizationRole = (typeof ORGANIZATION_ROLES)[number];
-export const organizationRoleSchema = z.enum(ORGANIZATION_ROLES);
 
 export const PLATFORM_ROLE_LABELS: Record<PlatformRole, string> = {
   super_admin: "Super Admin",

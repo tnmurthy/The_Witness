@@ -7,7 +7,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Plus, Trash2 } from "lucide-react";
 
-import { createAiPromptTemplateSchema, type CreateAiPromptTemplateInput } from "@/lib/validation/publications";
+import {
+  createAiPromptTemplateSchema,
+  type CreateAiPromptTemplateInput,
+} from "@/lib/validation/publications";
 import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +18,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Dialog,
   DialogTrigger,
@@ -37,7 +48,13 @@ interface AiPromptTemplate {
   is_active: boolean;
 }
 
-function CreateTemplateDialog({ publicationId, onCreated }: { publicationId: string; onCreated: (t: AiPromptTemplate) => void }) {
+function CreateTemplateDialog({
+  publicationId,
+  onCreated,
+}: {
+  publicationId: string;
+  onCreated: (t: AiPromptTemplate) => void;
+}) {
   const [open, setOpen] = React.useState(false);
   const form = useForm<CreateAiPromptTemplateInput>({
     resolver: zodResolver(createAiPromptTemplateSchema),
@@ -89,7 +106,9 @@ function CreateTemplateDialog({ publicationId, onCreated }: { publicationId: str
                   <FormControl>
                     <Input placeholder="hero_story" {...field} />
                   </FormControl>
-                  <FormDescription>Matches a block_type from the Issue Builder (e.g. hero_story, signal_card).</FormDescription>
+                  <FormDescription>
+                    Matches a block_type from the Issue Builder (e.g. hero_story, signal_card).
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -114,7 +133,12 @@ function CreateTemplateDialog({ publicationId, onCreated }: { publicationId: str
                 <FormItem>
                   <FormLabel>Prompt text</FormLabel>
                   <FormControl>
-                    <Textarea rows={6} placeholder="Write a hero story about {{topic}}…" className="font-mono text-xs" {...field} />
+                    <Textarea
+                      rows={6}
+                      placeholder="Write a hero story about {{topic}}…"
+                      className="font-mono text-xs"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -137,7 +161,13 @@ function CreateTemplateDialog({ publicationId, onCreated }: { publicationId: str
   );
 }
 
-export function AiPromptTemplatesPanel({ publicationId, initialTemplates }: { publicationId: string; initialTemplates: AiPromptTemplate[] }) {
+export function AiPromptTemplatesPanel({
+  publicationId,
+  initialTemplates,
+}: {
+  publicationId: string;
+  initialTemplates: AiPromptTemplate[];
+}) {
   const router = useRouter();
   const [templates, setTemplates] = React.useState(initialTemplates);
 
@@ -155,9 +185,15 @@ export function AiPromptTemplatesPanel({ publicationId, initialTemplates }: { pu
       if (!res.ok) throw new Error(body.error ?? "Failed to update template");
       router.refresh();
     } catch (error) {
-      logger.error("Toggle AI prompt template active failed in UI", { error, publicationId, templateId: template.id });
+      logger.error("Toggle AI prompt template active failed in UI", {
+        error,
+        publicationId,
+        templateId: template.id,
+      });
       toast.error(error instanceof Error ? error.message : "Something went wrong");
-      setTemplates((prev) => prev.map((t) => (t.id === template.id ? { ...t, is_active: template.is_active } : t)));
+      setTemplates((prev) =>
+        prev.map((t) => (t.id === template.id ? { ...t, is_active: template.is_active } : t))
+      );
     }
   }
 
@@ -166,7 +202,9 @@ export function AiPromptTemplatesPanel({ publicationId, initialTemplates }: { pu
     setTemplates((prev) => prev.filter((t) => t.id !== templateId));
 
     try {
-      const res = await fetch(`/api/publications/${publicationId}/ai-prompt-templates/${templateId}`, { method: "DELETE" });
+      const res = await fetch(`/api/publications/${publicationId}/ai-prompt-templates/${templateId}`, {
+        method: "DELETE",
+      });
       if (!res.ok) {
         const body = await res.json();
         throw new Error(body.error ?? "Failed to delete template");
@@ -183,10 +221,13 @@ export function AiPromptTemplatesPanel({ publicationId, initialTemplates }: { pu
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <Muted>
-          Publication-specific overrides only. Platform-wide defaults (managed by Super Admin) apply automatically
-          wherever no override exists here.
+          Publication-specific overrides only. Platform-wide defaults (managed by Super Admin) apply
+          automatically wherever no override exists here.
         </Muted>
-        <CreateTemplateDialog publicationId={publicationId} onCreated={(t) => setTemplates((prev) => [...prev, t])} />
+        <CreateTemplateDialog
+          publicationId={publicationId}
+          onCreated={(t) => setTemplates((prev) => [...prev, t])}
+        />
       </div>
 
       {templates.length === 0 ? (
@@ -202,13 +243,22 @@ export function AiPromptTemplatesPanel({ publicationId, initialTemplates }: { pu
                     {t.block_type}
                   </Badge>
                 </div>
-                <Switch checked={t.is_active} onCheckedChange={() => handleToggleActive(t)} aria-label={`Active: ${t.name}`} />
+                <Switch
+                  checked={t.is_active}
+                  onCheckedChange={() => handleToggleActive(t)}
+                  aria-label={`Active: ${t.name}`}
+                />
               </CardHeader>
               <CardContent>
                 <p className="line-clamp-3 font-mono text-xs text-muted-foreground">{t.template_text}</p>
               </CardContent>
               <CardFooter>
-                <Button variant="ghost" size="sm" className="text-danger-700" onClick={() => handleDelete(t.id)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-danger-700"
+                  onClick={() => handleDelete(t.id)}
+                >
                   <Trash2 className="h-3.5 w-3.5" /> Delete
                 </Button>
               </CardFooter>

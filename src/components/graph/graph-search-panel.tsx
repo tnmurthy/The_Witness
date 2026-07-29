@@ -24,7 +24,10 @@ export function GraphSearchPanel({ onSelect }: GraphSearchPanelProps) {
     <div className="space-y-3">
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          />
           <Input
             className="pl-9"
             placeholder="Search the Knowledge Graph…"
@@ -62,7 +65,11 @@ export function GraphSearchPanel({ onSelect }: GraphSearchPanelProps) {
           <EmptyState
             icon={Search}
             title={search ? "No entities match" : "Nothing here yet"}
-            description={search ? "Try a different search term or entity type." : "Start typing to search across every entity type in the graph."}
+            description={
+              search
+                ? "Try a different search term or entity type."
+                : "Start typing to search across every entity type in the graph."
+            }
           />
         }
       >
@@ -73,7 +80,7 @@ export function GraphSearchPanel({ onSelect }: GraphSearchPanelProps) {
                 <button
                   type="button"
                   onClick={() => onSelect(entity.entityType, entity.entityId, entity.label)}
-                  className="flex w-full items-center justify-between gap-2 rounded-md border border-neutral-200 px-3 py-2 text-left hover:border-neutral-300 hover:bg-secondary focus-visible:outline-none focus-visible:shadow-focus-gold"
+                  className="flex w-full items-center justify-between gap-2 rounded-md border border-neutral-200 px-3 py-2 text-left hover:border-neutral-300 hover:bg-secondary focus-visible:shadow-focus-gold focus-visible:outline-none"
                 >
                   <span className="truncate text-sm font-medium text-foreground">{entity.label}</span>
                   <Badge variant="neutral" className="shrink-0 text-[10px]">

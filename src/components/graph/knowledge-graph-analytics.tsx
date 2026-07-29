@@ -20,7 +20,9 @@ import { Share2 } from "lucide-react";
 export async function KnowledgeGraphAnalytics() {
   const supabase = await createClient();
 
-  const { data: edges } = await supabase.from("knowledge_graph_edges").select("source_type, source_id, target_type, target_id, relation_type");
+  const { data: edges } = await supabase
+    .from("knowledge_graph_edges")
+    .select("source_type, source_id, target_type, target_id, relation_type");
 
   if (!edges || edges.length === 0) {
     return (
@@ -87,7 +89,9 @@ export async function KnowledgeGraphAnalytics() {
               </div>
             );
           })}
-          <Muted className="pt-1 text-xs">Entity labels aren&apos;t shown here — see the Graph Explorer to browse by name.</Muted>
+          <Muted className="pt-1 text-xs">
+            Entity labels aren&apos;t shown here — see the Graph Explorer to browse by name.
+          </Muted>
         </CardContent>
       </Card>
     </div>

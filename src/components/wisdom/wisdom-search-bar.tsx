@@ -33,7 +33,10 @@ export function WisdomSearchBar() {
           onBlur={() => updateParam("search", search)}
         />
       </div>
-      <Select value={searchParams.get("sourceType") ?? "all"} onValueChange={(v) => updateParam("sourceType", v === "all" ? "" : v)}>
+      <Select
+        value={searchParams.get("sourceType") ?? "all"}
+        onValueChange={(v) => updateParam("sourceType", v === "all" ? "" : v)}
+      >
         <SelectTrigger className="w-52">
           <SelectValue placeholder="All sources" />
         </SelectTrigger>
@@ -46,7 +49,10 @@ export function WisdomSearchBar() {
           ))}
         </SelectContent>
       </Select>
-      <Select value={searchParams.get("reviewStatus") ?? "all"} onValueChange={(v) => updateParam("reviewStatus", v === "all" ? "" : v)}>
+      <Select
+        value={searchParams.get("reviewStatus") ?? "all"}
+        onValueChange={(v) => updateParam("reviewStatus", v === "all" ? "" : v)}
+      >
         <SelectTrigger className="w-44">
           <SelectValue placeholder="All statuses" />
         </SelectTrigger>

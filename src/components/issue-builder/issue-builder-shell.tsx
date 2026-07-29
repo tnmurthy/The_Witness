@@ -6,7 +6,11 @@ import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
 import { useIssueBuilderStore, type SectionRow, type BlockRow } from "@/lib/stores/issue-builder-store";
-import { subscribeToIssueChannel, unsubscribeFromIssueChannel, type PresenceUser } from "@/lib/supabase/realtime-issue";
+import {
+  subscribeToIssueChannel,
+  unsubscribeFromIssueChannel,
+  type PresenceUser,
+} from "@/lib/supabase/realtime-issue";
 import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +25,13 @@ import { IssueGraphPanel } from "@/components/graph/issue-graph-panel";
 import { ErrorBoundary } from "@/components/error/error-boundary";
 
 interface IssueBuilderShellProps {
-  issue: { id: string; title: string; status: string; publication_id: string; publications: { name: string } | { name: string }[] | null };
+  issue: {
+    id: string;
+    title: string;
+    status: string;
+    publication_id: string;
+    publications: { name: string } | { name: string }[] | null;
+  };
   initialSections: SectionRow[];
   initialBlocks: BlockRow[];
   currentUserId: string;
@@ -36,7 +46,13 @@ interface IssueBuilderShellProps {
  * that first paint — store hydration, the Realtime subscription
  * lifecycle, and rendering the canvas.
  */
-export function IssueBuilderShell({ issue, initialSections, initialBlocks, currentUserId, currentUserName }: IssueBuilderShellProps) {
+export function IssueBuilderShell({
+  issue,
+  initialSections,
+  initialBlocks,
+  currentUserId,
+  currentUserName,
+}: IssueBuilderShellProps) {
   const hydrate = useIssueBuilderStore((s) => s.hydrate);
   const applyRemoteBlockChange = useIssueBuilderStore((s) => s.applyRemoteBlockChange);
   const [presenceUsers, setPresenceUsers] = React.useState<PresenceUser[]>([]);
@@ -59,7 +75,9 @@ export function IssueBuilderShell({ issue, initialSections, initialBlocks, curre
     return () => unsubscribeFromIssueChannel(channel);
   }, [issue.id, currentUserId, currentUserName, applyRemoteBlockChange]);
 
-  const publicationName = Array.isArray(issue.publications) ? issue.publications[0]?.name : issue.publications?.name;
+  const publicationName = Array.isArray(issue.publications)
+    ? issue.publications[0]?.name
+    : issue.publications?.name;
   // Live store state, not the initialSections prop — a section added via
   // "Add section" after the initial page load must be selectable as a
   // Generate Issue target without a full page reload.
@@ -68,7 +86,11 @@ export function IssueBuilderShell({ issue, initialSections, initialBlocks, curre
 
   async function handleAddSection() {
     try {
-      const res = await fetch(`/api/issues/${issue.id}/sections`, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+      const res = await fetch(`/api/issues/${issue.id}/sections`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+      });
       const body = await res.json();
       if (!res.ok) throw new Error(body.error ?? "Failed to add section");
       useIssueBuilderStore.setState((s) => ({ sections: [...s.sections, body.section] }));
@@ -104,7 +126,11 @@ export function IssueBuilderShell({ issue, initialSections, initialBlocks, curre
         <div className="flex items-center gap-3">
           <AutosaveIndicator />
           <PresenceBar users={presenceUsers} currentUserId={currentUserId} />
-          <AIAssistantSheet publicationId={issue.publication_id} publicationName={publicationName ?? "The Witness"} issueId={issue.id} />
+          <AIAssistantSheet
+            publicationId={issue.publication_id}
+            publicationName={publicationName ?? "The Witness"}
+            issueId={issue.id}
+          />
           <WisdomRecommendationsPanel issueId={issue.id} />
           <IssueGraphPanel issueId={issue.id} />
           {firstSectionId && <GenerateIssueDialog issueId={issue.id} sectionId={firstSectionId} />}

@@ -53,7 +53,9 @@ export default async function WisdomPage({ searchParams }: WisdomPageProps) {
       <div className="flex items-center justify-between">
         <div>
           <H1 className="text-xl">Wisdom Engine</H1>
-          <Muted>Structured knowledge from seven classical sources, reframed for technology and career decisions.</Muted>
+          <Muted>
+            Structured knowledge from seven classical sources, reframed for technology and career decisions.
+          </Muted>
         </div>
         <Button asChild variant="signal">
           <Link href="/wisdom/new">New entry</Link>
@@ -78,17 +80,24 @@ export default async function WisdomPage({ searchParams }: WisdomPageProps) {
           </TableHeader>
           <TableBody>
             {entries.map((entry) => {
-              const category = Array.isArray(entry.wisdom_categories) ? entry.wisdom_categories[0] : entry.wisdom_categories;
+              const category = Array.isArray(entry.wisdom_categories)
+                ? entry.wisdom_categories[0]
+                : entry.wisdom_categories;
               return (
                 <TableRow key={entry.id}>
                   <TableCell>
-                    <Link href={`/wisdom/${entry.id}`} className="font-medium text-foreground hover:underline">
+                    <Link
+                      href={`/wisdom/${entry.id}`}
+                      className="font-medium text-foreground hover:underline"
+                    >
                       {entry.title}
                     </Link>
                     <p className="line-clamp-1 text-xs text-muted-foreground">{entry.translation}</p>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="neutral">{WISDOM_SOURCE_LABELS[entry.source_type as keyof typeof WISDOM_SOURCE_LABELS]}</Badge>
+                    <Badge variant="neutral">
+                      {WISDOM_SOURCE_LABELS[entry.source_type as keyof typeof WISDOM_SOURCE_LABELS]}
+                    </Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">{category?.name ?? "—"}</TableCell>
                   <TableCell>

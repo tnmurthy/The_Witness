@@ -46,7 +46,10 @@ export default async function IssuesPage() {
                   </CardHeader>
                   <CardContent className="flex items-center justify-between">
                     <Muted className="truncate text-xs">{pub?.name}</Muted>
-                    <Badge variant={issue.status === "published" ? "success" : "neutral"} className="capitalize">
+                    <Badge
+                      variant={issue.status === "published" ? "success" : "neutral"}
+                      className="capitalize"
+                    >
                       {issue.status}
                     </Badge>
                   </CardContent>

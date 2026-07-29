@@ -31,7 +31,9 @@ export async function GET(request: Request) {
 
   let query = supabase
     .from("wisdom_entries")
-    .select("id, title, source_type, translation, category_id, keywords, review_status, created_at, wisdom_categories(name)")
+    .select(
+      "id, title, source_type, translation, category_id, keywords, review_status, created_at, wisdom_categories(name)"
+    )
     .order("created_at", { ascending: false })
     .limit(100);
 
@@ -73,7 +75,10 @@ export async function POST(request: Request) {
   if (sourceSchema) {
     const sourceValidation = sourceSchema.safeParse(parsed.data.sourceFields ?? {});
     if (!sourceValidation.success) {
-      return NextResponse.json({ error: "Invalid source-specific fields", issues: sourceValidation.error.issues }, { status: 422 });
+      return NextResponse.json(
+        { error: "Invalid source-specific fields", issues: sourceValidation.error.issues },
+        { status: 422 }
+      );
     }
   }
 
@@ -104,18 +109,34 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Failed to create wisdom entry" }, { status: 500 });
   }
 
-  const { error: sourceFieldsError } = await upsertWisdomSourceFields(supabase, entry.id, parsed.data.sourceType, parsed.data.sourceFields);
+  const { error: sourceFieldsError } = await upsertWisdomSourceFields(
+    supabase,
+    entry.id,
+    parsed.data.sourceType,
+    parsed.data.sourceFields
+  );
   if (sourceFieldsError) {
-    logger.error("Wisdom entry created but source fields failed", { error: sourceFieldsError, entryId: entry.id });
+    logger.error("Wisdom entry created but source fields failed", {
+      error: sourceFieldsError,
+      entryId: entry.id,
+    });
   }
 
   if (parsed.data.reflectionQuestions.length > 0) {
-    await supabase
-      .from("wisdom_reflection_questions")
-      .insert(parsed.data.reflectionQuestions.map((question, position) => ({ wisdom_entry_id: entry.id, question, position })));
+    await supabase.from("wisdom_reflection_questions").insert(
+      parsed.data.reflectionQuestions.map((question, position) => ({
+        wisdom_entry_id: entry.id,
+        question,
+        position,
+      }))
+    );
   }
   if (parsed.data.exercises.length > 0) {
-    await supabase.from("wisdom_exercises").insert(parsed.data.exercises.map((exercise, position) => ({ wisdom_entry_id: entry.id, exercise, position })));
+    await supabase
+      .from("wisdom_exercises")
+      .insert(
+        parsed.data.exercises.map((exercise, position) => ({ wisdom_entry_id: entry.id, exercise, position }))
+      );
   }
   if (parsed.data.relatedWisdomIds.length > 0) {
     await supabase.from("knowledge_graph_edges").insert(

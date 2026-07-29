@@ -9,7 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import { Muted } from "@/components/ui/typography";
 
 const FUNCTIONS = [
@@ -59,7 +66,9 @@ function formatOutput(functionId: FunctionId, output: unknown): string {
     return (output as { headlines: string[] }).headlines.map((h, i) => `${i + 1}. ${h}`).join("\n");
   }
   if (functionId === "suggest_images") {
-    return (output as { suggestions: { searchQuery: string; altText: string; rationale: string }[] }).suggestions
+    return (
+      output as { suggestions: { searchQuery: string; altText: string; rationale: string }[] }
+    ).suggestions
       .map((s) => `Search: "${s.searchQuery}"\nAlt text: ${s.altText}\nWhy: ${s.rationale}`)
       .join("\n\n");
   }
@@ -68,11 +77,22 @@ function formatOutput(functionId: FunctionId, output: unknown): string {
     return `Subject: ${o.subject}\nPreview: ${o.previewText}\n\n${o.body}`;
   }
   if (functionId === "generate_seo_metadata") {
-    const o = output as { metaTitle: string; metaDescription: string; keywords: string[]; ogTitle: string; ogDescription: string };
+    const o = output as {
+      metaTitle: string;
+      metaDescription: string;
+      keywords: string[];
+      ogTitle: string;
+      ogDescription: string;
+    };
     return `Meta title: ${o.metaTitle}\nMeta description: ${o.metaDescription}\nKeywords: ${o.keywords.join(", ")}\n\nOG title: ${o.ogTitle}\nOG description: ${o.ogDescription}`;
   }
   if (functionId === "generate_pdf_content") {
-    const o = output as { coverTitle: string; coverSubtitle: string; pullQuote: string; sections: { heading: string; body: string }[] };
+    const o = output as {
+      coverTitle: string;
+      coverSubtitle: string;
+      pullQuote: string;
+      sections: { heading: string; body: string }[];
+    };
     return `${o.coverTitle}\n${o.coverSubtitle}\n\nPull quote: "${o.pullQuote}"\n\n${o.sections.map((s) => `${s.heading}\n${s.body}`).join("\n\n")}`;
   }
   return JSON.stringify(output, null, 2);
@@ -85,7 +105,12 @@ interface AIAssistantSheetProps {
   initialText?: string;
 }
 
-export function AIAssistantSheet({ publicationId, publicationName, issueId, initialText = "" }: AIAssistantSheetProps) {
+export function AIAssistantSheet({
+  publicationId,
+  publicationName,
+  issueId,
+  initialText = "",
+}: AIAssistantSheetProps) {
   const [functionId, setFunctionId] = React.useState<FunctionId>("rewrite");
   const [inputText, setInputText] = React.useState(initialText);
   const [output, setOutput] = React.useState<string | null>(null);
@@ -135,7 +160,9 @@ export function AIAssistantSheet({ publicationId, publicationName, issueId, init
       <SheetContent className="w-full max-w-md overflow-y-auto sm:max-w-md">
         <SheetHeader>
           <SheetTitle>AI Assistant</SheetTitle>
-          <SheetDescription>Every result here is a suggestion — nothing is applied until you copy it in.</SheetDescription>
+          <SheetDescription>
+            Every result here is a suggestion — nothing is applied until you copy it in.
+          </SheetDescription>
         </SheetHeader>
 
         <div className="mt-4 space-y-4">
@@ -157,7 +184,13 @@ export function AIAssistantSheet({ publicationId, publicationName, issueId, init
 
           <div className="space-y-1.5">
             <Label htmlFor="ai-input">Content</Label>
-            <Textarea id="ai-input" rows={8} value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder="Paste or type the text to work from…" />
+            <Textarea
+              id="ai-input"
+              rows={8}
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="Paste or type the text to work from…"
+            />
           </div>
 
           <Button onClick={handleRun} disabled={isRunning || !inputText.trim()} className="w-full">

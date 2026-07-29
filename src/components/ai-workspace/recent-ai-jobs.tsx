@@ -35,7 +35,9 @@ export async function RecentAiJobs() {
         ) : (
           jobs.map((job) => (
             <div key={job.id} className="flex items-center justify-between text-sm">
-              <span className="truncate text-foreground">{(job.function_id ?? "generate_issue").replace(/_/g, " ")}</span>
+              <span className="truncate text-foreground">
+                {(job.function_id ?? "generate_issue").replace(/_/g, " ")}
+              </span>
               <Badge variant={STATUS_VARIANT[job.status] ?? "neutral"} className="text-[10px] capitalize">
                 {job.status}
               </Badge>

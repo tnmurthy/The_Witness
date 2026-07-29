@@ -11,7 +11,13 @@ import { logger } from "@/lib/logger";
  * more specific ErrorBoundary (src/components/error/error-boundary.tsx).
  * Must be a Client Component (Next.js requirement for error.tsx).
  */
-export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   useEffect(() => {
     logger.error("Unhandled route error", { error, digest: error.digest });
   }, [error]);

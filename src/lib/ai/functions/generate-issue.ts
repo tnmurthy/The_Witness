@@ -11,7 +11,10 @@ const inputSchema = z.object({
   topic: z.string().min(1).max(500),
   audience: z.string().max(300).default("technology and career-focused professionals"),
   tone: z.string().max(300).default("analytical, direct, no hype"),
-  blockTypes: z.array(z.enum(IMPLEMENTED_BLOCK_TYPES)).min(1).default(["hero_story", "signal_card", "career_insight"]),
+  blockTypes: z
+    .array(z.enum(IMPLEMENTED_BLOCK_TYPES))
+    .min(1)
+    .default(["hero_story", "signal_card", "career_insight"]),
 });
 export type GenerateIssueInput = z.infer<typeof inputSchema>;
 
@@ -47,7 +50,9 @@ export const generateIssueFunction: AIFunctionDefinition<GenerateIssueInput, Gen
     return {
       system:
         `You are the AI Workspace for ${input.publicationName}. Draft editorial content as a human editor would then review and edit — never invent specific facts, statistics, names, or quotes; write in general, defensible terms when you don't have a verified specific detail, and prefer a slightly vaguer true statement over a specific invented one.` +
-        (input.editorialGuidelines ? `\n\nEditorial guidelines for this publication:\n${input.editorialGuidelines}` : "") +
+        (input.editorialGuidelines
+          ? `\n\nEditorial guidelines for this publication:\n${input.editorialGuidelines}`
+          : "") +
         `\n\nAudience: ${input.audience}. Tone: ${input.tone}.` +
         `\n\nRespond with ONLY a JSON object: {"blocks": [{"type": string, "payload": object}]}. Draft one block for each of these types, with a payload shape matching the block type exactly:\n${blockShapes}`,
       prompt: `Topic for this issue: ${input.topic}`,

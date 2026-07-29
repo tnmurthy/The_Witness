@@ -1,4 +1,7 @@
 import { createServerClient, type SetAllCookies } from "@supabase/ssr";
+// Database generic intentionally not applied — see client.ts's comment
+// and docs/PROJECT_VERIFICATION.md for why createServerClient resolves
+// to `never` with the installed @supabase/ssr version.
 import { cookies } from "next/headers";
 import { env } from "@/lib/env";
 

@@ -36,9 +36,9 @@ export default async function AnalyticsPage() {
 
       <Alert variant="info">
         <AlertDescription>
-          Reader and subscriber analytics need an event-tracking pipeline this platform doesn&apos;t have yet — reader
-          opens, click-throughs, subscriber growth. Those dashboards will appear here once that pipeline exists, not
-          before.
+          Reader and subscriber analytics need an event-tracking pipeline this platform doesn&apos;t have yet
+          — reader opens, click-throughs, subscriber growth. Those dashboards will appear here once that
+          pipeline exists, not before.
         </AlertDescription>
       </Alert>
     </div>

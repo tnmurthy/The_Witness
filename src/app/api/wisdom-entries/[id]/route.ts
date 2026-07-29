@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { updateWisdomEntrySchema, sourceFieldsSchemaFor, type WisdomSourceType } from "@/lib/validation/wisdom";
+import {
+  updateWisdomEntrySchema,
+  sourceFieldsSchemaFor,
+  type WisdomSourceType,
+} from "@/lib/validation/wisdom";
 import { upsertWisdomSourceFields } from "@/lib/wisdom/source-fields";
 import { logger } from "@/lib/logger";
 
@@ -55,7 +59,11 @@ export async function GET(_request: Request, { params }: RouteParams) {
     .eq("source_id", id)
     .eq("target_type", "wisdom_entry");
 
-  return NextResponse.json({ entry, sourceFields, relatedWisdomIds: (relatedEdges ?? []).map((e) => e.target_id) });
+  return NextResponse.json({
+    entry,
+    sourceFields,
+    relatedWisdomIds: (relatedEdges ?? []).map((e) => e.target_id),
+  });
 }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
@@ -93,7 +101,12 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   if (parsed.data.decisionLens !== undefined) update.decision_lens = parsed.data.decisionLens;
   if (parsed.data.keywords !== undefined) update.keywords = parsed.data.keywords;
 
-  const { data: entry, error } = await supabase.from("wisdom_entries").update(update).eq("id", id).select("id, source_type").single();
+  const { data: entry, error } = await supabase
+    .from("wisdom_entries")
+    .update(update)
+    .eq("id", id)
+    .select("id, source_type")
+    .single();
 
   if (error || !entry) {
     logger.error("Failed to update wisdom entry", { error, entryId: id });
@@ -106,7 +119,10 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     if (sourceSchema) {
       const validation = sourceSchema.safeParse(parsed.data.sourceFields);
       if (!validation.success) {
-        return NextResponse.json({ error: "Invalid source-specific fields", issues: validation.error.issues }, { status: 422 });
+        return NextResponse.json(
+          { error: "Invalid source-specific fields", issues: validation.error.issues },
+          { status: 422 }
+        );
       }
       await upsertWisdomSourceFields(supabase, id, sourceType, parsed.data.sourceFields);
     }
@@ -115,19 +131,32 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   if (parsed.data.reflectionQuestions !== undefined) {
     await supabase.from("wisdom_reflection_questions").delete().eq("wisdom_entry_id", id);
     if (parsed.data.reflectionQuestions.length > 0) {
-      await supabase
-        .from("wisdom_reflection_questions")
-        .insert(parsed.data.reflectionQuestions.map((question, position) => ({ wisdom_entry_id: id, question, position })));
+      await supabase.from("wisdom_reflection_questions").insert(
+        parsed.data.reflectionQuestions.map((question, position) => ({
+          wisdom_entry_id: id,
+          question,
+          position,
+        }))
+      );
     }
   }
   if (parsed.data.exercises !== undefined) {
     await supabase.from("wisdom_exercises").delete().eq("wisdom_entry_id", id);
     if (parsed.data.exercises.length > 0) {
-      await supabase.from("wisdom_exercises").insert(parsed.data.exercises.map((exercise, position) => ({ wisdom_entry_id: id, exercise, position })));
+      await supabase
+        .from("wisdom_exercises")
+        .insert(
+          parsed.data.exercises.map((exercise, position) => ({ wisdom_entry_id: id, exercise, position }))
+        );
     }
   }
   if (parsed.data.relatedWisdomIds !== undefined) {
-    await supabase.from("knowledge_graph_edges").delete().eq("source_type", "wisdom_entry").eq("source_id", id).eq("target_type", "wisdom_entry");
+    await supabase
+      .from("knowledge_graph_edges")
+      .delete()
+      .eq("source_type", "wisdom_entry")
+      .eq("source_id", id)
+      .eq("target_type", "wisdom_entry");
     if (parsed.data.relatedWisdomIds.length > 0) {
       await supabase.from("knowledge_graph_edges").insert(
         parsed.data.relatedWisdomIds.map((targetId) => ({

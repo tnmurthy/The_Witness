@@ -47,7 +47,9 @@ export default async function AIWorkspacePage() {
     <div className="space-y-6">
       <div>
         <H1 className="text-xl">AI Workspace</H1>
-        <Muted>Every AI function lives where you&apos;d use it — in context, not in a separate authoring screen.</Muted>
+        <Muted>
+          Every AI function lives where you&apos;d use it — in context, not in a separate authoring screen.
+        </Muted>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -56,8 +58,8 @@ export default async function AIWorkspacePage() {
             <FileEdit className="h-5 w-5 text-navy-700" />
             <p className="text-sm font-medium text-foreground">Issue Builder</p>
             <p className="text-xs text-muted-foreground">
-              Generate Issue, Rewrite, Summarize, Improve Writing, Suggest Headlines, Suggest Images, Generate LinkedIn
-              Post/Email/PDF/SEO Metadata.
+              Generate Issue, Rewrite, Summarize, Improve Writing, Suggest Headlines, Suggest Images, Generate
+              LinkedIn Post/Email/PDF/SEO Metadata.
             </p>
             <Link href="/issues" className="text-xs font-medium text-navy-700 hover:underline">
               Open an issue →
@@ -68,7 +70,9 @@ export default async function AIWorkspacePage() {
           <CardContent className="space-y-2 pt-6">
             <BookOpen className="h-5 w-5 text-gold-700" />
             <p className="text-sm font-medium text-foreground">Wisdom Engine</p>
-            <p className="text-xs text-muted-foreground">Recommend Wisdom for an issue&apos;s topic, from the Issue Builder&apos;s Wisdom panel.</p>
+            <p className="text-xs text-muted-foreground">
+              Recommend Wisdom for an issue&apos;s topic, from the Issue Builder&apos;s Wisdom panel.
+            </p>
             <Link href="/wisdom" className="text-xs font-medium text-navy-700 hover:underline">
               Browse the library →
             </Link>
@@ -78,7 +82,9 @@ export default async function AIWorkspacePage() {
           <CardContent className="space-y-2 pt-6">
             <Share2 className="h-5 w-5 text-navy-700" />
             <p className="text-sm font-medium text-foreground">Knowledge Graph</p>
-            <p className="text-xs text-muted-foreground">Suggest Graph Connections for any entity, from its Knowledge Graph panel.</p>
+            <p className="text-xs text-muted-foreground">
+              Suggest Graph Connections for any entity, from its Knowledge Graph panel.
+            </p>
             <Link href="/graph" className="text-xs font-medium text-navy-700 hover:underline">
               Explore the graph →
             </Link>
@@ -106,12 +112,20 @@ export default async function AIWorkspacePage() {
                         {(job.function_id ?? "generate_issue").replace(/_/g, " ")}
                       </p>
                       <Muted className="text-xs">
-                        {publication?.name ?? "—"} · {job.provider}/{job.model} · {new Date(job.created_at).toLocaleString()}
+                        {publication?.name ?? "—"} · {job.provider}/{job.model} ·{" "}
+                        {new Date(job.created_at).toLocaleString()}
                       </Muted>
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
-                      {job.cost_usd != null && <span className="font-mono text-xs text-muted-foreground">${Number(job.cost_usd).toFixed(4)}</span>}
-                      <Badge variant={STATUS_VARIANT[job.status] ?? "neutral"} className="text-[10px] capitalize">
+                      {job.cost_usd != null && (
+                        <span className="font-mono text-xs text-muted-foreground">
+                          ${Number(job.cost_usd).toFixed(4)}
+                        </span>
+                      )}
+                      <Badge
+                        variant={STATUS_VARIANT[job.status] ?? "neutral"}
+                        className="text-[10px] capitalize"
+                      >
                         {job.status}
                       </Badge>
                     </div>

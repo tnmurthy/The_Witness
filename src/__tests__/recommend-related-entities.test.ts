@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { recommendRelatedEntitiesFunction, RELATED_ENTITY_CATEGORIES } from "@/lib/ai/functions/recommend-related-entities";
+import {
+  recommendRelatedEntitiesFunction,
+  RELATED_ENTITY_CATEGORIES,
+} from "@/lib/ai/functions/recommend-related-entities";
 import { AI_FUNCTION_IDS } from "@/lib/ai/functions/registry";
 
 describe("RELATED_ENTITY_CATEGORIES", () => {
@@ -24,7 +27,10 @@ describe("recommendRelatedEntitiesFunction", () => {
   });
 
   it("rejects an empty candidate list", () => {
-    const result = recommendRelatedEntitiesFunction.inputSchema.safeParse({ issueTopic: "X", candidates: [] });
+    const result = recommendRelatedEntitiesFunction.inputSchema.safeParse({
+      issueTopic: "X",
+      candidates: [],
+    });
     expect(result.success).toBe(false);
   });
 
@@ -33,7 +39,11 @@ describe("recommendRelatedEntitiesFunction", () => {
       issueTopic: "The return of on-premise AI infrastructure",
       candidates: [
         { entityType: "company", entityId: "11111111-1111-1111-1111-111111111111", label: "Vectorwise AI" },
-        { entityType: "technology", entityId: "22222222-2222-2222-2222-222222222222", label: "Vector Databases" },
+        {
+          entityType: "technology",
+          entityId: "22222222-2222-2222-2222-222222222222",
+          label: "Vector Databases",
+        },
       ],
     });
     const { prompt } = recommendRelatedEntitiesFunction.buildPrompt(input);
@@ -45,7 +55,13 @@ describe("recommendRelatedEntitiesFunction", () => {
   it("buildPrompt includes every candidate's exact id so the model cannot invent one", () => {
     const input = recommendRelatedEntitiesFunction.inputSchema.parse({
       issueTopic: "X",
-      candidates: [{ entityType: "paper", entityId: "33333333-3333-3333-3333-333333333333", label: "Attention Is All You Need" }],
+      candidates: [
+        {
+          entityType: "paper",
+          entityId: "33333333-3333-3333-3333-333333333333",
+          label: "Attention Is All You Need",
+        },
+      ],
     });
     const { prompt } = recommendRelatedEntitiesFunction.buildPrompt(input);
     expect(prompt).toContain("33333333-3333-3333-3333-333333333333");
@@ -68,7 +84,14 @@ describe("recommendRelatedEntitiesFunction", () => {
 
   it("parseResult preserves entityType so suggestions can be grouped back by category", () => {
     const raw = JSON.stringify({
-      suggestions: [{ entityType: "company", entityId: "11111111-1111-1111-1111-111111111111", relationType: "mentions", rationale: "X" }],
+      suggestions: [
+        {
+          entityType: "company",
+          entityId: "11111111-1111-1111-1111-111111111111",
+          relationType: "mentions",
+          rationale: "X",
+        },
+      ],
     });
     const result = recommendRelatedEntitiesFunction.parseResult(raw);
     expect(result.suggestions[0]?.entityType).toBe("company");

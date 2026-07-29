@@ -26,7 +26,9 @@ export async function GET(request: Request) {
   const limit = Math.min(Number(searchParams.get("limit")) || 20, 50);
 
   const types: GraphEntityType[] =
-    typeParam && (GRAPH_ENTITY_TYPES as readonly string[]).includes(typeParam) ? [typeParam as GraphEntityType] : [...GRAPH_ENTITY_TYPES];
+    typeParam && (GRAPH_ENTITY_TYPES as readonly string[]).includes(typeParam)
+      ? [typeParam as GraphEntityType]
+      : [...GRAPH_ENTITY_TYPES];
 
   try {
     const results = await Promise.all(
@@ -38,7 +40,10 @@ export async function GET(request: Request) {
         // can't be resolved that way and produces a ParserError type,
         // not a runtime error. Casting the select string is the correct
         // escape hatch for a column list that's only known at runtime.
-        let query = supabase.from(table).select(`id, ${titleColumn}` as "id").limit(limit);
+        let query = supabase
+          .from(table)
+          .select(`id, ${titleColumn}` as "id")
+          .limit(limit);
         if (search) query = query.ilike(titleColumn, `%${search}%`);
 
         const { data, error } = await query;

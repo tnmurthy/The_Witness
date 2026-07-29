@@ -46,7 +46,10 @@ export interface SuggestGraphConnectionsOutput {
  * (POST /api/graph/edges still requires an explicit editor action to
  * actually create the edge — this function only suggests).
  */
-export const suggestGraphConnectionsFunction: AIFunctionDefinition<SuggestGraphConnectionsInput, SuggestGraphConnectionsOutput> = {
+export const suggestGraphConnectionsFunction: AIFunctionDefinition<
+  SuggestGraphConnectionsInput,
+  SuggestGraphConnectionsOutput
+> = {
   id: "suggest_graph_connections",
   label: "Suggest Graph Connections",
   description: "Propose meaningful new Knowledge Graph edges for an entity, from a candidate pool",

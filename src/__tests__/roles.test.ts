@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { PLATFORM_ROLES, MEMBERSHIP_ROLES, ORGANIZATION_ROLES, PLATFORM_ROLE_LABELS, isEditorialRole } from "@/lib/auth/roles";
+import {
+  PLATFORM_ROLES,
+  MEMBERSHIP_ROLES,
+  ORGANIZATION_ROLES,
+  PLATFORM_ROLE_LABELS,
+  isEditorialRole,
+} from "@/lib/auth/roles";
 
 describe("PLATFORM_ROLES", () => {
   it("matches the exact role list from the Milestone 2 spec and the platform_role DB enum", () => {

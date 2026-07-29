@@ -55,7 +55,6 @@ export const GRAPH_RELATION_TYPES = [
   "part_of",
   "attributed_to",
 ] as const;
-export type GraphRelationType = (typeof GRAPH_RELATION_TYPES)[number];
 
 /** Verified against each table's actual column names (007_knowledge_graph.sql) — technology/company/github_repository use `name`, everything else uses `title` (or `full_name` for people). Getting this mapping wrong would silently query the wrong column, so every entry here was checked against the migration file directly, not assumed from a naming convention. */
 export const GRAPH_ENTITY_TABLE: Record<GraphEntityType, { table: string; titleColumn: string }> = {

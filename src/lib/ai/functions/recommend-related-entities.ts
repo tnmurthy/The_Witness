@@ -3,7 +3,14 @@ import { parseJsonResponse } from "./types";
 import type { AIFunctionDefinition } from "./types";
 
 /** The exact 6 categories this milestone's brief names for Issue Builder auto-suggestion — not the full 13-type Knowledge Graph, and deliberately narrower than suggest_graph_connections' any-entity scope. */
-export const RELATED_ENTITY_CATEGORIES = ["company", "technology", "paper", "github_repository", "wisdom_entry", "article"] as const;
+export const RELATED_ENTITY_CATEGORIES = [
+  "company",
+  "technology",
+  "paper",
+  "github_repository",
+  "wisdom_entry",
+  "article",
+] as const;
 export type RelatedEntityCategory = (typeof RELATED_ENTITY_CATEGORIES)[number];
 
 const candidateSchema = z.object({
@@ -58,10 +65,14 @@ export interface RecommendRelatedEntitiesOutput {
  * explicitly shown in the candidate list, and the calling route
  * verifies that before persisting anything.
  */
-export const recommendRelatedEntitiesFunction: AIFunctionDefinition<RecommendRelatedEntitiesInput, RecommendRelatedEntitiesOutput> = {
+export const recommendRelatedEntitiesFunction: AIFunctionDefinition<
+  RecommendRelatedEntitiesInput,
+  RecommendRelatedEntitiesOutput
+> = {
   id: "recommend_related_entities",
   label: "Recommend Related Entities",
-  description: "Suggest related companies, technologies, research, GitHub repositories, wisdom, and articles for an issue",
+  description:
+    "Suggest related companies, technologies, research, GitHub repositories, wisdom, and articles for an issue",
   inputSchema,
   defaultMaxTokens: 1500,
   buildPrompt: (input) => {
@@ -74,7 +85,11 @@ export const recommendRelatedEntitiesFunction: AIFunctionDefinition<RecommendRel
 
     const candidateBlock = Array.from(byCategory.entries())
       .map(([category, items]) => {
-        const lines = items.map((c) => `  - id: ${c.entityId}, label: "${c.label}"${c.snippet ? `, note: "${c.snippet}"` : ""}`).join("\n");
+        const lines = items
+          .map(
+            (c) => `  - id: ${c.entityId}, label: "${c.label}"${c.snippet ? `, note: "${c.snippet}"` : ""}`
+          )
+          .join("\n");
         return `${category}:\n${lines}`;
       })
       .join("\n\n");

@@ -4,7 +4,11 @@ import { passthroughParser } from "./types";
 
 const inputSchema = z.object({
   text: z.string().min(1).max(10000),
-  instruction: z.string().min(1).max(500).default("Rewrite this to be clearer and more engaging, keeping the same meaning."),
+  instruction: z
+    .string()
+    .min(1)
+    .max(500)
+    .default("Rewrite this to be clearer and more engaging, keeping the same meaning."),
 });
 export type RewriteInput = z.infer<typeof inputSchema>;
 

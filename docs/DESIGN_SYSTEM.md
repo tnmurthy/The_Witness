@@ -33,46 +33,46 @@ throughout this document for where The Witness diverges and why.
 Every component lives in `src/components/ui/*.tsx`, one file per
 component, following shadcn/ui's file-per-component convention exactly
 (this is a deliberate choice: it's what makes `npx shadcn add <name>`
-safe to run for any *new* component even though the registry CDN wasn't
+safe to run for any _new_ component even though the registry CDN wasn't
 reachable from this project's build sandbox for the components already
 here — see Milestone 1's README note on this).
 
-| Component | File | Notes |
-|---|---|---|
-| Button | `button.tsx` | 6 variants incl. `signal` (gold-700, reserved for AI actions) |
-| Badge | `badge.tsx` | 6 variants; always paired with text, never color-only |
-| Alert | `alert.tsx` | `role="alert"` (danger/warning) vs `role="status"` (info/success) |
-| Card | `card.tsx` | Header/Title/Description/Content/Footer sub-components |
-| Table | `table.tsx` | Hairline dividers, not zebra striping |
-| Input | `input.tsx` | 40px height, gold focus ring |
-| Textarea | `textarea.tsx` | Same field-state classes as Input |
-| Select | `select.tsx` | Radix-based; requires `Controller`/`FormField`, not `register()` |
-| Checkbox | `checkbox.tsx` | Radix-based |
-| RadioGroup | `radio-group.tsx` | Radix-based |
-| Switch | `switch.tsx` | Radix-based |
-| Form | `form.tsx` | react-hook-form context wrapper (`FormField`/`FormItem`/`FormControl`/`FormMessage`) |
-| Label | `label.tsx` | Radix-based |
-| Dialog | `dialog.tsx` | Branded navy overlay, not generic black |
-| Sheet | `sheet.tsx` | Side-panel variant of Dialog; powers the mobile nav drawer |
-| Tabs | `tabs.tsx` | Radix-based |
-| Breadcrumb | `breadcrumb.tsx` | Composable primitives, not a single monolithic component |
-| Tooltip | `tooltip.tsx` | Radix-based |
-| DropdownMenu | `dropdown-menu.tsx` | Radix-based; powers the user menu |
-| Avatar | `avatar.tsx` | Initials fallback: navy-100 bg / navy-800 text |
-| Separator | `separator.tsx` | Radix-based |
-| Skeleton | `skeleton.tsx` | Respects `prefers-reduced-motion` globally, no per-use opt-out |
-| Sonner (toast) | `sonner.tsx` | Transient feedback — see "Alert vs. toast" below |
-| Typography | `typography.tsx` | `H1`–`H4`, `Lead`, `Text`, `Muted`, `Eyebrow`, `InlineCode` |
-| Container / Grid | `container.tsx` | Responsive layout helpers |
+| Component        | File                | Notes                                                                                |
+| ---------------- | ------------------- | ------------------------------------------------------------------------------------ |
+| Button           | `button.tsx`        | 6 variants incl. `signal` (gold-700, reserved for AI actions)                        |
+| Badge            | `badge.tsx`         | 6 variants; always paired with text, never color-only                                |
+| Alert            | `alert.tsx`         | `role="alert"` (danger/warning) vs `role="status"` (info/success)                    |
+| Card             | `card.tsx`          | Header/Title/Description/Content/Footer sub-components                               |
+| Table            | `table.tsx`         | Hairline dividers, not zebra striping                                                |
+| Input            | `input.tsx`         | 40px height, gold focus ring                                                         |
+| Textarea         | `textarea.tsx`      | Same field-state classes as Input                                                    |
+| Select           | `select.tsx`        | Radix-based; requires `Controller`/`FormField`, not `register()`                     |
+| Checkbox         | `checkbox.tsx`      | Radix-based                                                                          |
+| RadioGroup       | `radio-group.tsx`   | Radix-based                                                                          |
+| Switch           | `switch.tsx`        | Radix-based                                                                          |
+| Form             | `form.tsx`          | react-hook-form context wrapper (`FormField`/`FormItem`/`FormControl`/`FormMessage`) |
+| Label            | `label.tsx`         | Radix-based                                                                          |
+| Dialog           | `dialog.tsx`        | Branded navy overlay, not generic black                                              |
+| Sheet            | `sheet.tsx`         | Side-panel variant of Dialog; powers the mobile nav drawer                           |
+| Tabs             | `tabs.tsx`          | Radix-based                                                                          |
+| Breadcrumb       | `breadcrumb.tsx`    | Composable primitives, not a single monolithic component                             |
+| Tooltip          | `tooltip.tsx`       | Radix-based                                                                          |
+| DropdownMenu     | `dropdown-menu.tsx` | Radix-based; powers the user menu                                                    |
+| Avatar           | `avatar.tsx`        | Initials fallback: navy-100 bg / navy-800 text                                       |
+| Separator        | `separator.tsx`     | Radix-based                                                                          |
+| Skeleton         | `skeleton.tsx`      | Respects `prefers-reduced-motion` globally, no per-use opt-out                       |
+| Sonner (toast)   | `sonner.tsx`        | Transient feedback — see "Alert vs. toast" below                                     |
+| Typography       | `typography.tsx`    | `H1`–`H4`, `Lead`, `Text`, `Muted`, `Eyebrow`, `InlineCode`                          |
+| Container / Grid | `container.tsx`     | Responsive layout helpers                                                            |
 
 Layout components (compose the above, not primitives themselves):
 
-| Component | File |
-|---|---|
-| Sidebar | `layout/sidebar.tsx` |
-| Topbar | `layout/topbar.tsx` |
-| MobileNav | `layout/mobile-nav.tsx` |
-| AppShell | `layout/app-shell.tsx` |
+| Component     | File                       |
+| ------------- | -------------------------- |
+| Sidebar       | `layout/sidebar.tsx`       |
+| Topbar        | `layout/topbar.tsx`        |
+| MobileNav     | `layout/mobile-nav.tsx`    |
+| AppShell      | `layout/app-shell.tsx`     |
 | ErrorBoundary | `error/error-boundary.tsx` |
 
 ## Alert vs. toast
@@ -120,11 +120,11 @@ that opens the exact same nav item list in a `Sheet` drawer, sharing one
 `NAV_ITEMS` source of truth (`layout/nav-items.ts`) with the desktop
 Sidebar — a module can never be added to one and forgotten in the other.
 
-| Breakpoint | Layout |
-|---|---|
+| Breakpoint             | Layout                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------- |
 | `< 768px` (below `md`) | Sidebar hidden; hamburger + Sheet drawer in Topbar; search collapses to an icon-only button |
-| `≥ 768px` (`md`+) | Full 240px Sidebar; search input with `⌘K` hint visible |
-| `≥ 1280px` (`xl`+) | Dashboard widget grid gains a column (2 → 4, via `Grid`) |
+| `≥ 768px` (`md`+)      | Full 240px Sidebar; search input with `⌘K` hint visible                                     |
+| `≥ 1280px` (`xl`+)     | Dashboard widget grid gains a column (2 → 4, via `Grid`)                                    |
 
 ## Accessibility
 

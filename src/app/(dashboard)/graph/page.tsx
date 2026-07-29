@@ -17,8 +17,8 @@ export default async function GraphExplorerPage() {
       <div>
         <H1 className="text-xl">Knowledge Graph</H1>
         <Muted>
-          Technology → Companies → Articles → Books → Research → Courses → GitHub → Wisdom → People → Issues — every
-          connection, browsable.
+          Technology → Companies → Articles → Books → Research → Courses → GitHub → Wisdom → People → Issues —
+          every connection, browsable.
         </Muted>
       </div>
       <GraphExplorerShell />

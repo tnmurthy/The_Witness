@@ -39,7 +39,11 @@ interface RelatedContentPanelProps {
  * (see LINKABLE_TYPES above) — a full deep-linkable Graph Explorer URL
  * scheme is a natural follow-up, not assumed necessary for this pass.
  */
-export function RelatedContentPanel({ entityType, entityId, title = "Related content" }: RelatedContentPanelProps) {
+export function RelatedContentPanel({
+  entityType,
+  entityId,
+  title = "Related content",
+}: RelatedContentPanelProps) {
   const query = useRelatedContent(entityType, entityId);
 
   return (
@@ -57,13 +61,21 @@ export function RelatedContentPanel({ entityType, entityId, title = "Related con
             </div>
           }
           isEmpty={(data) => data.groups.length === 0}
-          empty={<EmptyState icon={Waypoints} title="No connections yet" description="Nothing in the Knowledge Graph is linked to this yet." />}
+          empty={
+            <EmptyState
+              icon={Waypoints}
+              title="No connections yet"
+              description="Nothing in the Knowledge Graph is linked to this yet."
+            />
+          }
         >
           {(data) => (
             <div className="space-y-4">
               {data.groups.map((group) => (
                 <div key={group.entityType}>
-                  <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{group.label}</p>
+                  <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    {group.label}
+                  </p>
                   <div className="flex flex-wrap gap-1.5">
                     {group.items.map((item) => {
                       const href = LINKABLE_TYPES[group.entityType]?.(item.entityId);

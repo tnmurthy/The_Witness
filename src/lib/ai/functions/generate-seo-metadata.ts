@@ -15,7 +15,10 @@ export interface GenerateSeoMetadataOutput {
   ogDescription: string;
 }
 
-export const generateSeoMetadataFunction: AIFunctionDefinition<GenerateSeoMetadataInput, GenerateSeoMetadataOutput> = {
+export const generateSeoMetadataFunction: AIFunctionDefinition<
+  GenerateSeoMetadataInput,
+  GenerateSeoMetadataOutput
+> = {
   id: "generate_seo_metadata",
   label: "Generate SEO Metadata",
   description: "Meta title, meta description, keywords, and Open Graph tags",

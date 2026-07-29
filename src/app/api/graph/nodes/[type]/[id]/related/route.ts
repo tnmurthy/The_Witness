@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { GRAPH_ENTITY_TABLE, GRAPH_ENTITY_TYPES, GRAPH_ENTITY_LABELS, type GraphEntityType } from "@/lib/graph/types";
+import {
+  GRAPH_ENTITY_TABLE,
+  GRAPH_ENTITY_TYPES,
+  GRAPH_ENTITY_LABELS,
+  type GraphEntityType,
+} from "@/lib/graph/types";
 import { logger } from "@/lib/logger";
 
 interface RouteParams {
@@ -31,7 +36,11 @@ export async function GET(_request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: "Unknown entity type" }, { status: 422 });
   }
 
-  const { data: rows, error } = await supabase.rpc("graph_neighbors", { start_type: type, start_id: id, max_depth: 1 });
+  const { data: rows, error } = await supabase.rpc("graph_neighbors", {
+    start_type: type,
+    start_id: id,
+    max_depth: 1,
+  });
 
   if (error) {
     logger.error("graph_neighbors RPC failed for related-content", { error, type, id });
@@ -52,7 +61,10 @@ export async function GET(_request: Request, { params }: RouteParams) {
   const groups = await Promise.all(
     Array.from(idsByType.entries()).map(async ([t, ids]) => {
       const { table, titleColumn } = GRAPH_ENTITY_TABLE[t];
-      const { data } = await supabase.from(table).select(`id, ${titleColumn}` as "id").in("id", ids);
+      const { data } = await supabase
+        .from(table)
+        .select(`id, ${titleColumn}` as "id")
+        .in("id", ids);
       const items = ((data ?? []) as Record<string, unknown>[]).map((row) => ({
         entityId: row.id as string,
         label: row[titleColumn] as string,

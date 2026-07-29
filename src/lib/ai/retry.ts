@@ -16,7 +16,11 @@ interface RetryOptions {
  * malformed-request 400 retrying three times just wastes 3x the latency
  * before failing the same way a first attempt would have.
  */
-export async function withRetry<T>(fn: (signal: AbortSignal) => Promise<T>, timeoutMs: number, options: RetryOptions = {}): Promise<T> {
+export async function withRetry<T>(
+  fn: (signal: AbortSignal) => Promise<T>,
+  timeoutMs: number,
+  options: RetryOptions = {}
+): Promise<T> {
   const maxAttempts = options.maxAttempts ?? 3;
   const baseDelayMs = options.baseDelayMs ?? 500;
 

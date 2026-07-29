@@ -41,7 +41,12 @@ export async function POST(request: Request) {
 
   if (!isAIFunctionId(parsed.data.functionId) || parsed.data.functionId === "generate_issue") {
     return NextResponse.json(
-      { error: parsed.data.functionId === "generate_issue" ? "Use /api/issues/:id/ai/generate for Generate Issue" : "Unknown AI function" },
+      {
+        error:
+          parsed.data.functionId === "generate_issue"
+            ? "Use /api/issues/:id/ai/generate for Generate Issue"
+            : "Unknown AI function",
+      },
       { status: 422 }
     );
   }
@@ -55,7 +60,10 @@ export async function POST(request: Request) {
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
   const isMember = !!membership || profile?.role === "super_admin";
   if (!isMember) {
-    return NextResponse.json({ error: "You must be a member of this publication to use the AI Workspace" }, { status: 403 });
+    return NextResponse.json(
+      { error: "You must be a member of this publication to use the AI Workspace" },
+      { status: 403 }
+    );
   }
 
   if (!getDefaultProviderId()) {
@@ -83,16 +91,26 @@ export async function POST(request: Request) {
     logger.error("AI function run failed", { error, functionId: parsed.data.functionId, userId: user.id });
 
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: "Invalid input for this function", issues: error.issues }, { status: 422 });
+      return NextResponse.json(
+        { error: "Invalid input for this function", issues: error.issues },
+        { status: 422 }
+      );
     }
     if (error instanceof AIProviderError) {
       return NextResponse.json({ error: error.message, retryable: error.retryable }, { status: 502 });
     }
-    return NextResponse.json({ error: error instanceof Error ? error.message : "AI function failed" }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "AI function failed" },
+      { status: 500 }
+    );
   }
 }
 
 export async function GET() {
-  const functions = Object.entries(AI_FUNCTIONS_REGISTRY).map(([id, def]) => ({ id, label: def.label, description: def.description }));
+  const functions = Object.entries(AI_FUNCTIONS_REGISTRY).map(([id, def]) => ({
+    id,
+    label: def.label,
+    description: def.description,
+  }));
   return NextResponse.json({ functions });
 }

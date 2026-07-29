@@ -4,12 +4,12 @@ Four sign-in methods, all backed by Supabase Auth, all landing through one callb
 
 ## The four methods
 
-| Method | Where | Notes |
-|---|---|---|
-| Email + password | `/sign-in`, `/sign-up` | Standard `signInWithPassword` / `signUp`. Sign-up requires email confirmation (`enable_confirmations = true` in `supabase/config.toml`) before the account can sign in. |
-| Magic link | `/sign-in` → "Sign in without a password" | `signInWithOtp`, with `shouldCreateUser: false` — deliberately cannot be used to create a new account, only to sign an existing, already-confirmed user in. |
-| Password reset | `/forgot-password` → email → `/reset-password` | `resetPasswordForEmail` then, after the recovery session is established via the callback, `updateUser({ password })`. |
-| OAuth (Google, GitHub) | `/sign-in`, `/sign-up` | `signInWithOAuth`. Requires provider configuration — see below. |
+| Method                 | Where                                          | Notes                                                                                                                                                                   |
+| ---------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Email + password       | `/sign-in`, `/sign-up`                         | Standard `signInWithPassword` / `signUp`. Sign-up requires email confirmation (`enable_confirmations = true` in `supabase/config.toml`) before the account can sign in. |
+| Magic link             | `/sign-in` → "Sign in without a password"      | `signInWithOtp`, with `shouldCreateUser: false` — deliberately cannot be used to create a new account, only to sign an existing, already-confirmed user in.             |
+| Password reset         | `/forgot-password` → email → `/reset-password` | `resetPasswordForEmail` then, after the recovery session is established via the callback, `updateUser({ password })`.                                                   |
+| OAuth (Google, GitHub) | `/sign-in`, `/sign-up`                         | `signInWithOAuth`. Requires provider configuration — see below.                                                                                                         |
 
 ## The callback route
 
@@ -44,7 +44,7 @@ Supabase itself handles JWT/refresh-token rotation; this app does not implement 
 
 ## Protected routes
 
-`middleware.ts` protects everything under `/dashboard`, `/organizations`, `/admin`, and `/settings` at the edge (redirects unauthenticated requests to `/sign-in?next=<original path>` before the page ever renders). Every one of those pages/layouts *also* re-checks auth server-side independently (see `src/app/(dashboard)/layout.tsx`) — the middleware list has to be maintained by hand since Next.js route groups don't appear in the URL and can't be introspected at the Edge runtime, so a path missing from that list is a slower redirect, not a security hole; the page-level check is the real backstop.
+`middleware.ts` protects everything under `/dashboard`, `/organizations`, `/admin`, and `/settings` at the edge (redirects unauthenticated requests to `/sign-in?next=<original path>` before the page ever renders). Every one of those pages/layouts _also_ re-checks auth server-side independently (see `src/app/(dashboard)/layout.tsx`) — the middleware list has to be maintained by hand since Next.js route groups don't appear in the URL and can't be introspected at the Edge runtime, so a path missing from that list is a slower redirect, not a security hole; the page-level check is the real backstop.
 
 Role-restricted pages (like `/admin/users`) additionally call `requireRole()` (`src/lib/auth/require-role.ts`), which redirects to `/dashboard?error=insufficient_role` if the signed-in user's role isn't in the allowed list.
 

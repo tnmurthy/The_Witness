@@ -11,10 +11,10 @@ Two display labels intentionally differ from their underlying enum
 value, because this milestone's brief used different names than the
 original schema design:
 
-| Enum value | Displayed as |
-|---|---|
-| `signal_card` | "Technology Signal" |
-| `research_summary` | "Research Paper" |
+| Enum value         | Displayed as        |
+| ------------------ | ------------------- |
+| `signal_card`      | "Technology Signal" |
+| `research_summary` | "Research Paper"    |
 
 The enum values themselves are unchanged. Renaming a Postgres enum label
 that other rows and code already reference is real migration risk (see
@@ -49,8 +49,7 @@ choice, not a shortcut:
 
 react-beautiful-dnd (the historically more common choice) is
 unmaintained. @dnd-kit is actively maintained and — more importantly for
-this product's accessibility commitments (Design System doc, Section
-14) — ships a working `KeyboardSensor` out of the box, so block
+this product's accessibility commitments (Design System doc, Section 14) — ships a working `KeyboardSensor` out of the box, so block
 reordering has a real keyboard-operable path, not just a mouse-drag one.
 `PointerSensor`'s `activationConstraint: { distance: 8 }` means a plain
 click to enter edit mode is never misread as a drag attempt.
@@ -95,6 +94,7 @@ This is "collaboration-ready," and it's worth being precise about what
 that does and doesn't mean.
 
 **What it is:**
+
 - Every block insert/update/delete/reorder broadcasts live to every
   other client with the issue open (Supabase Realtime `postgres_changes`
   on `blocks`/`sections`, enabled in Migration 016).

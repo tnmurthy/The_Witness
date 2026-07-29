@@ -24,7 +24,11 @@ export default function DashboardPage() {
           <CardTitle>Issue pipeline</CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground">
-          See every issue at <Link href="/issues" className="text-navy-700 underline-offset-4 hover:underline">Issue Builder</Link>.
+          See every issue at{" "}
+          <Link href="/issues" className="text-navy-700 underline-offset-4 hover:underline">
+            Issue Builder
+          </Link>
+          .
         </CardContent>
       </Card>
 
@@ -32,7 +36,9 @@ export default function DashboardPage() {
         <CardHeader>
           <CardTitle>Subscribers</CardTitle>
         </CardHeader>
-        <CardContent className="text-sm text-muted-foreground">Wired up in Milestone 10 — Publishing Pipeline.</CardContent>
+        <CardContent className="text-sm text-muted-foreground">
+          Wired up in Milestone 10 — Publishing Pipeline.
+        </CardContent>
       </Card>
 
       <RecentAiJobs />
@@ -41,7 +47,9 @@ export default function DashboardPage() {
         <CardHeader>
           <CardTitle>Publishing calendar</CardTitle>
         </CardHeader>
-        <CardContent className="text-sm text-muted-foreground">Wired up in Milestone 3 — Publication Management.</CardContent>
+        <CardContent className="text-sm text-muted-foreground">
+          Wired up in Milestone 3 — Publication Management.
+        </CardContent>
       </Card>
 
       <KnowledgeGraphSummary />

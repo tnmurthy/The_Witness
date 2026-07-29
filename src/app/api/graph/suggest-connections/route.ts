@@ -57,10 +57,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid input", issues: parsed.error.issues }, { status: 422 });
   }
 
-  const { data: membership } = await supabase.from("publication_members").select("publication_id").eq("user_id", user.id).limit(1).maybeSingle();
+  const { data: membership } = await supabase
+    .from("publication_members")
+    .select("publication_id")
+    .eq("user_id", user.id)
+    .limit(1)
+    .maybeSingle();
   if (!membership) {
     return NextResponse.json(
-      { error: "You must be a member of at least one publication to use AI Knowledge Graph suggestions (used for cost attribution)." },
+      {
+        error:
+          "You must be a member of at least one publication to use AI Knowledge Graph suggestions (used for cost attribution).",
+      },
       { status: 422 }
     );
   }
@@ -81,7 +89,10 @@ export async function POST(request: Request) {
   const candidateGroups = await Promise.all(
     otherTypes.map(async (type) => {
       const { table, titleColumn } = GRAPH_ENTITY_TABLE[type];
-      const { data } = await supabase.from(table).select(`id, ${titleColumn}` as "id").limit(perTypeSample);
+      const { data } = await supabase
+        .from(table)
+        .select(`id, ${titleColumn}` as "id")
+        .limit(perTypeSample);
       return ((data ?? []) as Record<string, unknown>[]).map((row) => ({
         entityType: type,
         entityId: row.id as string,
@@ -92,7 +103,10 @@ export async function POST(request: Request) {
   const candidates = candidateGroups.flat().slice(0, MAX_CANDIDATES);
 
   if (candidates.length === 0) {
-    return NextResponse.json({ error: "No candidate entities exist yet to suggest connections to" }, { status: 422 });
+    return NextResponse.json(
+      { error: "No candidate entities exist yet to suggest connections to" },
+      { status: 422 }
+    );
   }
 
   try {
@@ -109,12 +123,19 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({ jobId: result.jobId, suggestions: result.output.suggestions, costUsd: result.costUsd });
+    return NextResponse.json({
+      jobId: result.jobId,
+      suggestions: result.output.suggestions,
+      costUsd: result.costUsd,
+    });
   } catch (error) {
     logger.error("Suggest graph connections failed", { error, userId: user.id });
     if (error instanceof AIProviderError) {
       return NextResponse.json({ error: error.message, retryable: error.retryable }, { status: 502 });
     }
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Suggestion failed" }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Suggestion failed" },
+      { status: 500 }
+    );
   }
 }

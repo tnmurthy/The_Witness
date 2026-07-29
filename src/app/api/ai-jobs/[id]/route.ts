@@ -23,7 +23,9 @@ export async function GET(_request: Request, { params }: RouteParams) {
 
   const { data: job, error } = await supabase
     .from("ai_jobs")
-    .select("id, function_id, status, provider, model, result, token_usage, cost_usd, error, created_at, completed_at")
+    .select(
+      "id, function_id, status, provider, model, result, token_usage, cost_usd, error, created_at, completed_at"
+    )
     .eq("id", id)
     .single();
 

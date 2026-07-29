@@ -3,7 +3,14 @@ import { createClient } from "@/lib/supabase/server";
 import { WisdomEntryForm } from "@/components/wisdom/wisdom-entry-form";
 import { RelatedContentPanel } from "@/components/graph/related-content-panel";
 import { WisdomReviewActions } from "@/components/wisdom/wisdom-review-actions";
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { H1 } from "@/components/ui/typography";
 import type { PlatformRole } from "@/lib/auth/roles";
 
@@ -58,7 +65,9 @@ export default async function WisdomEntryDetailPage({ params }: { params: Promis
     hitopadesha_story: "hitopadesha_stories",
   };
   const table = sourceTableMap[entry.source_type];
-  const { data: sourceFieldsRow } = table ? await supabase.from(table).select("*").eq("wisdom_entry_id", id).maybeSingle() : { data: null };
+  const { data: sourceFieldsRow } = table
+    ? await supabase.from(table).select("*").eq("wisdom_entry_id", id).maybeSingle()
+    : { data: null };
 
   const { data: relatedEdges } = await supabase
     .from("knowledge_graph_edges")

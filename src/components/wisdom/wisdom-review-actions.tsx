@@ -25,7 +25,13 @@ interface WisdomReviewActionsProps {
   reviewNotes?: string | null;
 }
 
-export function WisdomReviewActions({ entryId, reviewStatus, isAuthor, canReview, reviewNotes }: WisdomReviewActionsProps) {
+export function WisdomReviewActions({
+  entryId,
+  reviewStatus,
+  isAuthor,
+  canReview,
+  reviewNotes,
+}: WisdomReviewActionsProps) {
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
 
@@ -61,7 +67,13 @@ export function WisdomReviewActions({ entryId, reviewStatus, isAuthor, canReview
         )}
         {canReview && reviewStatus === "in_review" && (
           <>
-            <Button size="sm" variant="outline" className="text-danger-700" disabled={loading === "reject"} onClick={() => act("reject")}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-danger-700"
+              disabled={loading === "reject"}
+              onClick={() => act("reject")}
+            >
               <X className="h-3.5 w-3.5" /> Reject
             </Button>
             <Button size="sm" disabled={loading === "approve"} onClick={() => act("approve")}>

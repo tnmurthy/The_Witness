@@ -38,7 +38,10 @@ export function SearchResults() {
         }}
         className="relative max-w-xl"
       >
-        <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+        <SearchIcon
+          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+          aria-hidden="true"
+        />
         <Input
           className="pl-9"
           placeholder="Search technologies, companies, wisdom, people, and more…"
@@ -50,9 +53,9 @@ export function SearchResults() {
 
       <Alert variant="info">
         <AlertDescription>
-          This searches the Knowledge Graph — technologies, companies, articles, books, research, courses, GitHub
-          repositories, wisdom entries, people, and issues. It doesn&apos;t yet search inside issue block content or
-          full article bodies; that&apos;s a future, broader search system.
+          This searches the Knowledge Graph — technologies, companies, articles, books, research, courses,
+          GitHub repositories, wisdom entries, people, and issues. It doesn&apos;t yet search inside issue
+          block content or full article bodies; that&apos;s a future, broader search system.
         </AlertDescription>
       </Alert>
 
@@ -67,12 +70,21 @@ export function SearchResults() {
             </div>
           }
           isEmpty={(data) => data.results.length === 0}
-          empty={<EmptyState icon={SearchIcon} title="No results" description={`Nothing in the Knowledge Graph matches "${query}".`} />}
+          empty={
+            <EmptyState
+              icon={SearchIcon}
+              title="No results"
+              description={`Nothing in the Knowledge Graph matches "${query}".`}
+            />
+          }
         >
           {(data) => (
             <ul className="space-y-2">
               {data.results.map((result) => (
-                <li key={`${result.entityType}:${result.entityId}`} className="flex items-center justify-between rounded-md border border-neutral-200 p-3">
+                <li
+                  key={`${result.entityType}:${result.entityId}`}
+                  className="flex items-center justify-between rounded-md border border-neutral-200 p-3"
+                >
                   <span className="text-sm font-medium text-foreground">{result.label}</span>
                   <Badge variant="neutral" className="text-[10px]">
                     {GRAPH_ENTITY_LABELS[result.entityType]}

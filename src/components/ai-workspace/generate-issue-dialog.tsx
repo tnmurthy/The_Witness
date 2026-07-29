@@ -77,7 +77,9 @@ export function GenerateIssueDialog({ issueId, sectionId }: { issueId: string; s
       setRejected(body.rejected ?? []);
 
       toast.success(`Drafted ${body.blocks.length} block${body.blocks.length === 1 ? "" : "s"}`, {
-        description: body.rejected?.length ? `${body.rejected.length} block(s) didn't validate and were skipped.` : "Review and edit before publishing.",
+        description: body.rejected?.length
+          ? `${body.rejected.length} block(s) didn't validate and were skipped.`
+          : "Review and edit before publishing.",
       });
       if (body.rejected?.length === 0) setOpen(false);
       router.refresh();
@@ -100,24 +102,39 @@ export function GenerateIssueDialog({ issueId, sectionId }: { issueId: string; s
         <DialogHeader>
           <DialogTitle>Generate issue</DialogTitle>
           <DialogDescription>
-            Drafts editable blocks into this issue&apos;s current section. Nothing publishes automatically — review
-            and edit every block before it goes live.
+            Drafts editable blocks into this issue&apos;s current section. Nothing publishes automatically —
+            review and edit every block before it goes live.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="topic">Topic</Label>
-            <Input id="topic" placeholder="The return of on-premise AI infrastructure" value={topic} onChange={(e) => setTopic(e.target.value)} />
+            <Input
+              id="topic"
+              placeholder="The return of on-premise AI infrastructure"
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+            />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label htmlFor="audience">Audience (optional)</Label>
-              <Input id="audience" placeholder="Engineering leaders" value={audience} onChange={(e) => setAudience(e.target.value)} />
+              <Input
+                id="audience"
+                placeholder="Engineering leaders"
+                value={audience}
+                onChange={(e) => setAudience(e.target.value)}
+              />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="tone">Tone (optional)</Label>
-              <Input id="tone" placeholder="Analytical, direct" value={tone} onChange={(e) => setTone(e.target.value)} />
+              <Input
+                id="tone"
+                placeholder="Analytical, direct"
+                value={tone}
+                onChange={(e) => setTone(e.target.value)}
+              />
             </div>
           </div>
           <div>
@@ -125,7 +142,11 @@ export function GenerateIssueDialog({ issueId, sectionId }: { issueId: string; s
             <div className="mt-2 grid grid-cols-2 gap-2">
               {IMPLEMENTED_BLOCK_TYPES.map((type) => (
                 <div key={type} className="flex items-center gap-2">
-                  <Checkbox id={`type-${type}`} checked={selectedTypes.includes(type)} onCheckedChange={() => toggleType(type)} />
+                  <Checkbox
+                    id={`type-${type}`}
+                    checked={selectedTypes.includes(type)}
+                    onCheckedChange={() => toggleType(type)}
+                  />
                   <Label htmlFor={`type-${type}`} className="text-sm font-normal">
                     {BLOCK_REGISTRY[type].label}
                   </Label>
@@ -148,7 +169,11 @@ export function GenerateIssueDialog({ issueId, sectionId }: { issueId: string; s
           <DialogClose asChild>
             <Button variant="ghost">Cancel</Button>
           </DialogClose>
-          <Button variant="signal" disabled={isGenerating || !topic.trim() || selectedTypes.length === 0} onClick={handleGenerate}>
+          <Button
+            variant="signal"
+            disabled={isGenerating || !topic.trim() || selectedTypes.length === 0}
+            onClick={handleGenerate}
+          >
             {isGenerating ? "Generating…" : "Generate"}
           </Button>
         </DialogFooter>

@@ -44,7 +44,10 @@ export function createOpenAIProvider(apiKey: string): AIProvider {
 
           const text = response.choices[0]?.message?.content;
           if (!text) {
-            throw new AIProviderError("OpenAI returned an empty response", { providerId: "openai", retryable: true });
+            throw new AIProviderError("OpenAI returned an empty response", {
+              providerId: "openai",
+              retryable: true,
+            });
           }
 
           const inputTokens = response.usage?.prompt_tokens ?? 0;
@@ -67,7 +70,11 @@ export function createOpenAIProvider(apiKey: string): AIProvider {
             });
           }
 
-          throw new AIProviderError("OpenAI request failed", { providerId: "openai", retryable: true, cause: error });
+          throw new AIProviderError("OpenAI request failed", {
+            providerId: "openai",
+            retryable: true,
+            cause: error,
+          });
         }
       }, timeoutMs);
     },

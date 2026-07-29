@@ -23,8 +23,17 @@ export function PeopleList() {
   return (
     <div className="space-y-4">
       <div className="relative max-w-md">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-        <Input className="pl-9" placeholder="Search people…" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search people" />
+        <Search
+          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+          aria-hidden="true"
+        />
+        <Input
+          className="pl-9"
+          placeholder="Search people…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          aria-label="Search people"
+        />
       </div>
 
       <QueryStateView
@@ -42,7 +51,9 @@ export function PeopleList() {
             icon={Users}
             title={search ? "No people match" : "No people yet"}
             description={
-              search ? "Try a different search term." : "People are authors, founders, and other individuals referenced across the Knowledge Graph."
+              search
+                ? "Try a different search term."
+                : "People are authors, founders, and other individuals referenced across the Knowledge Graph."
             }
             action={{ label: "Add a person", href: "/people/new" }}
           />
@@ -60,7 +71,9 @@ export function PeopleList() {
                     </Avatar>
                     <div className="min-w-0">
                       <p className="truncate font-medium text-foreground">{person.full_name}</p>
-                      {person.bio && <p className="line-clamp-1 text-xs text-muted-foreground">{person.bio}</p>}
+                      {person.bio && (
+                        <p className="line-clamp-1 text-xs text-muted-foreground">{person.bio}</p>
+                      )}
                     </div>
                   </CardContent>
                 </Card>

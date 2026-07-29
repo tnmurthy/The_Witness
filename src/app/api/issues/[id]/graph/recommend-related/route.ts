@@ -4,7 +4,10 @@ import { canEditIssue } from "@/lib/auth/issue-permissions";
 import { runAIFunction } from "@/lib/ai/orchestrator";
 import { AIProviderError } from "@/lib/ai/types";
 import { isProviderConfigured, getDefaultProviderId } from "@/lib/ai/registry";
-import { RELATED_ENTITY_CATEGORIES, type RelatedEntityCategory } from "@/lib/ai/functions/recommend-related-entities";
+import {
+  RELATED_ENTITY_CATEGORIES,
+  type RelatedEntityCategory,
+} from "@/lib/ai/functions/recommend-related-entities";
 import type { RecommendRelatedEntitiesOutput } from "@/lib/ai/functions/recommend-related-entities";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
@@ -75,7 +78,11 @@ export async function POST(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: "Invalid input", issues: parsed.error.issues }, { status: 422 });
   }
 
-  const { data: issue } = await supabase.from("issues").select("publication_id, title").eq("id", issueId).single();
+  const { data: issue } = await supabase
+    .from("issues")
+    .select("publication_id, title")
+    .eq("id", issueId)
+    .single();
   if (!issue) return NextResponse.json({ error: "Issue not found" }, { status: 404 });
 
   const { data: blocks } = await supabase
@@ -144,10 +151,15 @@ export async function POST(request: Request, { params }: RouteParams) {
     // Anti-hallucination check: only ids actually offered survive, same
     // discipline as recommend_wisdom and suggest_graph_connections.
     const validKeys = new Set(candidates.map((c) => `${c.entityType}:${c.entityId}`));
-    const validSuggestions = result.output.suggestions.filter((s) => validKeys.has(`${s.entityType}:${s.entityId}`));
+    const validSuggestions = result.output.suggestions.filter((s) =>
+      validKeys.has(`${s.entityType}:${s.entityId}`)
+    );
 
     const labelByKey = new Map(candidates.map((c) => [`${c.entityType}:${c.entityId}`, c.label]));
-    const hydrated = validSuggestions.map((s) => ({ ...s, label: labelByKey.get(`${s.entityType}:${s.entityId}`) ?? "(untitled)" }));
+    const hydrated = validSuggestions.map((s) => ({
+      ...s,
+      label: labelByKey.get(`${s.entityType}:${s.entityId}`) ?? "(untitled)",
+    }));
 
     return NextResponse.json({ jobId: result.jobId, suggestions: hydrated, costUsd: result.costUsd });
   } catch (error) {
@@ -155,6 +167,9 @@ export async function POST(request: Request, { params }: RouteParams) {
     if (error instanceof AIProviderError) {
       return NextResponse.json({ error: error.message, retryable: error.retryable }, { status: 502 });
     }
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Recommendation failed" }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Recommendation failed" },
+      { status: 500 }
+    );
   }
 }

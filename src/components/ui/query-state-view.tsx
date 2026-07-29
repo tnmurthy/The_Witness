@@ -37,15 +37,21 @@ export function QueryStateView<T>({ query, loading, isEmpty, empty, children }: 
   }
 
   if (query.isError) {
-    const isPermissionError = query.error instanceof ApiError && (query.error.status === 401 || query.error.status === 403);
+    const isPermissionError =
+      query.error instanceof ApiError && (query.error.status === 401 || query.error.status === 403);
 
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg border border-danger-200 bg-danger-50 px-6 py-12 text-center" role="alert">
+      <div
+        className="border-danger-200 bg-danger-50 flex flex-col items-center justify-center rounded-lg border px-6 py-12 text-center"
+        role="alert"
+      >
         <AlertTriangle className="h-8 w-8 text-danger-600" aria-hidden="true" />
         <p className="mt-3 text-sm font-medium text-foreground">
           {isPermissionError ? "You don't have access to this." : "Something went wrong loading this."}
         </p>
-        <p className="mt-1 text-sm text-muted-foreground">{query.error instanceof Error ? query.error.message : "Please try again."}</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {query.error instanceof Error ? query.error.message : "Please try again."}
+        </p>
         {!isPermissionError && (
           <Button variant="outline" size="sm" className="mt-4" onClick={() => query.refetch()}>
             <RefreshCw className="h-3.5 w-3.5" /> Retry

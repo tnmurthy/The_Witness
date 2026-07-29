@@ -96,7 +96,12 @@ export function PersonDetail({ personId }: { personId: string }) {
 
             <div className="space-y-1.5">
               <Label htmlFor="person-avatar">Avatar URL</Label>
-              <Input id="person-avatar" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} placeholder="https://…" />
+              <Input
+                id="person-avatar"
+                value={avatarUrl}
+                onChange={(e) => setAvatarUrl(e.target.value)}
+                placeholder="https://…"
+              />
             </div>
 
             <div className="space-y-1.5">
@@ -119,12 +124,13 @@ export function PersonDetail({ personId }: { personId: string }) {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Delete {data.person.full_name}?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This removes the person and every Knowledge Graph connection to them. This can&apos;t be undone.
+                      This removes the person and every Knowledge Graph connection to them. This can&apos;t be
+                      undone.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDelete} className="bg-danger-700 hover:bg-danger-800">
+                    <AlertDialogAction onClick={handleDelete} className="hover:bg-danger-800 bg-danger-700">
                       Delete
                     </AlertDialogAction>
                   </AlertDialogFooter>

@@ -24,7 +24,12 @@ export async function POST(request: Request, { params }: RouteParams) {
 
   const { data: entry, error } = await supabase
     .from("wisdom_entries")
-    .update({ review_status: "rejected", reviewed_by: user.id, reviewed_at: new Date().toISOString(), review_notes: reason })
+    .update({
+      review_status: "rejected",
+      reviewed_by: user.id,
+      reviewed_at: new Date().toISOString(),
+      review_notes: reason,
+    })
     .eq("id", id)
     .select("id, review_status")
     .single();

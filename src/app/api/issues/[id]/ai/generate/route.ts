@@ -61,17 +61,28 @@ export async function POST(request: Request, { params }: RouteParams) {
     );
   }
 
-  const { data: section } = await supabase.from("sections").select("id, issue_id").eq("id", parsed.data.sectionId).single();
+  const { data: section } = await supabase
+    .from("sections")
+    .select("id, issue_id")
+    .eq("id", parsed.data.sectionId)
+    .single();
   if (section?.issue_id !== issueId) {
     return NextResponse.json({ error: "That section does not belong to this issue" }, { status: 422 });
   }
 
-  const { data: issue } = await supabase.from("issues").select("publication_id, publications(name, editorial_guidelines)").eq("id", issueId).single();
+  const { data: issue } = await supabase
+    .from("issues")
+    .select("publication_id, publications(name, editorial_guidelines)")
+    .eq("id", issueId)
+    .single();
   if (!issue) return NextResponse.json({ error: "Issue not found" }, { status: 404 });
   const publication = Array.isArray(issue.publications) ? issue.publications[0] : issue.publications;
 
   try {
-    const { count: existingCount } = await supabase.from("blocks").select("id", { count: "exact", head: true }).eq("section_id", parsed.data.sectionId);
+    const { count: existingCount } = await supabase
+      .from("blocks")
+      .select("id", { count: "exact", head: true })
+      .eq("section_id", parsed.data.sectionId);
     let nextPosition = existingCount ?? 0;
 
     const result = await runAIFunction<GenerateIssueOutput>(supabase, {
@@ -102,7 +113,9 @@ export async function POST(request: Request, { params }: RouteParams) {
           created_by: user.id,
           last_edited_by: user.id,
         })
-        .select("id, section_id, issue_id, type, position, payload, ai_generated, last_edited_by, last_edited_at")
+        .select(
+          "id, section_id, issue_id, type, position, payload, ai_generated, last_edited_by, last_edited_at"
+        )
         .single();
 
       if (error) {
@@ -123,6 +136,9 @@ export async function POST(request: Request, { params }: RouteParams) {
     if (error instanceof AIProviderError) {
       return NextResponse.json({ error: error.message, retryable: error.retryable }, { status: 502 });
     }
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Generation failed" }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Generation failed" },
+      { status: 500 }
+    );
   }
 }

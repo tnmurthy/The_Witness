@@ -46,7 +46,13 @@ describe("sourceFieldsSchemaFor", () => {
 
   it("returns a schema requiring tantraNumber between 1 and 5 for panchatantra_tale", () => {
     const schema = sourceFieldsSchemaFor("panchatantra_tale");
-    expect(schema?.safeParse({ tantraNumber: 4, tantraName: "Labdhapranasha", taleTitle: "The Monkey and the Crocodile" }).success).toBe(true);
+    expect(
+      schema?.safeParse({
+        tantraNumber: 4,
+        tantraName: "Labdhapranasha",
+        taleTitle: "The Monkey and the Crocodile",
+      }).success
+    ).toBe(true);
     expect(schema?.safeParse({ tantraNumber: 6, tantraName: "X", taleTitle: "Y" }).success).toBe(false);
   });
 
@@ -90,8 +96,16 @@ describe("recommendWisdomFunction", () => {
     const input = recommendWisdomFunction.inputSchema.parse({
       issueTopic: "The return of on-premise AI infrastructure",
       candidates: [
-        { id: "11111111-1111-1111-1111-111111111111", title: "On detachment", translation: "Act without attachment." },
-        { id: "22222222-2222-2222-2222-222222222222", title: "On patience", translation: "Patience is strength." },
+        {
+          id: "11111111-1111-1111-1111-111111111111",
+          title: "On detachment",
+          translation: "Act without attachment.",
+        },
+        {
+          id: "22222222-2222-2222-2222-222222222222",
+          title: "On patience",
+          translation: "Patience is strength.",
+        },
       ],
     });
     const { prompt } = recommendWisdomFunction.buildPrompt(input);
@@ -111,7 +125,11 @@ describe("recommendWisdomFunction", () => {
   it("parseResult extracts score and rationale alongside the id", () => {
     const raw = JSON.stringify({
       recommendations: [
-        { wisdomEntryId: "11111111-1111-1111-1111-111111111111", score: 0.92, rationale: "Directly addresses attachment to a specific vendor outcome." },
+        {
+          wisdomEntryId: "11111111-1111-1111-1111-111111111111",
+          score: 0.92,
+          rationale: "Directly addresses attachment to a specific vendor outcome.",
+        },
       ],
     });
     const result = recommendWisdomFunction.parseResult(raw);

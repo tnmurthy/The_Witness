@@ -45,7 +45,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid input", issues: parsed.error.issues }, { status: 422 });
   }
 
-  const types: GraphEntityType[] = parsed.data.entityTypes && parsed.data.entityTypes.length > 0 ? parsed.data.entityTypes : [...GRAPH_ENTITY_TYPES];
+  const types: GraphEntityType[] =
+    parsed.data.entityTypes && parsed.data.entityTypes.length > 0
+      ? parsed.data.entityTypes
+      : [...GRAPH_ENTITY_TYPES];
 
   let proximitySet: Set<string> | null = null;
   if (parsed.data.expandFrom) {
@@ -54,7 +57,11 @@ export async function POST(request: Request) {
       start_id: parsed.data.expandFrom.entityId,
       max_depth: 2,
     });
-    proximitySet = new Set(((neighborRows ?? []) as { entity_type: string; entity_id: string }[]).map((r) => `${r.entity_type}:${r.entity_id}`));
+    proximitySet = new Set(
+      ((neighborRows ?? []) as { entity_type: string; entity_id: string }[]).map(
+        (r) => `${r.entity_type}:${r.entity_id}`
+      )
+    );
   }
 
   try {

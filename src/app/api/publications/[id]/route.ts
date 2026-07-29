@@ -77,7 +77,10 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
   // Archive, not hard-delete — publications carry issues, subscribers,
   // and analytics history that shouldn't disappear. Matches
   // publication_status's 'active'/'archived' pair (Migration 001).
-  const { error } = await supabase.from("publications").update({ status: "archived", archived_at: new Date().toISOString() }).eq("id", id);
+  const { error } = await supabase
+    .from("publications")
+    .update({ status: "archived", archived_at: new Date().toISOString() })
+    .eq("id", id);
 
   if (error) {
     logger.error("Failed to archive publication", { error, publicationId: id });

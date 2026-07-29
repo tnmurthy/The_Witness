@@ -60,7 +60,13 @@ export function ForgotPasswordForm() {
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
       <div className="space-y-1.5">
         <Label htmlFor="email">Email</Label>
-        <Input id="email" type="email" autoComplete="email" aria-invalid={!!errors.email} {...register("email")} />
+        <Input
+          id="email"
+          type="email"
+          autoComplete="email"
+          aria-invalid={!!errors.email}
+          {...register("email")}
+        />
         {errors.email && <p className="text-xs text-danger-700">{errors.email.message}</p>}
       </div>
       <Button type="submit" className="w-full" disabled={isSubmitting}>

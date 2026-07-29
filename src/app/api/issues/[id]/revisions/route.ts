@@ -56,7 +56,11 @@ export async function GET(_request: Request, { params }: RouteParams) {
 const SNAPSHOT_THROTTLE_MS = 5 * 60 * 1000;
 
 async function buildSnapshot(supabase: Awaited<ReturnType<typeof createClient>>, issueId: string) {
-  const { data: sections } = await supabase.from("sections").select("id, title, position").eq("issue_id", issueId).order("position");
+  const { data: sections } = await supabase
+    .from("sections")
+    .select("id, title, position")
+    .eq("issue_id", issueId)
+    .order("position");
   const { data: blocks } = await supabase
     .from("blocks")
     .select("id, section_id, type, position, payload")

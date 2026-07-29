@@ -18,7 +18,10 @@ export async function KnowledgeGraphSummary() {
   const [technologies, companies, wisdomEntries, people, edges] = await Promise.all([
     supabase.from("technologies").select("id", { count: "exact", head: true }),
     supabase.from("companies").select("id", { count: "exact", head: true }),
-    supabase.from("wisdom_entries").select("id", { count: "exact", head: true }).eq("review_status", "approved"),
+    supabase
+      .from("wisdom_entries")
+      .select("id", { count: "exact", head: true })
+      .eq("review_status", "approved"),
     supabase.from("people").select("id", { count: "exact", head: true }),
     supabase.from("knowledge_graph_edges").select("id", { count: "exact", head: true }),
   ]);

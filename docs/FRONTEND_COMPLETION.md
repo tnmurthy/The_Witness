@@ -5,22 +5,22 @@
 Every named gap in the brief, checked off against what was actually
 built and verified — not assumed:
 
-| Gap | Status |
-|---|---|
-| Graph Explorer page | Built (`/graph`) — search, node detail, hop-depth control, click-to-navigate, breadcrumb trail |
-| People Administration page | Built (`/people`, `/people/new`, `/people/[id]`) — list with search, create form, edit + delete + related content |
-| Knowledge Graph UI | Built — `GraphSearchPanel`, `GraphNodeDetail`, `GraphBreadcrumbTrail` |
-| Knowledge Graph navigation | Built — clicking any neighbor navigates the whole panel to it; a session-scoped breadcrumb trail lets you jump back |
-| Issue Builder integration | Built — `IssueGraphPanel` in the Issue Builder toolbar: related content, AI-suggested connections (reviewed one at a time, never auto-created), manual connect |
-| Wisdom Engine integration | Built — `RelatedContentPanel` added to the wisdom entry detail page |
-| Related Content panels | Built as one genuinely reusable component, used on 3 different pages (People, Wisdom, Issue Builder) |
-| Search integration | Built (`/search`) — honestly scoped to the Knowledge Graph, not a first draft of a future platform-wide system; says so on the page itself |
-| Dashboard widgets | Built — `KnowledgeGraphSummary` replaces the Milestone 1 placeholder card with real counts |
-| Navigation updates | Fixed — `Knowledge Graph`, `AI Workspace`, and `Search` nav items pointed to routes that never existed; all three now point to real, working pages. Added `People` to the nav. |
-| Breadcrumbs | Added to every new nested page (`/people/new`, `/people/[id]`) |
-| Empty states | One reusable `EmptyState` component, applied everywhere a list can be empty |
-| Loading states | Route-level `loading.tsx` added for every new route |
-| Error states | Route-level `error.tsx` added for every new route, all sharing one `RouteErrorFallback` component |
+| Gap                        | Status                                                                                                                                                                         |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Graph Explorer page        | Built (`/graph`) — search, node detail, hop-depth control, click-to-navigate, breadcrumb trail                                                                                 |
+| People Administration page | Built (`/people`, `/people/new`, `/people/[id]`) — list with search, create form, edit + delete + related content                                                              |
+| Knowledge Graph UI         | Built — `GraphSearchPanel`, `GraphNodeDetail`, `GraphBreadcrumbTrail`                                                                                                          |
+| Knowledge Graph navigation | Built — clicking any neighbor navigates the whole panel to it; a session-scoped breadcrumb trail lets you jump back                                                            |
+| Issue Builder integration  | Built — `IssueGraphPanel` in the Issue Builder toolbar: related content, AI-suggested connections (reviewed one at a time, never auto-created), manual connect                 |
+| Wisdom Engine integration  | Built — `RelatedContentPanel` added to the wisdom entry detail page                                                                                                            |
+| Related Content panels     | Built as one genuinely reusable component, used on 3 different pages (People, Wisdom, Issue Builder)                                                                           |
+| Search integration         | Built (`/search`) — honestly scoped to the Knowledge Graph, not a first draft of a future platform-wide system; says so on the page itself                                     |
+| Dashboard widgets          | Built — `KnowledgeGraphSummary` replaces the Milestone 1 placeholder card with real counts                                                                                     |
+| Navigation updates         | Fixed — `Knowledge Graph`, `AI Workspace`, and `Search` nav items pointed to routes that never existed; all three now point to real, working pages. Added `People` to the nav. |
+| Breadcrumbs                | Added to every new nested page (`/people/new`, `/people/[id]`)                                                                                                                 |
+| Empty states               | One reusable `EmptyState` component, applied everywhere a list can be empty                                                                                                    |
+| Loading states             | Route-level `loading.tsx` added for every new route                                                                                                                            |
+| Error states               | Route-level `error.tsx` added for every new route, all sharing one `RouteErrorFallback` component                                                                              |
 
 ## TanStack Query: what "connect every page" actually means here
 

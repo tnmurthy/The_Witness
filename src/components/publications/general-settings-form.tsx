@@ -5,7 +5,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
-import { updatePublicationGeneralSchema, type UpdatePublicationGeneralInput } from "@/lib/validation/publications";
+import {
+  updatePublicationGeneralSchema,
+  type UpdatePublicationGeneralInput,
+} from "@/lib/validation/publications";
 import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +24,11 @@ export function GeneralSettingsForm({ publicationId, initial }: GeneralSettingsF
   const router = useRouter();
   const form = useForm<UpdatePublicationGeneralInput>({
     resolver: zodResolver(updatePublicationGeneralSchema),
-    defaultValues: { name: initial.name, description: initial.description ?? "", cadence: initial.cadence ?? "" },
+    defaultValues: {
+      name: initial.name,
+      description: initial.description ?? "",
+      cadence: initial.cadence ?? "",
+    },
   });
 
   async function onSubmit(values: UpdatePublicationGeneralInput) {

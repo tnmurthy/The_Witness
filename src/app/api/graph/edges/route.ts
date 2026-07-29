@@ -46,7 +46,10 @@ export async function POST(request: Request) {
   if (error || !edge) {
     const status = error?.code === "23505" ? 409 : 500;
     logger.error("Failed to create graph edge", { error, userId: user.id });
-    return NextResponse.json({ error: error?.code === "23505" ? "That connection already exists" : "Failed to create connection" }, { status });
+    return NextResponse.json(
+      { error: error?.code === "23505" ? "That connection already exists" : "Failed to create connection" },
+      { status }
+    );
   }
 
   return NextResponse.json({ edge }, { status: 201 });

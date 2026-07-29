@@ -49,7 +49,9 @@ export async function upsertWisdomSourceFields(
 
   if (!fields) return { error: `sourceFields is required for source type "${sourceType}"` };
 
-  const { error } = await supabase.from(table).upsert({ wisdom_entry_id: wisdomEntryId, ...toSnakeCaseFields(fields) });
+  const { error } = await supabase
+    .from(table)
+    .upsert({ wisdom_entry_id: wisdomEntryId, ...toSnakeCaseFields(fields) });
 
   return { error: error?.message ?? null };
 }

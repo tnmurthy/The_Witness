@@ -13,15 +13,15 @@ Panchatantra, Hitopadeśa — as genuinely first-class source types with
 their own specialization tables, not folded into the generic `other`
 bucket:
 
-| Source | Table | Structure |
-|---|---|---|
-| Bhagavad Gītā | `gita_verses` | chapter + verse |
-| Sanskrit Subhāṣitam | `subhashitams` | meter + attributed_to |
-| Advaita Vedānta | `advaita_principles` | source_work + tradition_note |
-| Upaniṣads | `upanishad_verses` | name + optional chapter/verse |
-| Chanakya Nīti | `chanakya_niti_verses` | chapter (adhyaya) + verse (shloka) |
-| Panchatantra | `panchatantra_tales` | tantra number (1-5) + name + tale title |
-| Hitopadeśa | `hitopadesha_stories` | section name + story title |
+| Source              | Table                  | Structure                               |
+| ------------------- | ---------------------- | --------------------------------------- |
+| Bhagavad Gītā       | `gita_verses`          | chapter + verse                         |
+| Sanskrit Subhāṣitam | `subhashitams`         | meter + attributed_to                   |
+| Advaita Vedānta     | `advaita_principles`   | source_work + tradition_note            |
+| Upaniṣads           | `upanishad_verses`     | name + optional chapter/verse           |
+| Chanakya Nīti       | `chanakya_niti_verses` | chapter (adhyaya) + verse (shloka)      |
+| Panchatantra        | `panchatantra_tales`   | tantra number (1-5) + name + tale title |
+| Hitopadeśa          | `hitopadesha_stories`  | section name + story title              |
 
 Each source is structured differently on purpose — a Panchatantra tale
 genuinely isn't organized like a Gītā verse (books and tales vs.

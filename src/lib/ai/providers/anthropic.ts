@@ -35,7 +35,10 @@ export function createAnthropicProvider(apiKey: string): AIProvider {
 
           const textBlock = response.content.find((block) => block.type === "text");
           if (!textBlock || textBlock.type !== "text") {
-            throw new AIProviderError("Anthropic returned no text content", { providerId: "anthropic", retryable: true });
+            throw new AIProviderError("Anthropic returned no text content", {
+              providerId: "anthropic",
+              retryable: true,
+            });
           }
 
           return {
@@ -55,7 +58,11 @@ export function createAnthropicProvider(apiKey: string): AIProvider {
             });
           }
 
-          throw new AIProviderError("Anthropic request failed", { providerId: "anthropic", retryable: true, cause: error });
+          throw new AIProviderError("Anthropic request failed", {
+            providerId: "anthropic",
+            retryable: true,
+            cause: error,
+          });
         }
       }, timeoutMs);
     },
