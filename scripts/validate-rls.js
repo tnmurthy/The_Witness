@@ -119,13 +119,25 @@ async function main() {
     const { data } = await anon.from("profiles").select("id").limit(1);
     return !data || data.length === 0 ? true : "Expected 0 rows, got " + data.length;
   });
-  await check("anon: blocked from wisdom_entries.select", async () => {
-    const { data } = await anon.from("wisdom_entries").select("id").limit(1);
-    return !data || data.length === 0 ? true : "Expected 0 rows, got " + data.length;
+  await check("anon: wisdom_entries shows only approved rows (intentional public content)", async () => {
+    // Approved wisdom entries are intentionally public — policy:
+    //   review_status = 'approved' OR is_platform_editorial()
+    // Verify anon can only see approved rows, never draft/in_review.
+    const { data } = await anon.from("wisdom_entries").select("id, review_status").limit(20);
+    if (!data || data.length === 0) return true;
+    const nonApproved = data.filter((r) => r.review_status !== "approved");
+    return nonApproved.length === 0
+      ? true
+      : "Anon can see non-approved entries: " + JSON.stringify(nonApproved);
   });
-  await check("anon: blocked from publications.select", async () => {
+  await check("anon: blocked from publications.select (requires Migration 021)", async () => {
+    // Migration 010 had an overly broad policy: USING (status = 'active') with no auth check.
+    // Migration 021 replaces it with: auth.uid() IS NOT NULL AND status = 'active'.
+    // This test confirms anon is blocked after Migration 021 has been applied.
     const { data } = await anon.from("publications").select("id").limit(1);
-    return !data || data.length === 0 ? true : "Expected 0 rows, got " + data.length;
+    return !data || data.length === 0
+      ? true
+      : "Expected 0 rows, got " + data.length + " — apply Migration 021 (node scripts/bootstrap.js)";
   });
 
   // ── Authenticated user (subscriber role) policies ────────────────────────────

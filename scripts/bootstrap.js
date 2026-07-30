@@ -14,6 +14,24 @@
 "use strict";
 
 const fs = require("fs");
+
+async function resolveIPv4(url) {
+  // Parse the connection URL, resolve the hostname to an IPv4 address,
+  // and return a new URL with the IP substituted. This forces IPv4 on
+  // Windows hosts where db.[ref].supabase.co resolves to IPv6 by default.
+  const dns = require("dns").promises;
+  const parsed = new URL(url);
+  try {
+    const addrs = await dns.resolve4(parsed.hostname);
+    if (addrs && addrs.length > 0) {
+      parsed.hostname = addrs[0];
+    }
+  } catch {
+    // DNS lookup failed — return original URL and let pg handle it
+  }
+  return parsed.toString();
+}
+
 const path = require("path");
 
 const c = {
@@ -88,10 +106,10 @@ async function checkDatabase() {
     console.log(`  ${FAIL}  pg not installed - run npm install`);
     process.exit(1);
   }
+  const resolvedUrl = await resolveIPv4(process.env.SUPABASE_DB_URL);
   const client = new pg.Client({
-    connectionString: process.env.SUPABASE_DB_URL,
+    connectionString: resolvedUrl,
     ssl: { rejectUnauthorized: false },
-    family: 4,
   });
   try {
     await client.connect();
@@ -128,10 +146,10 @@ async function applyMigrations() {
     .sort();
   console.log(`  Found ${files.length} migration files`);
 
+  const resolvedUrl = await resolveIPv4(process.env.SUPABASE_DB_URL);
   const client = new pg.Client({
-    connectionString: process.env.SUPABASE_DB_URL,
+    connectionString: resolvedUrl,
     ssl: { rejectUnauthorized: false },
-    family: 4,
   });
   await client.connect();
   await client.query(`
@@ -215,10 +233,10 @@ async function verifyStorage() {
 async function verifyRealtime() {
   console.log(`\n${c.bold("Step 6: Realtime")}`);
   const pg = require("pg");
+  const resolvedUrl = await resolveIPv4(process.env.SUPABASE_DB_URL);
   const client = new pg.Client({
-    connectionString: process.env.SUPABASE_DB_URL,
+    connectionString: resolvedUrl,
     ssl: { rejectUnauthorized: false },
-    family: 4,
   });
   await client.connect();
   for (const table of ["ai_jobs", "delivery_logs", "issues"]) {
@@ -243,10 +261,10 @@ async function verifyRealtime() {
 async function verifyAuthTrigger() {
   console.log(`\n${c.bold("Step 7: Auth trigger and helper functions")}`);
   const pg = require("pg");
+  const resolvedUrl = await resolveIPv4(process.env.SUPABASE_DB_URL);
   const client = new pg.Client({
-    connectionString: process.env.SUPABASE_DB_URL,
+    connectionString: resolvedUrl,
     ssl: { rejectUnauthorized: false },
-    family: 4,
   });
   await client.connect();
   const { rows } = await client.query(

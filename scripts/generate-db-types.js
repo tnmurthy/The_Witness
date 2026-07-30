@@ -63,10 +63,10 @@ function pgTypeToTs(dataType, udtName) {
 }
 
 async function main() {
+  const resolvedUrl = await resolveIPv4(process.env.TYPEGEN_DB_URL);
   const client = new Client({
-    connectionString: process.env.TYPEGEN_DB_URL,
+    connectionString: resolvedUrl,
     ssl: { rejectUnauthorized: false },
-    family: 4,
   });
   await client.connect();
 
