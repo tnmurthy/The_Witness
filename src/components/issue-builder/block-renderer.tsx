@@ -94,7 +94,9 @@ export function BlockRenderer({ type, payload }: { type: string; payload: Record
       return (
         <div className="space-y-3 rounded-lg border border-neutral-200 bg-card p-6">
           {p.eyebrow && <Eyebrow>{p.eyebrow}</Eyebrow>}
-          <h2 className="font-voice text-3xl font-semibold leading-tight text-foreground">{p.headline || "Untitled hero story"}</h2>
+          <h2 className="font-voice text-3xl font-semibold leading-tight text-foreground">
+            {p.headline || "Untitled hero story"}
+          </h2>
           {p.dek && <p className="text-lg text-muted-foreground">{p.dek}</p>}
           {p.imageUrl && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -110,7 +112,9 @@ export function BlockRenderer({ type, payload }: { type: string; payload: Record
       return (
         <div className="rounded-sm border-l-4 border-gold-700 bg-card p-5">
           <Eyebrow>{p.eyebrow || "Signal"}</Eyebrow>
-          <h4 className="mt-1 font-voice text-lg font-semibold text-foreground">{p.headline || "Untitled signal"}</h4>
+          <h4 className="mt-1 font-voice text-lg font-semibold text-foreground">
+            {p.headline || "Untitled signal"}
+          </h4>
           <Text className="mt-1 text-sm text-muted-foreground">{p.body}</Text>
         </div>
       );
@@ -143,7 +147,12 @@ export function BlockRenderer({ type, payload }: { type: string; payload: Record
           {p.authors && <Muted>{p.authors}</Muted>}
           <Text className="text-sm">{p.summary}</Text>
           {p.url && (
-            <a href={p.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-navy-700 hover:underline">
+            <a
+              href={p.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-sm text-navy-700 hover:underline"
+            >
               Read paper <ExternalLink className="h-3 w-3" />
             </a>
           )}
@@ -178,7 +187,12 @@ export function BlockRenderer({ type, payload }: { type: string; payload: Record
           <h4 className="font-semibold text-foreground">{p.name || "Untitled company"}</h4>
           <Text className="text-sm">{p.description}</Text>
           {p.url && (
-            <a href={p.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-navy-700 hover:underline">
+            <a
+              href={p.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-sm text-navy-700 hover:underline"
+            >
               Visit site <ExternalLink className="h-3 w-3" />
             </a>
           )}
@@ -192,10 +206,15 @@ export function BlockRenderer({ type, payload }: { type: string; payload: Record
         <ol className="space-y-4 border-l border-neutral-200 pl-5">
           {p.events.map((event, i) => (
             <li key={i} className="relative">
-              <span className="absolute -left-[25px] top-1 h-2.5 w-2.5 rounded-full bg-navy-800" aria-hidden="true" />
+              <span
+                className="absolute -left-[25px] top-1 h-2.5 w-2.5 rounded-full bg-navy-800"
+                aria-hidden="true"
+              />
               <Muted className="font-mono text-xs">{event.date}</Muted>
               <p className="font-medium text-foreground">{event.title}</p>
-              {event.description && <Text className="text-sm text-muted-foreground">{event.description}</Text>}
+              {event.description && (
+                <Text className="text-sm text-muted-foreground">{event.description}</Text>
+              )}
             </li>
           ))}
         </ol>
@@ -217,7 +236,9 @@ export function BlockRenderer({ type, payload }: { type: string; payload: Record
       return (
         <div className="space-y-1 rounded-lg bg-surface-2 p-5">
           <Eyebrow>Reflection</Eyebrow>
-          <p className="font-voice text-lg text-foreground">{p.question || "What question should the reader consider?"}</p>
+          <p className="font-voice text-lg text-foreground">
+            {p.question || "What question should the reader consider?"}
+          </p>
           {p.promptHelp && <Muted>{p.promptHelp}</Muted>}
         </div>
       );
@@ -230,7 +251,9 @@ export function BlockRenderer({ type, payload }: { type: string; payload: Record
           <Eyebrow>Today&apos;s Wisdom</Eyebrow>
           {p.sourceText && <p className="font-voice text-base text-foreground">{p.sourceText}</p>}
           {p.iast && <p className="font-voice italic text-muted-foreground">{p.iast}</p>}
-          <p className="font-voice text-lg italic text-foreground">&ldquo;{p.translation || "Translation goes here."}&rdquo;</p>
+          <p className="font-voice text-lg italic text-foreground">
+            &ldquo;{p.translation || "Translation goes here."}&rdquo;
+          </p>
           {(p.context || p.source) && (
             <Muted className="text-xs">
               {p.source}

@@ -22,7 +22,11 @@ export default async function IssueBuilderPage({ params }: { params: Promise<{ i
 
   const { data: profile } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
 
-  const { data: sections } = await supabase.from("sections").select("id, issue_id, title, position").eq("issue_id", id).order("position");
+  const { data: sections } = await supabase
+    .from("sections")
+    .select("id, issue_id, title, position")
+    .eq("issue_id", id)
+    .order("position");
 
   const { data: rawBlocks } = await supabase
     .from("blocks")

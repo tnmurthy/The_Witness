@@ -77,7 +77,16 @@ comment on policy prompt_templates_manage_publication_editor on public.prompt_te
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('publication-logos', 'publication-logos', true, 2097152, array['image/png','image/jpeg','image/svg+xml','image/webp'])
 on conflict (id) do nothing;
-comment on column storage.buckets.file_size_limit is 'publication-logos capped at 2MB — logos are UI chrome, not editorial media; the general media library (Milestone 4 content tables, future) is not subject to this limit.';
+-- Not a COMMENT ON statement: on a real hosted Supabase project,
+-- storage.buckets is owned by Supabase's own internal service role, not
+-- the project's postgres role your SQL Editor / CLI connects as — INSERT
+-- and SELECT work (Supabase grants those), but COMMENT ON requires table
+-- ownership and fails with 42501 (insufficient_privilege). This note
+-- carries the same documentation that comment would have, without
+-- requiring a permission this connection doesn't have.
+-- publication-logos is capped at 2MB — logos are UI chrome, not
+-- editorial media; the general media library (future) is not subject to
+-- this limit.
 
 create policy publication_logos_select_public on storage.objects
   for select using (bucket_id = 'publication-logos');
@@ -91,4 +100,13 @@ create policy publication_logos_manage_editor on storage.objects
     bucket_id = 'publication-logos' and
     public.is_publication_editor_or_above((storage.foldername(name))[1]::uuid)
   );
-comment on policy publication_logos_manage_editor on storage.objects is 'Upload path convention: <publication_id>/<filename> — storage.foldername(name) splits the object path so the first segment (the publication_id) can be checked against publication membership, the same authorization function used everywhere else in the schema.';
+-- Not a COMMENT ON statement, for the same reason as storage.buckets
+-- above: COMMENT ON POLICY requires ownership of the table the policy is
+-- attached to (storage.objects), which the project's postgres role does
+-- not have on a real hosted Supabase project even though creating the
+-- policy itself (above) is fully supported.
+-- publication_logos_manage_editor: upload path convention is
+-- <publication_id>/<filename> — storage.foldername(name) splits the
+-- object path so the first segment (the publication_id) can be checked
+-- against publication membership, the same authorization function used
+-- everywhere else in the schema.

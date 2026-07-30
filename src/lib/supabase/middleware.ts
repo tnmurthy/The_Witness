@@ -1,4 +1,6 @@
 import { createServerClient, type SetAllCookies } from "@supabase/ssr";
+// Database generic intentionally not applied — same reason as
+// server.ts and client.ts.
 import { NextResponse, type NextRequest } from "next/server";
 import { env } from "@/lib/env";
 
@@ -45,11 +47,25 @@ export async function updateSession(request: NextRequest) {
   // its own layout/page (see src/app/(dashboard)/layout.tsx), so a path
   // missing from this list is a UX regression (a slower redirect instead
   // of an instant one), not a security hole.
-  const protectedPrefixes = ["/dashboard", "/organizations", "/admin", "/settings", "/publications", "/issues"];
+  const protectedPrefixes = [
+    "/dashboard",
+    "/organizations",
+    "/admin",
+    "/settings",
+    "/publications",
+    "/issues",
+    "/wisdom",
+    "/graph",
+    "/people",
+    "/ai-workspace",
+    "/search",
+    "/analytics",
+  ];
   const isProtectedRoute = protectedPrefixes.some(
     (prefix) => request.nextUrl.pathname === prefix || request.nextUrl.pathname.startsWith(`${prefix}/`)
   );
-  const isAuthRoute = request.nextUrl.pathname.startsWith("/sign-in") || request.nextUrl.pathname.startsWith("/sign-up");
+  const isAuthRoute =
+    request.nextUrl.pathname.startsWith("/sign-in") || request.nextUrl.pathname.startsWith("/sign-up");
 
   if (!user && isProtectedRoute) {
     const redirectUrl = new URL("/sign-in", request.url);

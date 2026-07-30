@@ -23,7 +23,9 @@ export async function GET(request: Request) {
 
   let query = supabase
     .from("issues")
-    .select("id, publication_id, title, slug, status, scheduled_at, published_at, created_by, updated_at, publications(name, slug)")
+    .select(
+      "id, publication_id, title, slug, status, scheduled_at, published_at, created_by, updated_at, publications(name, slug)"
+    )
     .order("updated_at", { ascending: false });
 
   if (publicationId) query = query.eq("publication_id", publicationId);
@@ -71,7 +73,10 @@ export async function POST(request: Request) {
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
   const isMember = !!membership || profile?.role === "super_admin";
   if (!isMember) {
-    return NextResponse.json({ error: "You must be a member of this publication to create an issue" }, { status: 403 });
+    return NextResponse.json(
+      { error: "You must be a member of this publication to create an issue" },
+      { status: 403 }
+    );
   }
 
   const baseSlug = slugify(parsed.data.title);
@@ -79,7 +84,12 @@ export async function POST(request: Request) {
 
   const { data: issue, error } = await supabase
     .from("issues")
-    .insert({ publication_id: parsed.data.publicationId, title: parsed.data.title, slug, created_by: user.id })
+    .insert({
+      publication_id: parsed.data.publicationId,
+      title: parsed.data.title,
+      slug,
+      created_by: user.id,
+    })
     .select("id, title, slug")
     .single();
 

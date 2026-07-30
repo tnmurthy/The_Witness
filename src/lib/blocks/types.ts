@@ -50,8 +50,6 @@ export const ALL_BLOCK_TYPES = [
   "decision_framework",
 ] as const;
 
-export type BlockType = (typeof ALL_BLOCK_TYPES)[number];
-
 export function isImplementedBlockType(type: string): type is ImplementedBlockType {
   return (IMPLEMENTED_BLOCK_TYPES as readonly string[]).includes(type);
 }

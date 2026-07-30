@@ -14,7 +14,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
@@ -34,7 +41,17 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip
 
 export const metadata = { title: "Design System" };
 
-function Section({ id, title, description, children }: { id: string; title: string; description?: string; children: React.ReactNode }) {
+function Section({
+  id,
+  title,
+  description,
+  children,
+}: {
+  id: string;
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+}) {
   return (
     <section id={id} className="scroll-mt-20 border-b border-neutral-200 py-10 first:pt-0 last:border-b-0">
       <Eyebrow>Design System</Eyebrow>
@@ -88,9 +105,16 @@ export default function DesignSystemPage() {
       </header>
 
       <Container className="flex gap-10 py-10">
-        <nav aria-label="Section index" className="sticky top-20 hidden h-fit w-48 shrink-0 space-y-1 text-sm lg:block">
+        <nav
+          aria-label="Section index"
+          className="sticky top-20 hidden h-fit w-48 shrink-0 space-y-1 text-sm lg:block"
+        >
           {SECTIONS.map(([id, label]) => (
-            <a key={id} href={`#${id}`} className="block rounded-md px-2 py-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground">
+            <a
+              key={id}
+              href={`#${id}`}
+              className="block rounded-md px-2 py-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
+            >
               {label}
             </a>
           ))}
@@ -101,13 +125,18 @@ export default function DesignSystemPage() {
             <Eyebrow>v1.0 — Milestone 3</Eyebrow>
             <H1 className="mt-1">Design System</H1>
             <Lead className="mt-2 max-w-2xl">
-              Every component below is the real, running component from <InlineCode>src/components/ui</InlineCode> —
-              inspired by Apple&apos;s clarity, the Financial Times&apos; editorial authority, and Notion&apos;s
-              product warmth. Full written documentation lives in <InlineCode>docs/DESIGN_SYSTEM.md</InlineCode>.
+              Every component below is the real, running component from{" "}
+              <InlineCode>src/components/ui</InlineCode> — inspired by Apple&apos;s clarity, the Financial
+              Times&apos; editorial authority, and Notion&apos;s product warmth. Full written documentation
+              lives in <InlineCode>docs/DESIGN_SYSTEM.md</InlineCode>.
             </Lead>
           </div>
 
-          <Section id="typography" title="Typography" description="Source Serif 4 for editorial headlines, IBM Plex Sans for UI, IBM Plex Mono for data.">
+          <Section
+            id="typography"
+            title="Typography"
+            description="Source Serif 4 for editorial headlines, IBM Plex Sans for UI, IBM Plex Mono for data."
+          >
             <H1>Heading 1 — The signal, not the noise</H1>
             <H2>Heading 2 — editorial voice</H2>
             <H3>Heading 3 — UI sans</H3>
@@ -121,7 +150,11 @@ export default function DesignSystemPage() {
             </p>
           </Section>
 
-          <Section id="colors" title="Color & Tokens" description="Full palette, contrast ratios, and token files are documented in docs/DESIGN_SYSTEM.md and the design-tokens.css source of truth.">
+          <Section
+            id="colors"
+            title="Color & Tokens"
+            description="Full palette, contrast ratios, and token files are documented in docs/DESIGN_SYSTEM.md and the design-tokens.css source of truth."
+          >
             <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
               {/* Full literal class names, deliberately not `bg-${c}` —
                   Tailwind's content scanner only picks up class names that
@@ -150,17 +183,28 @@ export default function DesignSystemPage() {
             </div>
           </Section>
 
-          <Section id="grid" title="Grid & Layout" description="Container and Grid helpers (src/components/ui/container.tsx) wrap the responsive breakpoints defined in design-tokens.css.">
+          <Section
+            id="grid"
+            title="Grid & Layout"
+            description="Container and Grid helpers (src/components/ui/container.tsx) wrap the responsive breakpoints defined in design-tokens.css."
+          >
             <Grid cols={{ base: 1, md: 2, xl: 4 }}>
               {[1, 2, 3, 4].map((n) => (
-                <div key={n} className="rounded-md border border-dashed border-neutral-300 bg-surface-2 py-6 text-center text-sm text-muted-foreground">
+                <div
+                  key={n}
+                  className="rounded-md border border-dashed border-neutral-300 bg-surface-2 py-6 text-center text-sm text-muted-foreground"
+                >
                   Column {n}
                 </div>
               ))}
             </Grid>
           </Section>
 
-          <Section id="buttons" title="Buttons" description="Six variants; signal (gold) is reserved for AI-initiated actions.">
+          <Section
+            id="buttons"
+            title="Buttons"
+            description="Six variants; signal (gold) is reserved for AI-initiated actions."
+          >
             <div className="flex flex-wrap gap-3">
               <Button>Primary</Button>
               <Button variant="secondary">Secondary</Button>
@@ -194,7 +238,11 @@ export default function DesignSystemPage() {
             </div>
           </Section>
 
-          <Section id="alerts" title="Alerts" description="Persistent, in-flow status messaging. Use Sonner (toast) for transient feedback instead.">
+          <Section
+            id="alerts"
+            title="Alerts"
+            description="Persistent, in-flow status messaging. Use Sonner (toast) for transient feedback instead."
+          >
             <Alert variant="info">
               <AlertTitle>Heads up</AlertTitle>
               <AlertDescription>This is an informational alert, role=&quot;status&quot;.</AlertDescription>
@@ -209,7 +257,9 @@ export default function DesignSystemPage() {
             </Alert>
             <Alert variant="danger">
               <AlertTitle>Something went wrong</AlertTitle>
-              <AlertDescription>role=&quot;alert&quot; — announced immediately by screen readers.</AlertDescription>
+              <AlertDescription>
+                role=&quot;alert&quot; — announced immediately by screen readers.
+              </AlertDescription>
             </Alert>
           </Section>
 
@@ -235,7 +285,11 @@ export default function DesignSystemPage() {
             </div>
           </Section>
 
-          <Section id="tables" title="Tables" description="Hairline dividers, muted uppercase headers. Used for the Admin Users and Organization Members lists.">
+          <Section
+            id="tables"
+            title="Tables"
+            description="Hairline dividers, muted uppercase headers. Used for the Admin Users and Organization Members lists."
+          >
             <Table>
               <TableHeader>
                 <TableRow>
@@ -263,7 +317,11 @@ export default function DesignSystemPage() {
             </Table>
           </Section>
 
-          <Section id="forms" title="Forms" description="40px controls, gold focus ring, gold required-marker (never red — red is reserved for errors).">
+          <Section
+            id="forms"
+            title="Forms"
+            description="40px controls, gold focus ring, gold required-marker (never red — red is reserved for errors)."
+          >
             <div className="grid max-w-xl gap-5">
               <div className="space-y-1.5">
                 <Label htmlFor="demo-input">
@@ -349,7 +407,9 @@ export default function DesignSystemPage() {
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Generate issue</DialogTitle>
-                    <DialogDescription>The AI Workspace drafts editable blocks from recent coverage.</DialogDescription>
+                    <DialogDescription>
+                      The AI Workspace drafts editable blocks from recent coverage.
+                    </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
                     <DialogClose asChild>
@@ -401,18 +461,28 @@ export default function DesignSystemPage() {
               </Button>
             </div>
             <Muted>
-              The sidebar (desktop, ≥768px) and the hamburger-triggered Sheet drawer (mobile, &lt;768px) share one
-              NAV_ITEMS source of truth — src/components/layout/nav-items.ts.
+              The sidebar (desktop, ≥768px) and the hamburger-triggered Sheet drawer (mobile, &lt;768px) share
+              one NAV_ITEMS source of truth — src/components/layout/nav-items.ts.
             </Muted>
           </Section>
 
-          <Section id="accessibility" title="Accessibility" description="Full contrast verification and guidelines: docs/DESIGN_SYSTEM.md, 'Accessibility.'">
+          <Section
+            id="accessibility"
+            title="Accessibility"
+            description="Full contrast verification and guidelines: docs/DESIGN_SYSTEM.md, 'Accessibility.'"
+          >
             <ul className="list-disc space-y-1.5 pl-5 text-sm text-foreground">
-              <li>Every interactive element has a visible focus ring (2px offset + gold-700, 5.27:1 contrast).</li>
-              <li>Alert uses role=&quot;alert&quot;/role=&quot;status&quot; based on urgency, not decoration.</li>
+              <li>
+                Every interactive element has a visible focus ring (2px offset + gold-700, 5.27:1 contrast).
+              </li>
+              <li>
+                Alert uses role=&quot;alert&quot;/role=&quot;status&quot; based on urgency, not decoration.
+              </li>
               <li>Required-field markers are gold, never red — red is reserved for errors only.</li>
               <li>Skeleton respects prefers-reduced-motion globally, no per-component opt-out needed.</li>
-              <li>This page itself: one H1, semantic landmark regions, skip-link inherited from the root layout.</li>
+              <li>
+                This page itself: one H1, semantic landmark regions, skip-link inherited from the root layout.
+              </li>
             </ul>
           </Section>
         </main>

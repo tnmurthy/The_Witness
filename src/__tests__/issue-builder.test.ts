@@ -70,7 +70,9 @@ describe("validateBlockPayload", () => {
   });
 
   it("accepts a todays_wisdom payload with only translation set (every other field optional)", () => {
-    const result = validateBlockPayload("todays_wisdom", { translation: "Act without attachment to outcome." });
+    const result = validateBlockPayload("todays_wisdom", {
+      translation: "Act without attachment to outcome.",
+    });
     expect(result.success).toBe(true);
   });
 
@@ -94,7 +96,12 @@ describe("useIssueBuilderStore", () => {
   };
 
   beforeEach(() => {
-    useIssueBuilderStore.setState({ sections: [], blocks: [], pendingBlockIds: new Set(), saveStatus: "idle" });
+    useIssueBuilderStore.setState({
+      sections: [],
+      blocks: [],
+      pendingBlockIds: new Set(),
+      saveStatus: "idle",
+    });
   });
 
   it("hydrate populates sections and blocks", () => {
@@ -129,7 +136,9 @@ describe("useIssueBuilderStore", () => {
     useIssueBuilderStore.getState().hydrate([section], [block]);
     useIssueBuilderStore.getState().markPending("b1");
 
-    useIssueBuilderStore.getState().applyRemoteBlockChange({ ...block, payload: { text: "remote change" } }, "UPDATE");
+    useIssueBuilderStore
+      .getState()
+      .applyRemoteBlockChange({ ...block, payload: { text: "remote change" } }, "UPDATE");
 
     // The local edit is still "original" because b1 is pending — the
     // remote echo must not have overwritten it.
@@ -138,7 +147,9 @@ describe("useIssueBuilderStore", () => {
 
   it("applyRemoteBlockChange DOES apply an incoming change once the block is no longer pending", () => {
     useIssueBuilderStore.getState().hydrate([section], [block]);
-    useIssueBuilderStore.getState().applyRemoteBlockChange({ ...block, payload: { text: "remote change" } }, "UPDATE");
+    useIssueBuilderStore
+      .getState()
+      .applyRemoteBlockChange({ ...block, payload: { text: "remote change" } }, "UPDATE");
     expect(useIssueBuilderStore.getState().blocks[0]?.payload.text).toBe("remote change");
   });
 

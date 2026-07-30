@@ -5,13 +5,30 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
-import { updateEditorialGuidelinesSchema, type UpdateEditorialGuidelinesInput } from "@/lib/validation/publications";
+import {
+  updateEditorialGuidelinesSchema,
+  type UpdateEditorialGuidelinesInput,
+} from "@/lib/validation/publications";
 import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+} from "@/components/ui/form";
 
-export function EditorialGuidelinesForm({ publicationId, initial }: { publicationId: string; initial: string | null }) {
+export function EditorialGuidelinesForm({
+  publicationId,
+  initial,
+}: {
+  publicationId: string;
+  initial: string | null;
+}) {
   const router = useRouter();
   const form = useForm<UpdateEditorialGuidelinesInput>({
     resolver: zodResolver(updateEditorialGuidelinesSchema),
@@ -46,11 +63,16 @@ export function EditorialGuidelinesForm({ publicationId, initial }: { publicatio
             <FormItem>
               <FormLabel>Editorial guidelines</FormLabel>
               <FormControl>
-                <Textarea rows={16} placeholder="Tone, sourcing standards, style conventions…" {...field} value={field.value ?? ""} />
+                <Textarea
+                  rows={16}
+                  placeholder="Tone, sourcing standards, style conventions…"
+                  {...field}
+                  value={field.value ?? ""}
+                />
               </FormControl>
               <FormDescription>
-                Shown to contributors in the Issue Builder and referenced by the AI Workspace when drafting content
-                for this publication (Milestone 5).
+                Shown to contributors in the Issue Builder and referenced by the AI Workspace when drafting
+                content for this publication (Milestone 5).
               </FormDescription>
               <FormMessage />
             </FormItem>

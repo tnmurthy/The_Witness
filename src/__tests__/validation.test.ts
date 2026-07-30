@@ -35,7 +35,15 @@ describe("inviteMemberSchema", () => {
 
 describe("changeUserRoleSchema", () => {
   it("accepts every valid platform role", () => {
-    for (const role of ["super_admin", "editor_in_chief", "editor", "writer", "researcher", "subscriber", "premium_subscriber"]) {
+    for (const role of [
+      "super_admin",
+      "editor_in_chief",
+      "editor",
+      "writer",
+      "researcher",
+      "subscriber",
+      "premium_subscriber",
+    ]) {
       expect(changeUserRoleSchema.safeParse({ role }).success).toBe(true);
     }
   });

@@ -40,14 +40,24 @@ export async function POST(request: Request, { params }: RouteParams) {
 
   const results = await Promise.all(
     parsed.data.blocks.map(({ id, sectionId, position }) =>
-      supabase.from("blocks").update({ section_id: sectionId, position, last_edited_by: user.id }).eq("id", id)
+      supabase
+        .from("blocks")
+        .update({ section_id: sectionId, position, last_edited_by: user.id })
+        .eq("id", id)
     )
   );
 
   const failed = results.filter((r) => r.error);
   if (failed.length > 0) {
-    logger.error("Some blocks failed to reorder", { issueId, failedCount: failed.length, errors: failed.map((f) => f.error) });
-    return NextResponse.json({ error: "Some blocks failed to reorder", failedCount: failed.length }, { status: 500 });
+    logger.error("Some blocks failed to reorder", {
+      issueId,
+      failedCount: failed.length,
+      errors: failed.map((f) => f.error),
+    });
+    return NextResponse.json(
+      { error: "Some blocks failed to reorder", failedCount: failed.length },
+      { status: 500 }
+    );
   }
 
   return NextResponse.json({ ok: true });

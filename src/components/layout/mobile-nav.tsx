@@ -57,7 +57,12 @@ export function MobileNav({ showAdmin = false }: { showAdmin?: boolean }) {
                     isActive && "bg-white/[0.06] text-white"
                   )}
                 >
-                  {isActive && <span className="absolute -left-3 top-1.5 bottom-1.5 w-[3px] bg-gold-500" aria-hidden="true" />}
+                  {isActive && (
+                    <span
+                      className="absolute -left-3 bottom-1.5 top-1.5 w-[3px] bg-gold-500"
+                      aria-hidden="true"
+                    />
+                  )}
                   <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} aria-hidden="true" />
                   {item.label}
                 </Link>

@@ -33,7 +33,9 @@ async function persistBlock(blockId: string, payload: Record<string, unknown>) {
 }
 
 export function BlockCard({ block }: { block: BlockRow }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: block.id,
+  });
   const updateBlockLocal = useIssueBuilderStore((s) => s.updateBlockLocal);
   const removeBlockLocal = useIssueBuilderStore((s) => s.removeBlockLocal);
   const markPending = useIssueBuilderStore((s) => s.markPending);
@@ -91,13 +93,13 @@ export function BlockCard({ block }: { block: BlockRow }) {
         {...attributes}
         {...listeners}
         aria-label="Drag to reorder"
-        className="mt-1 flex h-7 w-5 shrink-0 cursor-grab items-center justify-center rounded text-neutral-300 opacity-0 hover:bg-secondary hover:text-muted-foreground focus-visible:opacity-100 focus-visible:outline-none focus-visible:shadow-focus-gold group-hover:opacity-100 active:cursor-grabbing"
+        className="mt-1 flex h-7 w-5 shrink-0 cursor-grab items-center justify-center rounded text-neutral-300 opacity-0 hover:bg-secondary hover:text-muted-foreground focus-visible:opacity-100 focus-visible:shadow-focus-gold focus-visible:outline-none active:cursor-grabbing group-hover:opacity-100"
       >
         <GripVertical className="h-4 w-4" />
       </button>
 
       <div className="min-w-0 flex-1 rounded-md border border-transparent p-1 hover:border-neutral-200">
-        <div className="mb-1 flex items-center justify-between opacity-0 group-hover:opacity-100 group-focus-within:opacity-100">
+        <div className="mb-1 flex items-center justify-between opacity-0 group-focus-within:opacity-100 group-hover:opacity-100">
           <div className="flex items-center gap-1.5">
             <Badge variant="neutral" className="text-[10px]">
               {definition?.label ?? block.type}
@@ -109,10 +111,21 @@ export function BlockCard({ block }: { block: BlockRow }) {
             )}
           </div>
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={() => setIsEditing((v) => !v)}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 px-2 text-xs"
+              onClick={() => setIsEditing((v) => !v)}
+            >
               {isEditing ? "Done" : "Edit"}
             </Button>
-            <Button variant="ghost" size="icon" className="h-6 w-6 text-danger-700" aria-label="Delete block" onClick={handleDelete}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 text-danger-700"
+              aria-label="Delete block"
+              onClick={handleDelete}
+            >
               <Trash2 className="h-3.5 w-3.5" />
             </Button>
           </div>
@@ -120,7 +133,12 @@ export function BlockCard({ block }: { block: BlockRow }) {
 
         <ErrorBoundary boundaryName={`${definition?.label ?? block.type} block`}>
           {isEditing ? (
-            <BlockEditorFields type={block.type} payload={block.payload} onChange={handlePayloadChange} />
+            <BlockEditorFields
+              type={block.type}
+              payload={block.payload}
+              onChange={handlePayloadChange}
+              blockId={block.id}
+            />
           ) : (
             <div onClick={() => setIsEditing(true)} className="cursor-text">
               <BlockRenderer type={block.type} payload={block.payload} />

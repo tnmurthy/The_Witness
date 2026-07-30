@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { QueryProvider } from "@/components/providers/query-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -37,8 +38,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans antialiased">
         <ThemeProvider>
           <TooltipProvider>
-            {children}
-            <Toaster position="bottom-right" />
+            <QueryProvider>
+              {children}
+              <Toaster position="bottom-right" />
+            </QueryProvider>
           </TooltipProvider>
         </ThemeProvider>
       </body>

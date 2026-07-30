@@ -17,16 +17,20 @@ import { z } from "zod";
  */
 
 const serverSchema = z.object({
-  // Populated once a real Supabase project exists (see README "Provisioning
-  // Supabase" — this is a manual, one-time step, not something this
-  // codebase can automate). SUPABASE_SERVICE_ROLE_KEY bypasses Row Level
-  // Security by design (Database Schema Design doc, Section 9.3) and must
-  // only ever be read on the server.
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
+  // SUPABASE_SERVICE_ROLE_KEY bypasses Row Level Security by design and
+  // must only ever be read on the server. Required at runtime in any
+  // deployment where admin-privileged routes are reachable (set
+  // REQUIRE_SERVICE_ROLE=true in Vercel environment variables for
+  // staging/production). Optional locally and during `next build` in CI
+  // where only static analysis runs — the build itself doesn't need admin
+  // credentials. PRR finding 2.5 identified this as optional when it
+  // should be conditionally required; the REQUIRE_SERVICE_ROLE flag is
+  // the correct hook for runtime enforcement without breaking CI builds.
+  SUPABASE_SERVICE_ROLE_KEY:
+    process.env.REQUIRE_SERVICE_ROLE === "true"
+      ? z.string().min(1, "SUPABASE_SERVICE_ROLE_KEY is required (REQUIRE_SERVICE_ROLE=true)")
+      : z.string().min(1).optional(),
 
-  // Reserved for Milestone 5 (AI Workspace) per the Implementation Plan —
-  // declared now so the shape of required secrets is visible from
-  // Milestone 1 onward, not discovered piecemeal later.
   OPENAI_API_KEY: z.string().min(1).optional(),
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
 
@@ -68,4 +72,5 @@ function parseEnv() {
 
 // In test environments, allow a lazily-mocked env rather than requiring
 // every unit test to stub a full Supabase project.
-export const env = process.env.NODE_ENV === "test" ? (process.env as unknown as ReturnType<typeof parseEnv>) : parseEnv();
+export const env =
+  process.env.NODE_ENV === "test" ? (process.env as unknown as ReturnType<typeof parseEnv>) : parseEnv();
