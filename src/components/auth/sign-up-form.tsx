@@ -71,7 +71,13 @@ export function SignUpForm() {
         <Label htmlFor="email">
           Email <span className="text-gold-700">*</span>
         </Label>
-        <Input id="email" type="email" autoComplete="email" aria-invalid={!!errors.email} {...register("email")} />
+        <Input
+          id="email"
+          type="email"
+          autoComplete="email"
+          aria-invalid={!!errors.email}
+          {...register("email")}
+        />
         {errors.email && <p className="text-xs text-danger-700">{errors.email.message}</p>}
       </div>
 

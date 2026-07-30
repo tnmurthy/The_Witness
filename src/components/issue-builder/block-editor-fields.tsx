@@ -9,25 +9,45 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { WisdomPickerDialog } from "@/components/wisdom/wisdom-picker-dialog";
 
 interface BlockEditorFieldsProps {
   type: string;
   payload: Record<string, unknown>;
   onChange: (payload: Record<string, unknown>) => void;
+  /** Only required for block types that need a server round trip from within the editor itself (currently just todays_wisdom's "Pick from Wisdom Engine") — every other block type edits purely in local state via onChange. */
+  blockId?: string;
 }
 
 function set(payload: Record<string, unknown>, patch: Record<string, unknown>) {
   return { ...payload, ...patch };
 }
 
-function StringListEditor({ label, items, onChange }: { label: string; items: string[]; onChange: (items: string[]) => void }) {
+function StringListEditor({
+  label,
+  items,
+  onChange,
+}: {
+  label: string;
+  items: string[];
+  onChange: (items: string[]) => void;
+}) {
   return (
     <div className="space-y-1.5">
       <Label>{label}</Label>
       {items.map((item, i) => (
         <div key={i} className="flex gap-2">
-          <Input value={item} onChange={(e) => onChange(items.map((it, idx) => (idx === i ? e.target.value : it)))} />
-          <Button type="button" variant="ghost" size="icon" aria-label="Remove" onClick={() => onChange(items.filter((_, idx) => idx !== i))}>
+          <Input
+            value={item}
+            onChange={(e) => onChange(items.map((it, idx) => (idx === i ? e.target.value : it)))}
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label="Remove"
+            onClick={() => onChange(items.filter((_, idx) => idx !== i))}
+          >
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
@@ -47,7 +67,7 @@ function StringListEditor({ label, items, onChange }: { label: string; items: st
  * component stays a pure, uncontrolled-feeling form with no network
  * awareness of its own.
  */
-export function BlockEditorFields({ type, payload, onChange }: BlockEditorFieldsProps) {
+export function BlockEditorFields({ type, payload, onChange, blockId }: BlockEditorFieldsProps) {
   switch (type as ImplementedBlockType) {
     case "heading":
       return (
@@ -58,7 +78,10 @@ export function BlockEditorFields({ type, payload, onChange }: BlockEditorFields
             value={(payload.text as string) ?? ""}
             onChange={(e) => onChange(set(payload, { text: e.target.value }))}
           />
-          <Select value={String(payload.level ?? 2)} onValueChange={(v) => onChange(set(payload, { level: Number(v) }))}>
+          <Select
+            value={String(payload.level ?? 2)}
+            onValueChange={(v) => onChange(set(payload, { level: Number(v) }))}
+          >
             <SelectTrigger className="w-32">
               <SelectValue />
             </SelectTrigger>
@@ -85,13 +108,22 @@ export function BlockEditorFields({ type, payload, onChange }: BlockEditorFields
     case "image":
       return (
         <div className="space-y-2">
-          <Input autoFocus placeholder="Image URL" value={(payload.url as string) ?? ""} onChange={(e) => onChange(set(payload, { url: e.target.value }))} />
+          <Input
+            autoFocus
+            placeholder="Image URL"
+            value={(payload.url as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { url: e.target.value }))}
+          />
           <Input
             placeholder="Alt text (required for accessibility)"
             value={(payload.alt as string) ?? ""}
             onChange={(e) => onChange(set(payload, { alt: e.target.value }))}
           />
-          <Input placeholder="Caption (optional)" value={(payload.caption as string) ?? ""} onChange={(e) => onChange(set(payload, { caption: e.target.value }))} />
+          <Input
+            placeholder="Caption (optional)"
+            value={(payload.caption as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { caption: e.target.value }))}
+          />
         </div>
       );
 
@@ -106,14 +138,25 @@ export function BlockEditorFields({ type, payload, onChange }: BlockEditorFields
                 key={ci}
                 className="w-32 shrink-0 font-medium"
                 value={h}
-                onChange={(e) => onChange(set(payload, { headers: headers.map((hh, i) => (i === ci ? e.target.value : hh)) }))}
+                onChange={(e) =>
+                  onChange(
+                    set(payload, { headers: headers.map((hh, i) => (i === ci ? e.target.value : hh)) })
+                  )
+                }
               />
             ))}
             <Button
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => onChange(set(payload, { headers: [...headers, `Column ${headers.length + 1}`], rows: rows.map((r) => [...r, ""]) }))}
+              onClick={() =>
+                onChange(
+                  set(payload, {
+                    headers: [...headers, `Column ${headers.length + 1}`],
+                    rows: rows.map((r) => [...r, ""]),
+                  })
+                )
+              }
             >
               <Plus className="h-3.5 w-3.5" /> Column
             </Button>
@@ -126,16 +169,33 @@ export function BlockEditorFields({ type, payload, onChange }: BlockEditorFields
                   className="w-32 shrink-0"
                   value={cell}
                   onChange={(e) =>
-                    onChange(set(payload, { rows: rows.map((r, i) => (i === ri ? r.map((c, ci2) => (ci2 === ci ? e.target.value : c)) : r)) }))
+                    onChange(
+                      set(payload, {
+                        rows: rows.map((r, i) =>
+                          i === ri ? r.map((c, ci2) => (ci2 === ci ? e.target.value : c)) : r
+                        ),
+                      })
+                    )
                   }
                 />
               ))}
-              <Button type="button" variant="ghost" size="icon" aria-label="Remove row" onClick={() => onChange(set(payload, { rows: rows.filter((_, i) => i !== ri) }))}>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label="Remove row"
+                onClick={() => onChange(set(payload, { rows: rows.filter((_, i) => i !== ri) }))}
+              >
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
           ))}
-          <Button type="button" variant="outline" size="sm" onClick={() => onChange(set(payload, { rows: [...rows, headers.map(() => "")] }))}>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => onChange(set(payload, { rows: [...rows, headers.map(() => "")] }))}
+          >
             <Plus className="h-3.5 w-3.5" /> Row
           </Button>
         </div>
@@ -145,39 +205,107 @@ export function BlockEditorFields({ type, payload, onChange }: BlockEditorFields
     case "hero_story":
       return (
         <div className="space-y-2">
-          <Input placeholder="Eyebrow (optional)" value={(payload.eyebrow as string) ?? ""} onChange={(e) => onChange(set(payload, { eyebrow: e.target.value }))} />
-          <Input autoFocus placeholder="Headline" value={(payload.headline as string) ?? ""} onChange={(e) => onChange(set(payload, { headline: e.target.value }))} />
-          <Input placeholder="Dek (optional subhead)" value={(payload.dek as string) ?? ""} onChange={(e) => onChange(set(payload, { dek: e.target.value }))} />
-          <Input placeholder="Image URL (optional)" value={(payload.imageUrl as string) ?? ""} onChange={(e) => onChange(set(payload, { imageUrl: e.target.value }))} />
-          <Textarea rows={6} placeholder="Body" value={(payload.body as string) ?? ""} onChange={(e) => onChange(set(payload, { body: e.target.value }))} />
+          <Input
+            placeholder="Eyebrow (optional)"
+            value={(payload.eyebrow as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { eyebrow: e.target.value }))}
+          />
+          <Input
+            autoFocus
+            placeholder="Headline"
+            value={(payload.headline as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { headline: e.target.value }))}
+          />
+          <Input
+            placeholder="Dek (optional subhead)"
+            value={(payload.dek as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { dek: e.target.value }))}
+          />
+          <Input
+            placeholder="Image URL (optional)"
+            value={(payload.imageUrl as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { imageUrl: e.target.value }))}
+          />
+          <Textarea
+            rows={6}
+            placeholder="Body"
+            value={(payload.body as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { body: e.target.value }))}
+          />
         </div>
       );
 
     case "signal_card":
       return (
         <div className="space-y-2">
-          <Input placeholder="Eyebrow" value={(payload.eyebrow as string) ?? "Signal"} onChange={(e) => onChange(set(payload, { eyebrow: e.target.value }))} />
-          <Input autoFocus placeholder="Headline" value={(payload.headline as string) ?? ""} onChange={(e) => onChange(set(payload, { headline: e.target.value }))} />
-          <Textarea rows={4} placeholder="Body" value={(payload.body as string) ?? ""} onChange={(e) => onChange(set(payload, { body: e.target.value }))} />
+          <Input
+            placeholder="Eyebrow"
+            value={(payload.eyebrow as string) ?? "Signal"}
+            onChange={(e) => onChange(set(payload, { eyebrow: e.target.value }))}
+          />
+          <Input
+            autoFocus
+            placeholder="Headline"
+            value={(payload.headline as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { headline: e.target.value }))}
+          />
+          <Textarea
+            rows={4}
+            placeholder="Body"
+            value={(payload.body as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { body: e.target.value }))}
+          />
         </div>
       );
 
     case "career_insight":
       return (
         <div className="space-y-2">
-          <Input autoFocus placeholder="Headline" value={(payload.headline as string) ?? ""} onChange={(e) => onChange(set(payload, { headline: e.target.value }))} />
-          <Textarea rows={4} placeholder="Body" value={(payload.body as string) ?? ""} onChange={(e) => onChange(set(payload, { body: e.target.value }))} />
-          <StringListEditor label="Action items" items={(payload.actionItems as string[]) ?? []} onChange={(items) => onChange(set(payload, { actionItems: items }))} />
+          <Input
+            autoFocus
+            placeholder="Headline"
+            value={(payload.headline as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { headline: e.target.value }))}
+          />
+          <Textarea
+            rows={4}
+            placeholder="Body"
+            value={(payload.body as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { body: e.target.value }))}
+          />
+          <StringListEditor
+            label="Action items"
+            items={(payload.actionItems as string[]) ?? []}
+            onChange={(items) => onChange(set(payload, { actionItems: items }))}
+          />
         </div>
       );
 
     case "research_summary":
       return (
         <div className="space-y-2">
-          <Input autoFocus placeholder="Paper title" value={(payload.title as string) ?? ""} onChange={(e) => onChange(set(payload, { title: e.target.value }))} />
-          <Input placeholder="Authors" value={(payload.authors as string) ?? ""} onChange={(e) => onChange(set(payload, { authors: e.target.value }))} />
-          <Input placeholder="URL" value={(payload.url as string) ?? ""} onChange={(e) => onChange(set(payload, { url: e.target.value }))} />
-          <Textarea rows={4} placeholder="Summary" value={(payload.summary as string) ?? ""} onChange={(e) => onChange(set(payload, { summary: e.target.value }))} />
+          <Input
+            autoFocus
+            placeholder="Paper title"
+            value={(payload.title as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { title: e.target.value }))}
+          />
+          <Input
+            placeholder="Authors"
+            value={(payload.authors as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { authors: e.target.value }))}
+          />
+          <Input
+            placeholder="URL"
+            value={(payload.url as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { url: e.target.value }))}
+          />
+          <Textarea
+            rows={4}
+            placeholder="Summary"
+            value={(payload.summary as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { summary: e.target.value }))}
+          />
         </div>
       );
 
@@ -185,20 +313,52 @@ export function BlockEditorFields({ type, payload, onChange }: BlockEditorFields
       return (
         <div className="space-y-2">
           <div className="flex gap-2">
-            <Input autoFocus placeholder="owner" value={(payload.owner as string) ?? ""} onChange={(e) => onChange(set(payload, { owner: e.target.value }))} />
-            <Input placeholder="repo" value={(payload.repo as string) ?? ""} onChange={(e) => onChange(set(payload, { repo: e.target.value }))} />
+            <Input
+              autoFocus
+              placeholder="owner"
+              value={(payload.owner as string) ?? ""}
+              onChange={(e) => onChange(set(payload, { owner: e.target.value }))}
+            />
+            <Input
+              placeholder="repo"
+              value={(payload.repo as string) ?? ""}
+              onChange={(e) => onChange(set(payload, { repo: e.target.value }))}
+            />
           </div>
-          <Input placeholder="https://github.com/owner/repo" value={(payload.url as string) ?? ""} onChange={(e) => onChange(set(payload, { url: e.target.value }))} />
-          <Textarea rows={3} placeholder="Description (optional)" value={(payload.description as string) ?? ""} onChange={(e) => onChange(set(payload, { description: e.target.value }))} />
+          <Input
+            placeholder="https://github.com/owner/repo"
+            value={(payload.url as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { url: e.target.value }))}
+          />
+          <Textarea
+            rows={3}
+            placeholder="Description (optional)"
+            value={(payload.description as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { description: e.target.value }))}
+          />
         </div>
       );
 
     case "company_profile":
       return (
         <div className="space-y-2">
-          <Input autoFocus placeholder="Company name" value={(payload.name as string) ?? ""} onChange={(e) => onChange(set(payload, { name: e.target.value }))} />
-          <Input placeholder="Website URL" value={(payload.url as string) ?? ""} onChange={(e) => onChange(set(payload, { url: e.target.value }))} />
-          <Textarea rows={4} placeholder="Description" value={(payload.description as string) ?? ""} onChange={(e) => onChange(set(payload, { description: e.target.value }))} />
+          <Input
+            autoFocus
+            placeholder="Company name"
+            value={(payload.name as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { name: e.target.value }))}
+          />
+          <Input
+            placeholder="Website URL"
+            value={(payload.url as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { url: e.target.value }))}
+          />
+          <Textarea
+            rows={4}
+            placeholder="Description"
+            value={(payload.description as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { description: e.target.value }))}
+          />
         </div>
       );
 
@@ -213,14 +373,32 @@ export function BlockEditorFields({ type, payload, onChange }: BlockEditorFields
                   className="w-32"
                   placeholder="Date"
                   value={ev.date}
-                  onChange={(e) => onChange(set(payload, { events: events.map((x, idx) => (idx === i ? { ...x, date: e.target.value } : x)) }))}
+                  onChange={(e) =>
+                    onChange(
+                      set(payload, {
+                        events: events.map((x, idx) => (idx === i ? { ...x, date: e.target.value } : x)),
+                      })
+                    )
+                  }
                 />
                 <Input
                   placeholder="Event title"
                   value={ev.title}
-                  onChange={(e) => onChange(set(payload, { events: events.map((x, idx) => (idx === i ? { ...x, title: e.target.value } : x)) }))}
+                  onChange={(e) =>
+                    onChange(
+                      set(payload, {
+                        events: events.map((x, idx) => (idx === i ? { ...x, title: e.target.value } : x)),
+                      })
+                    )
+                  }
                 />
-                <Button type="button" variant="ghost" size="icon" aria-label="Remove event" onClick={() => onChange(set(payload, { events: events.filter((_, idx) => idx !== i) }))}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Remove event"
+                  onClick={() => onChange(set(payload, { events: events.filter((_, idx) => idx !== i) }))}
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
@@ -228,11 +406,22 @@ export function BlockEditorFields({ type, payload, onChange }: BlockEditorFields
                 rows={2}
                 placeholder="Description (optional)"
                 value={ev.description ?? ""}
-                onChange={(e) => onChange(set(payload, { events: events.map((x, idx) => (idx === i ? { ...x, description: e.target.value } : x)) }))}
+                onChange={(e) =>
+                  onChange(
+                    set(payload, {
+                      events: events.map((x, idx) => (idx === i ? { ...x, description: e.target.value } : x)),
+                    })
+                  )
+                }
               />
             </div>
           ))}
-          <Button type="button" variant="outline" size="sm" onClick={() => onChange(set(payload, { events: [...events, { date: "", title: "" }] }))}>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => onChange(set(payload, { events: [...events, { date: "", title: "" }] }))}
+          >
             <Plus className="h-3.5 w-3.5" /> Add event
           </Button>
         </div>
@@ -242,28 +431,78 @@ export function BlockEditorFields({ type, payload, onChange }: BlockEditorFields
     case "quote":
       return (
         <div className="space-y-2">
-          <Textarea autoFocus rows={3} placeholder="Quote text" value={(payload.text as string) ?? ""} onChange={(e) => onChange(set(payload, { text: e.target.value }))} />
-          <Input placeholder="Attribution (optional)" value={(payload.attribution as string) ?? ""} onChange={(e) => onChange(set(payload, { attribution: e.target.value }))} />
+          <Textarea
+            autoFocus
+            rows={3}
+            placeholder="Quote text"
+            value={(payload.text as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { text: e.target.value }))}
+          />
+          <Input
+            placeholder="Attribution (optional)"
+            value={(payload.attribution as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { attribution: e.target.value }))}
+          />
         </div>
       );
 
     case "reflection":
       return (
         <div className="space-y-2">
-          <Textarea autoFocus rows={2} placeholder="Reflection question" value={(payload.question as string) ?? ""} onChange={(e) => onChange(set(payload, { question: e.target.value }))} />
-          <Textarea rows={2} placeholder="Prompt / help text (optional)" value={(payload.promptHelp as string) ?? ""} onChange={(e) => onChange(set(payload, { promptHelp: e.target.value }))} />
+          <Textarea
+            autoFocus
+            rows={2}
+            placeholder="Reflection question"
+            value={(payload.question as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { question: e.target.value }))}
+          />
+          <Textarea
+            rows={2}
+            placeholder="Prompt / help text (optional)"
+            value={(payload.promptHelp as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { promptHelp: e.target.value }))}
+          />
         </div>
       );
 
     case "todays_wisdom":
       return (
         <div className="space-y-2">
-          <Textarea placeholder="Source text (original language, optional)" rows={2} value={(payload.sourceText as string) ?? ""} onChange={(e) => onChange(set(payload, { sourceText: e.target.value }))} />
-          <Input placeholder="IAST transliteration (optional)" value={(payload.iast as string) ?? ""} onChange={(e) => onChange(set(payload, { iast: e.target.value }))} />
-          <Textarea autoFocus rows={2} placeholder="Translation" value={(payload.translation as string) ?? ""} onChange={(e) => onChange(set(payload, { translation: e.target.value }))} />
+          {blockId && (
+            <WisdomPickerDialog
+              blockId={blockId}
+              onAttached={(attachedPayload) => onChange(attachedPayload)}
+            />
+          )}
+          <Textarea
+            placeholder="Source text (original language, optional)"
+            rows={2}
+            value={(payload.sourceText as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { sourceText: e.target.value }))}
+          />
+          <Input
+            placeholder="IAST transliteration (optional)"
+            value={(payload.iast as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { iast: e.target.value }))}
+          />
+          <Textarea
+            autoFocus
+            rows={2}
+            placeholder="Translation"
+            value={(payload.translation as string) ?? ""}
+            onChange={(e) => onChange(set(payload, { translation: e.target.value }))}
+          />
           <div className="flex gap-2">
-            <Input placeholder="Source (e.g. Bhagavad Gītā 2.47)" value={(payload.source as string) ?? ""} onChange={(e) => onChange(set(payload, { source: e.target.value }))} />
-            <Input placeholder="Context (optional)" value={(payload.context as string) ?? ""} onChange={(e) => onChange(set(payload, { context: e.target.value }))} />
+            <Input
+              placeholder="Source (e.g. Bhagavad Gītā 2.47)"
+              value={(payload.source as string) ?? ""}
+              onChange={(e) => onChange(set(payload, { source: e.target.value }))}
+            />
+            <Input
+              placeholder="Context (optional)"
+              value={(payload.context as string) ?? ""}
+              onChange={(e) => onChange(set(payload, { context: e.target.value }))}
+            />
           </div>
         </div>
       );
@@ -276,15 +515,41 @@ export function BlockEditorFields({ type, payload, onChange }: BlockEditorFields
             <div key={i} className="flex items-center gap-2">
               <Checkbox
                 checked={item.done}
-                onCheckedChange={(checked) => onChange(set(payload, { items: items.map((x, idx) => (idx === i ? { ...x, done: !!checked } : x)) }))}
+                onCheckedChange={(checked) =>
+                  onChange(
+                    set(payload, {
+                      items: items.map((x, idx) => (idx === i ? { ...x, done: !!checked } : x)),
+                    })
+                  )
+                }
               />
-              <Input value={item.text} onChange={(e) => onChange(set(payload, { items: items.map((x, idx) => (idx === i ? { ...x, text: e.target.value } : x)) }))} />
-              <Button type="button" variant="ghost" size="icon" aria-label="Remove item" onClick={() => onChange(set(payload, { items: items.filter((_, idx) => idx !== i) }))}>
+              <Input
+                value={item.text}
+                onChange={(e) =>
+                  onChange(
+                    set(payload, {
+                      items: items.map((x, idx) => (idx === i ? { ...x, text: e.target.value } : x)),
+                    })
+                  )
+                }
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label="Remove item"
+                onClick={() => onChange(set(payload, { items: items.filter((_, idx) => idx !== i) }))}
+              >
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
           ))}
-          <Button type="button" variant="outline" size="sm" onClick={() => onChange(set(payload, { items: [...items, { text: "", done: false }] }))}>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => onChange(set(payload, { items: [...items, { text: "", done: false }] }))}
+          >
             <Plus className="h-3.5 w-3.5" /> Add item
           </Button>
         </div>
@@ -292,6 +557,8 @@ export function BlockEditorFields({ type, payload, onChange }: BlockEditorFields
     }
 
     default:
-      return <p className="text-sm text-muted-foreground">This block type doesn&apos;t have an editor yet.</p>;
+      return (
+        <p className="text-sm text-muted-foreground">This block type doesn&apos;t have an editor yet.</p>
+      );
   }
 }

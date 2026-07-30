@@ -5,6 +5,7 @@ import {
   Sparkles,
   BookOpen,
   Share2,
+  Users,
   Search,
   BarChart3,
   Shield,
@@ -27,11 +28,12 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Publications", href: "/publications", icon: Newspaper },
   { label: "Issue Builder", href: "/issues", icon: FileEdit },
-  { label: "AI Workspace", href: "/dashboard/ai-workspace", icon: Sparkles },
-  { label: "Wisdom Engine", href: "/dashboard/wisdom", icon: BookOpen },
-  { label: "Knowledge Graph", href: "/dashboard/knowledge-graph", icon: Share2 },
-  { label: "Search", href: "/dashboard/search", icon: Search },
-  { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+  { label: "AI Workspace", href: "/ai-workspace", icon: Sparkles },
+  { label: "Wisdom Engine", href: "/wisdom", icon: BookOpen },
+  { label: "Knowledge Graph", href: "/graph", icon: Share2 },
+  { label: "People", href: "/people", icon: Users },
+  { label: "Search", href: "/search", icon: Search },
+  { label: "Analytics", href: "/analytics", icon: BarChart3 },
 ];
 
 /**

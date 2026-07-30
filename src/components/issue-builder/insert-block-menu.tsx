@@ -43,13 +43,15 @@ export function InsertBlockMenu({ sectionId }: { sectionId: string }) {
           <Plus className="h-4 w-4" /> Add block
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-72 p-2 max-h-96 overflow-y-auto">
+      <PopoverContent align="start" className="max-h-96 w-72 overflow-y-auto p-2">
         {BLOCK_CATEGORIES.map((category) => {
           const items = Object.values(BLOCK_REGISTRY).filter((b) => b.category === category.value);
           if (items.length === 0) return null;
           return (
             <div key={category.value} className="mb-2 last:mb-0">
-              <p className="px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{category.label}</p>
+              <p className="px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                {category.label}
+              </p>
               {items.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -57,7 +59,7 @@ export function InsertBlockMenu({ sectionId }: { sectionId: string }) {
                     key={item.type}
                     type="button"
                     onClick={() => handleInsert(item.type)}
-                    className="flex w-full items-start gap-2.5 rounded-md px-2 py-1.5 text-left text-sm hover:bg-secondary focus-visible:outline-none focus-visible:bg-secondary"
+                    className="flex w-full items-start gap-2.5 rounded-md px-2 py-1.5 text-left text-sm hover:bg-secondary focus-visible:bg-secondary focus-visible:outline-none"
                   >
                     <Icon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.75} />
                     <span>

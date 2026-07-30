@@ -42,7 +42,11 @@ export function CreateIssueForm({ publications }: { publications: PublicationOpt
   }
 
   if (publications.length === 0) {
-    return <p className="text-sm text-muted-foreground">You need to be a member of a publication before creating an issue.</p>;
+    return (
+      <p className="text-sm text-muted-foreground">
+        You need to be a member of a publication before creating an issue.
+      </p>
+    );
   }
 
   return (

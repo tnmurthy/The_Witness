@@ -133,7 +133,7 @@ docs/
 .github/workflows/ci.yml       lint / typecheck / test / build, as separate jobs
 ```
 
-**Note on shadcn/ui components:** `npx shadcn add <component>` pulls from `ui.shadcn.com`, which wasn't reachable from this project's build sandbox. The components in `src/components/ui/` are hand-authored to match shadcn's standard output exactly (same Radix primitives, same `cva` variant patterns, same file shape) so `npx shadcn add <component>` will still work normally for any *new* component in a real development environment with full network access — it just won't try to overwrite the ones already here unless you pass `--overwrite`.
+**Note on shadcn/ui components:** `npx shadcn add <component>` pulls from `ui.shadcn.com`, which wasn't reachable from this project's build sandbox. The components in `src/components/ui/` are hand-authored to match shadcn's standard output exactly (same Radix primitives, same `cva` variant patterns, same file shape) so `npx shadcn add <component>` will still work normally for any _new_ component in a real development environment with full network access — it just won't try to overwrite the ones already here unless you pass `--overwrite`.
 
 ## Milestone 2: Authentication and User Management
 
@@ -167,5 +167,4 @@ The database migration for this milestone (`013_rbac_and_audit.sql`) was the har
 
 ## What's deliberately not in this milestone
 
-No domain content tables are wired to the UI yet (Publications, Issue Builder, etc. remain placeholders naming the milestone that fills them in). No outbound transactional email — organization invitations create a real `invitations` row but nothing sends the email yet (Milestone 10). No AI integration (Milestone 5). Publication-level role management (an Editor-in-Chief managing Editor/Writer/Researcher roles *within their own publication*) is data-model-ready (Migration 002's `publication_members` + RLS) but has no UI yet — that lands with Milestone 3/4.
-
+No domain content tables are wired to the UI yet (Publications, Issue Builder, etc. remain placeholders naming the milestone that fills them in). No outbound transactional email — organization invitations create a real `invitations` row but nothing sends the email yet (Milestone 10). No AI integration (Milestone 5). Publication-level role management (an Editor-in-Chief managing Editor/Writer/Researcher roles _within their own publication_) is data-model-ready (Migration 002's `publication_members` + RLS) but has no UI yet — that lands with Milestone 3/4.

@@ -27,7 +27,11 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { data: existing } = await supabase.from("blocks").select("issue_id, type").eq("id", blockId).single();
+  const { data: existing } = await supabase
+    .from("blocks")
+    .select("issue_id, type")
+    .eq("id", blockId)
+    .single();
   if (!existing?.issue_id) {
     return NextResponse.json({ error: "Block not found" }, { status: 404 });
   }

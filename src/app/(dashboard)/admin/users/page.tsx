@@ -19,7 +19,8 @@ export default async function AdminUsersPage() {
         <h1 className="text-xl font-semibold text-foreground">Users &amp; Roles</h1>
         <p className="text-sm text-muted-foreground">
           Platform-wide role changes are Super Admin only. Publication-level roles (Editor-in-Chief, Editor,
-          Writer, Researcher on a specific publication) are managed from that publication&apos;s settings instead.
+          Writer, Researcher on a specific publication) are managed from that publication&apos;s settings
+          instead.
         </p>
       </div>
       <UsersTable initialUsers={users ?? []} currentUserId={userId} />

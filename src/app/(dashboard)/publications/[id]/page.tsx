@@ -1,6 +1,13 @@
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { H1, Muted } from "@/components/ui/typography";
@@ -74,7 +81,11 @@ export default async function PublicationDetailPage({ params }: { params: Promis
         <TabsContent value="general">
           <GeneralSettingsForm
             publicationId={id}
-            initial={{ name: publication.name, description: publication.description, cadence: publication.cadence }}
+            initial={{
+              name: publication.name,
+              description: publication.description,
+              cadence: publication.cadence,
+            }}
           />
         </TabsContent>
 

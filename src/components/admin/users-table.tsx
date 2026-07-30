@@ -15,7 +15,13 @@ interface UserRow {
   created_at: string;
 }
 
-export function UsersTable({ initialUsers, currentUserId }: { initialUsers: UserRow[]; currentUserId: string }) {
+export function UsersTable({
+  initialUsers,
+  currentUserId,
+}: {
+  initialUsers: UserRow[];
+  currentUserId: string;
+}) {
   const [users, setUsers] = React.useState(initialUsers);
   const [savingId, setSavingId] = React.useState<string | null>(null);
 
@@ -84,7 +90,9 @@ export function UsersTable({ initialUsers, currentUserId }: { initialUsers: User
                 </SelectContent>
               </Select>
             </TableCell>
-            <TableCell className="text-muted-foreground">{new Date(u.created_at).toLocaleDateString()}</TableCell>
+            <TableCell className="text-muted-foreground">
+              {new Date(u.created_at).toLocaleDateString()}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

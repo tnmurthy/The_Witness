@@ -80,7 +80,11 @@ export async function PUT(request: Request, { params }: RouteParams) {
     .single();
 
   if (error || !template) {
-    logger.error("Failed to update template config", { error, publicationId: id, channel: parsedChannel.data });
+    logger.error("Failed to update template config", {
+      error,
+      publicationId: id,
+      channel: parsedChannel.data,
+    });
     return NextResponse.json({ error: "Failed to update template" }, { status: 500 });
   }
 

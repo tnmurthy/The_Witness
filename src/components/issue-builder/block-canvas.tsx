@@ -61,10 +61,16 @@ export function BlockCanvas({ issueId }: { issueId: string }) {
     if (!activeBlock || !overBlock) return;
 
     const targetSectionId = overBlock.section_id;
-    const sectionBlocks = blocks.filter((b) => b.section_id === targetSectionId).sort((a, b) => a.position - b.position);
+    const sectionBlocks = blocks
+      .filter((b) => b.section_id === targetSectionId)
+      .sort((a, b) => a.position - b.position);
     const withoutActive = sectionBlocks.filter((b) => b.id !== activeBlock.id);
     const overIndex = withoutActive.findIndex((b) => b.id === overBlock.id);
-    const nextOrder = [...withoutActive.slice(0, overIndex), activeBlock, ...withoutActive.slice(overIndex)].map((b) => b.id);
+    const nextOrder = [
+      ...withoutActive.slice(0, overIndex),
+      activeBlock,
+      ...withoutActive.slice(overIndex),
+    ].map((b) => b.id);
 
     if (activeBlock.section_id === targetSectionId) {
       reorderBlocksLocal(targetSectionId, nextOrder);
@@ -82,10 +88,15 @@ export function BlockCanvas({ issueId }: { issueId: string }) {
           .slice()
           .sort((a, b) => a.position - b.position)
           .map((section) => {
-            const sectionBlocks = blocks.filter((b) => b.section_id === section.id).sort((a, b) => a.position - b.position);
+            const sectionBlocks = blocks
+              .filter((b) => b.section_id === section.id)
+              .sort((a, b) => a.position - b.position);
             return (
               <div key={section.id} className="space-y-1">
-                <SortableContext items={sectionBlocks.map((b) => b.id)} strategy={verticalListSortingStrategy}>
+                <SortableContext
+                  items={sectionBlocks.map((b) => b.id)}
+                  strategy={verticalListSortingStrategy}
+                >
                   {sectionBlocks.length === 0 ? (
                     <Muted className="rounded-md border border-dashed border-neutral-300 p-6 text-center">
                       Empty section — add a block below to get started.

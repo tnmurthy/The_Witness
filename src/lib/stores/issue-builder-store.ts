@@ -70,7 +70,9 @@ export const useIssueBuilderStore = create<IssueBuilderState>((set, get) => ({
 
   updateBlockLocal: (id, payload) =>
     set((s) => ({
-      blocks: s.blocks.map((b) => (b.id === id ? { ...b, payload, last_edited_at: new Date().toISOString() } : b)),
+      blocks: s.blocks.map((b) =>
+        b.id === id ? { ...b, payload, last_edited_at: new Date().toISOString() } : b
+      ),
     })),
 
   removeBlockLocal: (id) => set((s) => ({ blocks: s.blocks.filter((b) => b.id !== id) })),
@@ -87,7 +89,8 @@ export const useIssueBuilderStore = create<IssueBuilderState>((set, get) => ({
   moveBlockToSectionLocal: (blockId, targetSectionId, orderedIds) =>
     set((s) => ({
       blocks: s.blocks.map((b) => {
-        if (b.id === blockId) return { ...b, section_id: targetSectionId, position: orderedIds.indexOf(blockId) };
+        if (b.id === blockId)
+          return { ...b, section_id: targetSectionId, position: orderedIds.indexOf(blockId) };
         if (b.section_id === targetSectionId) {
           const newPosition = orderedIds.indexOf(b.id);
           return newPosition === -1 ? b : { ...b, position: newPosition };

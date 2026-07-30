@@ -74,7 +74,10 @@ export async function POST(request: Request) {
     .insert({ organization_id: organization.id, user_id: user.id, role: "admin" });
 
   if (memberError) {
-    logger.error("Failed to add creator as organization admin", { error: memberError, organizationId: organization.id });
+    logger.error("Failed to add creator as organization admin", {
+      error: memberError,
+      organizationId: organization.id,
+    });
     return NextResponse.json({ error: "Organization created but membership setup failed" }, { status: 500 });
   }
 

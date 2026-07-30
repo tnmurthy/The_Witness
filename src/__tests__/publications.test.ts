@@ -19,12 +19,18 @@ describe("createPublicationSchema", () => {
   });
 
   it("rejects a slug with uppercase letters or spaces", () => {
-    expect(createPublicationSchema.safeParse({ name: "The Witness", slug: "The Witness" }).success).toBe(false);
-    expect(createPublicationSchema.safeParse({ name: "The Witness", slug: "The-Witness" }).success).toBe(false);
+    expect(createPublicationSchema.safeParse({ name: "The Witness", slug: "The Witness" }).success).toBe(
+      false
+    );
+    expect(createPublicationSchema.safeParse({ name: "The Witness", slug: "The-Witness" }).success).toBe(
+      false
+    );
   });
 
   it("accepts a slug with hyphens between lowercase segments", () => {
-    expect(createPublicationSchema.safeParse({ name: "Career Compass", slug: "career-compass" }).success).toBe(true);
+    expect(
+      createPublicationSchema.safeParse({ name: "Career Compass", slug: "career-compass" }).success
+    ).toBe(true);
   });
 
   it("rejects a name shorter than 2 characters", () => {
@@ -49,7 +55,9 @@ describe("publishingScheduleSchema", () => {
 
   it("rejects a malformed time (not 24-hour HH:MM)", () => {
     expect(publishingScheduleSchema.safeParse({ frequency: "daily", timeOfDay: "7am" }).success).toBe(false);
-    expect(publishingScheduleSchema.safeParse({ frequency: "daily", timeOfDay: "25:00" }).success).toBe(false);
+    expect(publishingScheduleSchema.safeParse({ frequency: "daily", timeOfDay: "25:00" }).success).toBe(
+      false
+    );
   });
 
   it("defaults daysOfWeek to an empty array and timezone to UTC", () => {
@@ -61,7 +69,9 @@ describe("publishingScheduleSchema", () => {
 
 describe("updateBrandingSchema", () => {
   it("accepts valid 6-digit hex colors", () => {
-    expect(updateBrandingSchema.safeParse({ primaryColor: "#2E3A59", accentColor: "#8A6600" }).success).toBe(true);
+    expect(updateBrandingSchema.safeParse({ primaryColor: "#2E3A59", accentColor: "#8A6600" }).success).toBe(
+      true
+    );
   });
 
   it("rejects a 3-digit hex shorthand or a named color", () => {
@@ -85,12 +95,18 @@ describe("createAiPromptTemplateSchema", () => {
   });
 
   it("defaults variables to an empty array", () => {
-    const result = createAiPromptTemplateSchema.parse({ blockType: "hero_story", name: "X", templateText: "Y" });
+    const result = createAiPromptTemplateSchema.parse({
+      blockType: "hero_story",
+      name: "X",
+      templateText: "Y",
+    });
     expect(result.variables).toEqual([]);
   });
 
   it("rejects an empty template text", () => {
-    expect(createAiPromptTemplateSchema.safeParse({ blockType: "x", name: "y", templateText: "" }).success).toBe(false);
+    expect(
+      createAiPromptTemplateSchema.safeParse({ blockType: "x", name: "y", templateText: "" }).success
+    ).toBe(false);
   });
 });
 

@@ -15,11 +15,7 @@ import { witnessTheme } from "./src/styles/tailwind.tokens";
  */
 const config: Config = {
   darkMode: ["class", '[data-theme="dark"]'],
-  content: [
-    "./src/app/**/*.{ts,tsx}",
-    "./src/components/**/*.{ts,tsx}",
-    "./src/lib/**/*.{ts,tsx}",
-  ],
+  content: ["./src/app/**/*.{ts,tsx}", "./src/components/**/*.{ts,tsx}", "./src/lib/**/*.{ts,tsx}"],
   theme: {
     container: {
       center: true,

@@ -28,7 +28,10 @@ export async function POST(request: Request, { params }: RouteParams) {
 
   let position = parsed.data.position;
   if (position === undefined) {
-    const { count } = await supabase.from("sections").select("id", { count: "exact", head: true }).eq("issue_id", issueId);
+    const { count } = await supabase
+      .from("sections")
+      .select("id", { count: "exact", head: true })
+      .eq("issue_id", issueId);
     position = count ?? 0;
   }
 

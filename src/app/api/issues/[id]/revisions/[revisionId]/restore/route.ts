@@ -63,7 +63,11 @@ export async function POST(_request: Request, { params }: RouteParams) {
   const snapshot = revision.snapshot as { sections: SnapshotSection[]; blocks: SnapshotBlock[] };
 
   // Checkpoint the pre-restore state first — see the function comment above.
-  const { data: currentSections } = await supabase.from("sections").select("id, title, position").eq("issue_id", issueId).order("position");
+  const { data: currentSections } = await supabase
+    .from("sections")
+    .select("id, title, position")
+    .eq("issue_id", issueId)
+    .order("position");
   const { data: currentBlocks } = await supabase
     .from("blocks")
     .select("id, section_id, type, position, payload")
@@ -80,9 +84,14 @@ export async function POST(_request: Request, { params }: RouteParams) {
 
   for (const section of snapshot.sections) {
     if (currentSectionIds.has(section.id)) {
-      await supabase.from("sections").update({ title: section.title, position: section.position }).eq("id", section.id);
+      await supabase
+        .from("sections")
+        .update({ title: section.title, position: section.position })
+        .eq("id", section.id);
     } else {
-      await supabase.from("sections").insert({ id: section.id, issue_id: issueId, title: section.title, position: section.position });
+      await supabase
+        .from("sections")
+        .insert({ id: section.id, issue_id: issueId, title: section.title, position: section.position });
     }
   }
   for (const section of currentSections ?? []) {
@@ -98,7 +107,13 @@ export async function POST(_request: Request, { params }: RouteParams) {
     if (currentBlockIds.has(block.id)) {
       await supabase
         .from("blocks")
-        .update({ section_id: block.section_id, type: block.type, position: block.position, payload: block.payload, last_edited_by: user.id })
+        .update({
+          section_id: block.section_id,
+          type: block.type,
+          position: block.position,
+          payload: block.payload,
+          last_edited_by: user.id,
+        })
         .eq("id", block.id);
     } else {
       await supabase.from("blocks").insert({
