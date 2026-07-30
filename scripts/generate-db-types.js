@@ -18,6 +18,22 @@
 // claim to fully replace the official tool, only to unblock Table/Enum
 // type safety until someone runs the real command with real Docker/
 // internet access.
+
+async function resolveIPv4(url) {
+  const dns = require("dns").promises;
+  try {
+    const parsed = new URL(url);
+    const addrs = await dns.resolve4(parsed.hostname);
+    if (addrs && addrs.length > 0) {
+      parsed.hostname = addrs[0];
+      return parsed.toString();
+    }
+  } catch {
+    /* fall through */
+  }
+  return url;
+}
+
 const { Client } = require("pg");
 
 const PG_TO_TS = {

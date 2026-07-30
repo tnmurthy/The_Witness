@@ -45,6 +45,47 @@ const PASS = c.green("OK");
 const FAIL = c.red("FAIL");
 const WARN = c.yellow("WARN");
 
+/**
+ * Execute SQL via Supabase's pg-meta REST API when direct Postgres TCP
+ * is unavailable (e.g. IPv6-only DB host on an IPv4-only machine).
+ * This is the same endpoint the Supabase SQL Editor uses.
+ */
+async function execSQLviaREST(sql) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL + "/pg/query";
+  const res = await globalThis.fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+      Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY,
+    },
+    body: JSON.stringify({ query: sql }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error("REST SQL failed (" + res.status + "): " + text.slice(0, 200));
+  }
+  return res.json();
+}
+
+async function canConnectPg() {
+  if (!process.env.SUPABASE_DB_URL) return false;
+  try {
+    const pg = require("pg");
+    const resolvedUrl = await resolveIPv4(process.env.SUPABASE_DB_URL);
+    const client = new pg.Client({
+      connectionString: resolvedUrl,
+      ssl: { rejectUnauthorized: false },
+      connectionTimeoutMillis: 5000,
+    });
+    await client.connect();
+    await client.end();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function loadDotEnv() {
   const envFile = path.join(__dirname, "..", ".env.local");
   if (!fs.existsSync(envFile)) {
@@ -134,6 +175,66 @@ async function checkDatabase() {
     }
   }
   await client.end();
+}
+
+async function applyMigrationsViaREST(files, migrationsDir) {
+  const { createClient } = require("@supabase/supabase-js");
+  const admin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+
+  // Ensure tracking table exists via REST SQL
+  await execSQLviaREST(`
+    create table if not exists public._witness_migrations (
+      filename text primary key,
+      applied_at timestamptz not null default now()
+    )
+  `).catch(() => {}); // may already exist
+
+  let applied = 0,
+    skipped = 0,
+    warnings = 0;
+
+  for (const filename of files) {
+    const { data: existing } = await admin
+      .from("_witness_migrations")
+      .select("filename")
+      .eq("filename", filename)
+      .single();
+    if (existing) {
+      console.log(`  ${c.dim("--")}  ${filename} (already applied)`);
+      skipped++;
+      continue;
+    }
+
+    const sql = fs.readFileSync(path.join(migrationsDir, filename), "utf8");
+    try {
+      await execSQLviaREST(sql);
+      await admin
+        .from("_witness_migrations")
+        .insert({ filename })
+        .catch(() => {});
+      console.log(`  ${PASS}  ${filename}`);
+      applied++;
+    } catch (err) {
+      const msg = err.message || "";
+      const isNonFatal = msg.includes("42501") || msg.includes("already exists");
+      if (isNonFatal) {
+        console.log(`  ${WARN}  ${filename} - non-fatal: ${msg.slice(0, 80)}`);
+        warnings++;
+        await admin
+          .from("_witness_migrations")
+          .upsert({ filename })
+          .catch(() => {});
+      } else {
+        console.log(`  ${FAIL}  ${filename}: ${msg.slice(0, 120)}`);
+        // Continue rather than abort — some statements may have applied
+        warnings++;
+      }
+    }
+  }
+
+  console.log(`  ${applied} applied, ${skipped} skipped, ${warnings} warnings (via REST)`);
 }
 
 async function applyMigrations() {
