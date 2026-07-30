@@ -25,7 +25,14 @@ const eslintConfig = [
     // rules (like no-require-imports, which assumes ESM-only app code)
     // the same way supabase/migrations/ is excluded from JS/TS rules
     // above for not being JS/TS at all.
-    ignores: [".next/**", "node_modules/**", "supabase/migrations/**", "next-env.d.ts", "scripts/**"],
+    ignores: [
+      ".next/**",
+      "node_modules/**",
+      "supabase/migrations/**",
+      "next-env.d.ts",
+      "scripts/**",
+      "coverage/**",
+    ],
   },
   {
     rules: {

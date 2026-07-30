@@ -7,18 +7,18 @@ silently worked around or silently ignored.
 
 ## Summary
 
-| # | Check | Result |
-|---|---|---|
-| 1 | TypeScript type checking | Pass |
-| 2 | ESLint | Pass |
-| 3 | Prettier | Pass (real fix — see below) |
-| 4 | Next.js production build | Pass |
-| 5 | Supabase type generation | Partial — official tool blocked by environment; working alternative built and partially wired (see below) |
-| 6 | Route validation | Verified clean; one finding documented, not fixed (see below) |
-| 7 | Import validation | Verified via existing infrastructure |
-| 8 | Dead code detection | 5 genuine findings, all fixed |
-| 9 | Unused dependency detection | 1 genuine finding, fixed |
-| 10 | Circular dependency detection | Genuinely clean (after fixing a blind spot in my own check — see below) |
+| #   | Check                         | Result                                                                                                    |
+| --- | ----------------------------- | --------------------------------------------------------------------------------------------------------- |
+| 1   | TypeScript type checking      | Pass                                                                                                      |
+| 2   | ESLint                        | Pass                                                                                                      |
+| 3   | Prettier                      | Pass (real fix — see below)                                                                               |
+| 4   | Next.js production build      | Pass                                                                                                      |
+| 5   | Supabase type generation      | Partial — official tool blocked by environment; working alternative built and partially wired (see below) |
+| 6   | Route validation              | Verified clean; one finding documented, not fixed (see below)                                             |
+| 7   | Import validation             | Verified via existing infrastructure                                                                      |
+| 8   | Dead code detection           | 5 genuine findings, all fixed                                                                             |
+| 9   | Unused dependency detection   | 1 genuine finding, fixed                                                                                  |
+| 10  | Circular dependency detection | Genuinely clean (after fixing a blind spot in my own check — see below)                                   |
 
 Final state, verified from a clean-slate `node_modules` reinstall:
 `typecheck` pass, `lint` pass, `format:check` pass, `test` (129/129)
@@ -70,6 +70,7 @@ What was built instead: `scripts/generate-db-types.js`, a standalone
 Node script that generates a structurally-equivalent Database type file
 via direct SQL introspection of information_schema/pg_catalog over a
 plain Postgres connection — no Docker required. It covers:
+
 - Tables (Row/Insert/Update shapes, matching the official generator's
   conventions for nullability and default-value optionality)
 - Enums (every value, verified against the real schema — spot-checked
@@ -110,6 +111,7 @@ something worked around by guessing or silently dropped.
 
 To regenerate with the official tool, once Docker + internet access are
 available:
+
 ```
 npx supabase gen types typescript --db-url "<connection-string>" \
   > src/lib/supabase/database.types.ts
@@ -227,13 +229,13 @@ an accidental pass.
 - `.prettierrc.json`-configured formatting applied to 161 files (no
   behavior change, verified)
 - `scripts/generate-db-types.js` (new) + `src/lib/supabase/
-  database.types.ts` (new, generated) — real, schema-verified Supabase
+database.types.ts` (new, generated) — real, schema-verified Supabase
   types, with an honest accounting of what does and doesn't use them yet
 - `eslint.config.mjs` — added `scripts/**` to ignores (standalone Node
   tooling, not application ESM source)
 - `package.json` — added `pg`, `@types/pg` as devDependencies
 - 5 dead-code removals across `src/lib/auth/roles.ts`, `src/lib/blocks/
-  types.ts`, `src/lib/graph/types.ts`, `src/lib/graph/hooks.ts`,
+types.ts`, `src/lib/graph/types.ts`, `src/lib/graph/hooks.ts`,
   `src/styles/tailwind.tokens.ts`
 - `src/lib/supabase/admin.ts` — real Database typing, working
 - `src/lib/supabase/client.ts`, `server.ts`, `middleware.ts` — attempted
