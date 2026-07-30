@@ -24,7 +24,9 @@ export async function GET(_request: Request, { params }: RouteParams) {
 
   const { data: issue, error } = await supabase
     .from("issues")
-    .select("id, publication_id, title, slug, status, scheduled_at, published_at, created_by, publications(name, slug)")
+    .select(
+      "id, publication_id, title, slug, status, scheduled_at, published_at, created_by, publications(name, slug)"
+    )
     .eq("id", id)
     .single();
 

@@ -58,12 +58,12 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     return (
       <div
         role="alert"
-        className="flex flex-col items-center justify-center gap-3 rounded-lg border border-danger-600/30 bg-danger-100 p-8 text-center"
+        className="border-danger-600/30 flex flex-col items-center justify-center gap-3 rounded-lg border bg-danger-100 p-8 text-center"
       >
         <AlertTriangle className="h-6 w-6 text-danger-700" aria-hidden="true" />
         <div>
           <p className="font-medium text-danger-700">Something went wrong in {this.props.boundaryName}.</p>
-          <p className="text-sm text-danger-700/80">The rest of the page should still work.</p>
+          <p className="text-danger-700/80 text-sm">The rest of the page should still work.</p>
         </div>
         <Button variant="outline" size="sm" onClick={this.reset}>
           Try again

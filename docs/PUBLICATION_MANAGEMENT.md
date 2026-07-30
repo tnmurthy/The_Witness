@@ -11,14 +11,14 @@ ceiling is Postgres itself.
 
 ## The six settings areas, and where each one lives
 
-| Area | Storage | API | Notes |
-|---|---|---|---|
-| Branding | `publications.branding` (jsonb) | `PATCH /api/publications/:id/branding` | Partial updates merge into the existing object |
-| Logo | Supabase Storage (`publication-logos` bucket) + `publications.logo_url` | `POST /api/publications/:id/logo` | 2MB cap, PNG/JPEG/SVG/WebP only, enforced both client-side and at the Storage bucket level |
-| Editorial Guidelines | `publications.editorial_guidelines` (text) | `PATCH /api/publications/:id/editorial-guidelines` | Plain text; referenced by the AI Workspace (Milestone 5) when drafting |
-| Publishing Schedule | `publications.publishing_schedule` (jsonb) | `PATCH /api/publications/:id/schedule` | Structured (frequency/days/time/timezone) — see below |
-| Email / PDF / Web Templates | `publication_templates` (Migration 003) | `GET`/`PUT /api/publications/:id/templates/:channel` | One table, three rows per publication (one per channel), not three tables |
-| AI Prompt Templates | `prompt_templates.publication_id` (Migration 014) | `/api/publications/:id/ai-prompt-templates` | Publication-scoped override of the platform-wide defaults from Milestone 5 |
+| Area                        | Storage                                                                 | API                                                  | Notes                                                                                      |
+| --------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Branding                    | `publications.branding` (jsonb)                                         | `PATCH /api/publications/:id/branding`               | Partial updates merge into the existing object                                             |
+| Logo                        | Supabase Storage (`publication-logos` bucket) + `publications.logo_url` | `POST /api/publications/:id/logo`                    | 2MB cap, PNG/JPEG/SVG/WebP only, enforced both client-side and at the Storage bucket level |
+| Editorial Guidelines        | `publications.editorial_guidelines` (text)                              | `PATCH /api/publications/:id/editorial-guidelines`   | Plain text; referenced by the AI Workspace (Milestone 5) when drafting                     |
+| Publishing Schedule         | `publications.publishing_schedule` (jsonb)                              | `PATCH /api/publications/:id/schedule`               | Structured (frequency/days/time/timezone) — see below                                      |
+| Email / PDF / Web Templates | `publication_templates` (Migration 003)                                 | `GET`/`PUT /api/publications/:id/templates/:channel` | One table, three rows per publication (one per channel), not three tables                  |
+| AI Prompt Templates         | `prompt_templates.publication_id` (Migration 014)                       | `/api/publications/:id/ai-prompt-templates`          | Publication-scoped override of the platform-wide defaults from Milestone 5                 |
 
 ## Why publishing_schedule is a new column, not a replacement for cadence
 
@@ -49,12 +49,12 @@ Non-null rows are a specific publication's override for one `block_type`.
   Editor-in-Chief of Publication A can create an override for Publication
   A; a Writer who is not a member of Publication A is rejected by RLS
   when attempting the same insert (not just denied in the UI).
-- At most one *active* override per `(publication_id, block_type)` — a
+- At most one _active_ override per `(publication_id, block_type)` — a
   partial unique index (`idx_prompt_templates_publication_block_type_
-  active`), verified live: a second active insert for the same block type
+active`), verified live: a second active insert for the same block type
   on the same publication is rejected with a real constraint violation,
   surfaced by the API as a 409, not a 500.
-- The actual fallback-to-default *resolution logic* (given a
+- The actual fallback-to-default _resolution logic_ (given a
   `publication_id` and `block_type`, which template does the AI Workspace
   actually use) is Milestone 5 scope — this milestone establishes the
   data model and management UI the resolver will read from, not the
@@ -65,7 +65,7 @@ Non-null rows are a specific publication's override for one `block_type`.
 `is_platform_editorial()` (Migration 002) checked `role in (...,
 'designer')`. Migration 013 (Milestone 2) recreated the `platform_role`
 enum without `designer`, and correctly fixed the two functions that had
-a *hard* catalog dependency on the enum type
+a _hard_ catalog dependency on the enum type
 (`current_platform_role()`, `publication_role()`, both `RETURNS
 platform_role`) — but `is_platform_editorial()` returns `boolean`, not
 `platform_role`, so it has no such dependency, and nothing caught the
@@ -101,7 +101,7 @@ up when the affected code path actually runs.
   bugs where an assertion passed for an unintended reason (a 1-character
   `name` failing its own `min(2)` rule independently of the `slug`
   behavior the test claimed to isolate). Fixed by using a valid value for
-  every field *except* the one under test, in each case.
+  every field _except_ the one under test, in each case.
 - **Full pipeline**: `typecheck` / `lint` / `test` / `build` all pass from
   a clean-slate `node_modules` reinstall, plus a live `npm start` sweep
   of every new route (protected pages redirect correctly, unauthenticated

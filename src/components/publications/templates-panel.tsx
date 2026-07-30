@@ -19,7 +19,15 @@ const CHANNELS: { value: Channel; label: string }[] = [
   { value: "web", label: "Website" },
 ];
 
-function ChannelEditor({ publicationId, channel, initialConfig }: { publicationId: string; channel: Channel; initialConfig: Record<string, unknown> }) {
+function ChannelEditor({
+  publicationId,
+  channel,
+  initialConfig,
+}: {
+  publicationId: string;
+  channel: Channel;
+  initialConfig: Record<string, unknown>;
+}) {
   const router = useRouter();
   const [text, setText] = React.useState(JSON.stringify(initialConfig, null, 2));
   const [error, setError] = React.useState<string | null>(null);
@@ -100,7 +108,11 @@ export function TemplatesPanel({ publicationId, initialConfigs }: TemplatesPanel
       </TabsList>
       {CHANNELS.map((c) => (
         <TabsContent key={c.value} value={c.value}>
-          <ChannelEditor publicationId={publicationId} channel={c.value} initialConfig={initialConfigs[c.value] ?? {}} />
+          <ChannelEditor
+            publicationId={publicationId}
+            channel={c.value}
+            initialConfig={initialConfigs[c.value] ?? {}}
+          />
         </TabsContent>
       ))}
     </Tabs>

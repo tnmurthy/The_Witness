@@ -52,7 +52,10 @@ export async function POST(request: Request) {
 
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
   if (!canCreatePublicationRole(profile?.role as PlatformRole | undefined)) {
-    return NextResponse.json({ error: "Only a Super Admin or Editor-in-Chief can create publications" }, { status: 403 });
+    return NextResponse.json(
+      { error: "Only a Super Admin or Editor-in-Chief can create publications" },
+      { status: 403 }
+    );
   }
 
   const body = await request.json().catch(() => null);
@@ -77,7 +80,8 @@ export async function POST(request: Request) {
     // publications.slug is unique — the most common real-world failure
     // here is a slug collision, surfaced as Postgres error code 23505.
     const status = pubError?.code === "23505" ? 409 : 500;
-    const message = pubError?.code === "23505" ? "That slug is already in use" : "Failed to create publication";
+    const message =
+      pubError?.code === "23505" ? "That slug is already in use" : "Failed to create publication";
     logger.error("Failed to create publication", { error: pubError, userId: user.id });
     return NextResponse.json({ error: message }, { status });
   }
@@ -87,7 +91,10 @@ export async function POST(request: Request) {
     .insert({ publication_id: publication.id, user_id: user.id, role: "editor_in_chief" });
 
   if (memberError) {
-    logger.error("Failed to add creator as publication editor_in_chief", { error: memberError, publicationId: publication.id });
+    logger.error("Failed to add creator as publication editor_in_chief", {
+      error: memberError,
+      publicationId: publication.id,
+    });
     return NextResponse.json({ error: "Publication created but membership setup failed" }, { status: 500 });
   }
 

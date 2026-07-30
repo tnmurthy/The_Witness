@@ -12,7 +12,11 @@ export default async function ProfileSettingsPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/sign-in");
 
-  const { data: profile } = await supabase.from("profiles").select("full_name, role").eq("id", user.id).single();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name, role")
+    .eq("id", user.id)
+    .single();
 
   return (
     <div className="space-y-6">

@@ -31,7 +31,10 @@ export async function POST(request: Request, { params }: RouteParams) {
 
   const { data: section } = await supabase.from("sections").select("issue_id").eq("id", sectionId).single();
   if (!section?.issue_id) {
-    return NextResponse.json({ error: "Section not found (or belongs to an article, not an issue)" }, { status: 404 });
+    return NextResponse.json(
+      { error: "Section not found (or belongs to an article, not an issue)" },
+      { status: 404 }
+    );
   }
 
   if (!(await canEditIssue(supabase, section.issue_id, user.id))) {
@@ -47,7 +50,9 @@ export async function POST(request: Request, { params }: RouteParams) {
   let payload = parsed.data.payload;
   if (isImplementedBlockType(parsed.data.type)) {
     const isEmpty = Object.keys(payload).length === 0;
-    payload = isEmpty ? (BLOCK_REGISTRY[parsed.data.type].defaultPayload as Record<string, unknown>) : payload;
+    payload = isEmpty
+      ? (BLOCK_REGISTRY[parsed.data.type].defaultPayload as Record<string, unknown>)
+      : payload;
 
     if (!isEmpty) {
       const validation = validateBlockPayload(parsed.data.type, payload);
@@ -59,13 +64,23 @@ export async function POST(request: Request, { params }: RouteParams) {
 
   let position = parsed.data.position;
   if (position === undefined) {
-    const { count } = await supabase.from("blocks").select("id", { count: "exact", head: true }).eq("section_id", sectionId);
+    const { count } = await supabase
+      .from("blocks")
+      .select("id", { count: "exact", head: true })
+      .eq("section_id", sectionId);
     position = count ?? 0;
   }
 
   const { data: block, error } = await supabase
     .from("blocks")
-    .insert({ section_id: sectionId, type: parsed.data.type, payload, position, created_by: user.id, last_edited_by: user.id })
+    .insert({
+      section_id: sectionId,
+      type: parsed.data.type,
+      payload,
+      position,
+      created_by: user.id,
+      last_edited_by: user.id,
+    })
     .select("id, section_id, issue_id, type, position, payload, ai_generated, last_edited_by, last_edited_at")
     .single();
 

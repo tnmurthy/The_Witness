@@ -17,7 +17,10 @@ export function Sidebar({ showAdmin = false }: { showAdmin?: boolean }) {
   const items: NavItem[] = showAdmin ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS;
 
   return (
-    <aside className="hidden w-60 shrink-0 flex-col bg-navy-900 px-3 py-4 md:flex" aria-label="Main navigation">
+    <aside
+      className="hidden w-60 shrink-0 flex-col bg-navy-900 px-3 py-4 md:flex"
+      aria-label="Main navigation"
+    >
       <div className="mb-6 flex items-center gap-2 px-2 font-voice text-lg font-semibold text-white">
         <span className="h-4 w-1 bg-gold-500" aria-hidden="true" />
         The Witness
@@ -37,7 +40,10 @@ export function Sidebar({ showAdmin = false }: { showAdmin?: boolean }) {
               )}
             >
               {isActive && (
-                <span className="absolute -left-3 top-1.5 bottom-1.5 w-[3px] bg-gold-500" aria-hidden="true" />
+                <span
+                  className="absolute -left-3 bottom-1.5 top-1.5 w-[3px] bg-gold-500"
+                  aria-hidden="true"
+                />
               )}
               <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} aria-hidden="true" />
               {item.label}

@@ -79,7 +79,9 @@ export function ResetPasswordForm() {
           aria-invalid={!!errors.confirmPassword}
           {...register("confirmPassword")}
         />
-        {errors.confirmPassword && <p className="text-xs text-danger-700">{errors.confirmPassword.message}</p>}
+        {errors.confirmPassword && (
+          <p className="text-xs text-danger-700">{errors.confirmPassword.message}</p>
+        )}
       </div>
       <Button type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting ? "Updating…" : "Update password"}

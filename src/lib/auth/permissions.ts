@@ -19,7 +19,10 @@ import type { PlatformRole, OrganizationRole } from "./roles";
  * an ordering across both.
  */
 
-const EDITORIAL_RANK: Record<Extract<PlatformRole, "super_admin" | "editor_in_chief" | "editor" | "writer" | "researcher">, number> = {
+const EDITORIAL_RANK: Record<
+  Extract<PlatformRole, "super_admin" | "editor_in_chief" | "editor" | "writer" | "researcher">,
+  number
+> = {
   super_admin: 4,
   editor_in_chief: 3,
   editor: 2,

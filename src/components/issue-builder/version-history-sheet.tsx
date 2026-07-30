@@ -7,7 +7,14 @@ import { toast } from "sonner";
 
 import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import { Muted } from "@/components/ui/typography";
 
 interface Revision {
@@ -92,8 +99,8 @@ export function VersionHistorySheet({ issueId }: { issueId: string }) {
         <SheetHeader>
           <SheetTitle>Version history</SheetTitle>
           <SheetDescription>
-            Automatic checkpoints save at most once every 5 minutes while editing. Restoring first saves the current
-            state as its own checkpoint, so nothing is ever lost.
+            Automatic checkpoints save at most once every 5 minutes while editing. Restoring first saves the
+            current state as its own checkpoint, so nothing is ever lost.
           </SheetDescription>
         </SheetHeader>
 
@@ -105,14 +112,24 @@ export function VersionHistorySheet({ issueId }: { issueId: string }) {
           {loading && <Muted>Loading…</Muted>}
           {!loading && revisions.length === 0 && <Muted>No versions saved yet.</Muted>}
           {revisions.map((revision) => (
-            <div key={revision.id} className="flex items-center justify-between rounded-md border border-neutral-200 p-3">
+            <div
+              key={revision.id}
+              className="flex items-center justify-between rounded-md border border-neutral-200 p-3"
+            >
               <div>
-                <p className="text-sm font-medium text-foreground">{revision.snapshot?.label || "Autosave checkpoint"}</p>
+                <p className="text-sm font-medium text-foreground">
+                  {revision.snapshot?.label || "Autosave checkpoint"}
+                </p>
                 <Muted className="text-xs">
                   {new Date(revision.created_at).toLocaleString()} · {revisionAuthorName(revision)}
                 </Muted>
               </div>
-              <Button variant="ghost" size="sm" disabled={restoringId === revision.id} onClick={() => handleRestore(revision.id)}>
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={restoringId === revision.id}
+                onClick={() => handleRestore(revision.id)}
+              >
                 <RotateCcw className="h-3.5 w-3.5" /> {restoringId === revision.id ? "Restoring…" : "Restore"}
               </Button>
             </div>

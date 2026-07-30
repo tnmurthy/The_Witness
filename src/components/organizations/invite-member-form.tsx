@@ -46,14 +46,20 @@ export function InviteMemberForm({ organizationId }: { organizationId: string })
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-wrap items-end gap-3">
       <div className="space-y-1.5">
         <Label htmlFor="invite-email">Email</Label>
-        <Input id="invite-email" type="email" className="w-64" aria-invalid={!!errors.email} {...register("email")} />
+        <Input
+          id="invite-email"
+          type="email"
+          className="w-64"
+          aria-invalid={!!errors.email}
+          {...register("email")}
+        />
         {errors.email && <p className="text-xs text-danger-700">{errors.email.message}</p>}
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="invite-role">Role</Label>
         <select
           id="invite-role"
-          className="h-10 rounded-sm border border-neutral-300 bg-card px-3 text-sm focus-visible:outline-none focus-visible:border-gold-700 focus-visible:ring-2 focus-visible:ring-gold-100"
+          className="h-10 rounded-sm border border-neutral-300 bg-card px-3 text-sm focus-visible:border-gold-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-100"
           {...register("role")}
         >
           <option value="member">Member</option>

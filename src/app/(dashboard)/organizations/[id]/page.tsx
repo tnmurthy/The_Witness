@@ -2,7 +2,14 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { canManageOrganization } from "@/lib/auth/permissions";
 import { InviteMemberForm } from "@/components/organizations/invite-member-form";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { H1, Muted } from "@/components/ui/typography";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +24,11 @@ export default async function OrganizationDetailPage({ params }: { params: Promi
   } = await supabase.auth.getUser();
   if (!user) redirect("/sign-in");
 
-  const { data: organization } = await supabase.from("organizations").select("id, name, type").eq("id", id).single();
+  const { data: organization } = await supabase
+    .from("organizations")
+    .select("id, name, type")
+    .eq("id", id)
+    .single();
   if (!organization) notFound();
 
   const { data: membership } = await supabase

@@ -9,7 +9,9 @@ import { z } from "zod";
  */
 export const publishingScheduleSchema = z.object({
   frequency: z.enum(["daily", "weekly", "biweekly", "monthly", "custom"]),
-  daysOfWeek: z.array(z.enum(["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"])).default([]),
+  daysOfWeek: z
+    .array(z.enum(["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]))
+    .default([]),
   timeOfDay: z
     .string()
     .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Use 24-hour HH:MM format")

@@ -11,7 +11,15 @@ import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+} from "@/components/ui/form";
 
 function slugify(value: string): string {
   return value
@@ -114,8 +122,8 @@ export function CreatePublicationForm() {
                 <Input placeholder="48h, weekly, monthly…" {...field} />
               </FormControl>
               <FormDescription>
-                Human-readable label shown to readers. The structured publishing schedule (days, time, timezone) is
-                set after creation, from the publication&apos;s Schedule tab.
+                Human-readable label shown to readers. The structured publishing schedule (days, time,
+                timezone) is set after creation, from the publication&apos;s Schedule tab.
               </FormDescription>
               <FormMessage />
             </FormItem>

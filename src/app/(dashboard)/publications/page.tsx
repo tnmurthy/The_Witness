@@ -45,14 +45,18 @@ export default async function PublicationsPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {publications.map((pub) => {
-            const membership = Array.isArray(pub.publication_members) ? pub.publication_members[0] : pub.publication_members;
+            const membership = Array.isArray(pub.publication_members)
+              ? pub.publication_members[0]
+              : pub.publication_members;
             return (
               <Link key={pub.id} href={`/publications/${pub.id}`}>
                 <Card className="h-full transition-colors hover:border-neutral-300">
                   <CardHeader className="flex-row items-center gap-3 space-y-0">
                     <Avatar className="h-9 w-9 rounded-md">
                       <AvatarImage src={pub.logo_url ?? undefined} alt="" />
-                      <AvatarFallback className="rounded-md">{pub.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback className="rounded-md">
+                        {pub.name.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0">
                       <CardTitle className="truncate text-base">{pub.name}</CardTitle>
@@ -60,7 +64,9 @@ export default async function PublicationsPage() {
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-2">
-                    {pub.description && <p className="line-clamp-2 text-sm text-muted-foreground">{pub.description}</p>}
+                    {pub.description && (
+                      <p className="line-clamp-2 text-sm text-muted-foreground">{pub.description}</p>
+                    )}
                     <div className="flex items-center gap-2">
                       <Badge variant={pub.status === "active" ? "success" : "neutral"}>{pub.status}</Badge>
                       {pub.cadence && <Badge variant="neutral">{pub.cadence}</Badge>}

@@ -12,7 +12,10 @@ export default async function NewIssuePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/sign-in");
 
-  const { data: memberships } = await supabase.from("publication_members").select("publications(id, name)").eq("user_id", user.id);
+  const { data: memberships } = await supabase
+    .from("publication_members")
+    .select("publications(id, name)")
+    .eq("user_id", user.id);
 
   const publications = (memberships ?? [])
     .map((m) => (Array.isArray(m.publications) ? m.publications[0] : m.publications))

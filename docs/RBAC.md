@@ -9,28 +9,28 @@ This was verified directly, not just asserted: a `writer`-role user attempting t
 
 ## Role matrix
 
-| Role | Scope | Can do |
-|---|---|---|
-| **Super Admin** | Platform-wide | Everything. Only role that can change another user's `platform_role` (`canManageUsers`). |
-| **Editor-in-Chief** | Platform-wide (role) + Publication (membership) | Views the full audit log (`canViewAuditLog`). Creates publications (`canCreatePublication`). As a *publication member* with this role, manages that publication's other members and content. |
-| **Editor** | Publication (membership) | Manages content and (per-publication) membership within publications they belong to at this role. |
-| **Writer** | Publication (membership) | Authors content within publications they belong to. Peer to Researcher — neither manages the other. |
-| **Researcher** | Publication (membership) | Same standing as Writer. |
-| **Subscriber** | Platform-wide (role) | Default role for a new sign-up. Read access to published content only. |
-| **Premium Subscriber** | Platform-wide (role) | Everything a Subscriber can, plus premium content access (`hasPremiumAccess`). |
-| **Organization Admin** | One Organization | *Not* a `platform_role` value — see below. |
+| Role                   | Scope                                           | Can do                                                                                                                                                                                       |
+| ---------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Super Admin**        | Platform-wide                                   | Everything. Only role that can change another user's `platform_role` (`canManageUsers`).                                                                                                     |
+| **Editor-in-Chief**    | Platform-wide (role) + Publication (membership) | Views the full audit log (`canViewAuditLog`). Creates publications (`canCreatePublication`). As a _publication member_ with this role, manages that publication's other members and content. |
+| **Editor**             | Publication (membership)                        | Manages content and (per-publication) membership within publications they belong to at this role.                                                                                            |
+| **Writer**             | Publication (membership)                        | Authors content within publications they belong to. Peer to Researcher — neither manages the other.                                                                                          |
+| **Researcher**         | Publication (membership)                        | Same standing as Writer.                                                                                                                                                                     |
+| **Subscriber**         | Platform-wide (role)                            | Default role for a new sign-up. Read access to published content only.                                                                                                                       |
+| **Premium Subscriber** | Platform-wide (role)                            | Everything a Subscriber can, plus premium content access (`hasPremiumAccess`).                                                                                                               |
+| **Organization Admin** | One Organization                                | _Not_ a `platform_role` value — see below.                                                                                                                                                   |
 
 ### Why "Organization Admin" isn't a platform_role
 
-An Organization Admin manages one enterprise/university/company account's seats — inviting members, setting their `organization_role`. This is orthogonal to a person's platform-wide editorial standing: someone can be their employer's Organization Admin while also being a bare Subscriber on the platform, or an Editor-in-Chief who *also* happens to administer their university's seats. Modeling "Organization Admin" as a `platform_role` value would conflate two independent scopes (platform-wide vs. one organization) into a single enum, which breaks the moment a person needs to be an admin of *one* organization but not implicitly of every organization. Instead, it's `organization_members.role = 'admin'`, checked via `canManageOrganization(orgRole)` — always scoped to a specific `organization_id`, never global.
+An Organization Admin manages one enterprise/university/company account's seats — inviting members, setting their `organization_role`. This is orthogonal to a person's platform-wide editorial standing: someone can be their employer's Organization Admin while also being a bare Subscriber on the platform, or an Editor-in-Chief who _also_ happens to administer their university's seats. Modeling "Organization Admin" as a `platform_role` value would conflate two independent scopes (platform-wide vs. one organization) into a single enum, which breaks the moment a person needs to be an admin of _one_ organization but not implicitly of every organization. Instead, it's `organization_members.role = 'admin'`, checked via `canManageOrganization(orgRole)` — always scoped to a specific `organization_id`, never global.
 
 ### Why Editor-in-Chief role changes aren't Super-Admin-only for publications, but platform_role changes are
 
-The original Implementation Plan noted role assignment as "Super Admin and Editor-in-Chief" — refined here specifically for **platform-wide** role changes (the `/admin/users` screen): those are Super Admin only. Rationale: a platform_role change is the highest-privilege action in the system (it can grant `super_admin` itself), and concentrating it in one clearly-accountable role reduces privilege-escalation surface. An Editor-in-Chief still has full role-management authority *within a publication they belong to* — granting/changing `publication_members.role` for Editor, Writer, Researcher on that publication — which is Milestone 3/4 territory and already covered by the `is_publication_editor_or_above()` RLS helper from Migration 002.
+The original Implementation Plan noted role assignment as "Super Admin and Editor-in-Chief" — refined here specifically for **platform-wide** role changes (the `/admin/users` screen): those are Super Admin only. Rationale: a platform_role change is the highest-privilege action in the system (it can grant `super_admin` itself), and concentrating it in one clearly-accountable role reduces privilege-escalation surface. An Editor-in-Chief still has full role-management authority _within a publication they belong to_ — granting/changing `publication_members.role` for Editor, Writer, Researcher on that publication — which is Milestone 3/4 territory and already covered by the `is_publication_editor_or_above()` RLS helper from Migration 002.
 
 ### Why Writer and Researcher are peers, not ranked
 
-`hasEditorialRankAtLeast()` (`src/lib/auth/permissions.ts`) gives both the same rank. Neither role manages the other's content or membership — they're differentiated by *specialty* (original reporting vs. research/sourcing), not seniority. Treating them as a strict hierarchy would misrepresent how editorial teams actually work.
+`hasEditorialRankAtLeast()` (`src/lib/auth/permissions.ts`) gives both the same rank. Neither role manages the other's content or membership — they're differentiated by _specialty_ (original reporting vs. research/sourcing), not seniority. Treating them as a strict hierarchy would misrepresent how editorial teams actually work.
 
 ## Audit logging
 

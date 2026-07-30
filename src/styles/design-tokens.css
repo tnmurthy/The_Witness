@@ -23,70 +23,86 @@
   /* ---------------------------------------------------------------- */
 
   /* Navy — brand primary, editorial authority */
-  --navy-50:  #F4F6F9;
-  --navy-100: #E2E6ED;
-  --navy-200: #C7CFDC;
-  --navy-300: #97A3B8;
-  --navy-400: #6E7C97;
-  --navy-500: #5C6B8A; /* "slate" — secondary text/borders */
-  --navy-600: #47567A;
-  --navy-700: #3D4B6E;
-  --navy-800: #2E3A59; /* primary brand navy */
-  --navy-900: #1B2438;
+  --navy-50: #f4f6f9;
+  --navy-100: #e2e6ed;
+  --navy-200: #c7cfdc;
+  --navy-300: #97a3b8;
+  --navy-400: #6e7c97;
+  --navy-500: #5c6b8a; /* "slate" — secondary text/borders */
+  --navy-600: #47567a;
+  --navy-700: #3d4b6e;
+  --navy-800: #2e3a59; /* primary brand navy */
+  --navy-900: #1b2438;
 
   /* Gold — reserved signal accent (AI content, active state, required, wisdom) */
-  --gold-50:  #FDF7E8;
-  --gold-100: #F9EDCB;
-  --gold-200: #F3DFA0;
-  --gold-300: #E9CB6C;
-  --gold-400: #E0B93D;
-  --gold-500: #CDA112;
-  --gold-600: #BF8F00; /* primary gold — decorative/border/icon use only, see a11y note */
-  --gold-700: #8A6600;
+  --gold-50: #fdf7e8;
+  --gold-100: #f9edcb;
+  --gold-200: #f3dfa0;
+  --gold-300: #e9cb6c;
+  --gold-400: #e0b93d;
+  --gold-500: #cda112;
+  --gold-600: #bf8f00; /* primary gold — decorative/border/icon use only, see a11y note */
+  --gold-700: #8a6600;
   --gold-800: #634900;
-  --gold-900: #4A3600;
+  --gold-900: #4a3600;
 
   /* Neutral — cool paper, not warm cream */
-  --neutral-0:   #FFFFFF;
-  --neutral-25:  #FAFBFC;
-  --neutral-50:  #F2F4F7;
-  --neutral-100: #E7EAEF;
-  --neutral-200: #D3D8E0;
-  --neutral-300: #B0B7C3;
-  --neutral-400: #8892A0;
+  --neutral-0: #ffffff;
+  --neutral-25: #fafbfc;
+  --neutral-50: #f2f4f7;
+  --neutral-100: #e7eaef;
+  --neutral-200: #d3d8e0;
+  --neutral-300: #b0b7c3;
+  --neutral-400: #8892a0;
   --neutral-500: #667085;
-  --neutral-600: #4B5468;
-  --neutral-700: #363E4E;
+  --neutral-600: #4b5468;
+  --neutral-700: #363e4e;
   --neutral-800: #232938;
-  --neutral-900: #14171F;
-  --neutral-950: #0B0D12;
+  --neutral-900: #14171f;
+  --neutral-950: #0b0d12;
 
   /* Semantic ramps */
-  --success-100: #E7F6EE; --success-600: #16794F; --success-700: #0E5A3B;
-  --warning-100: #FEF3E2; --warning-600: #B45309; --warning-700: #8A3E06;
-  --danger-100:  #FEECEC; --danger-600:  #B42318; --danger-700:  #8B1B10;
-  --info-100:    #EAF1FE; --info-600:    #2563EB; --info-700:    #1D4ED8;
+  --success-100: #e7f6ee;
+  --success-600: #16794f;
+  --success-700: #0e5a3b;
+  --warning-100: #fef3e2;
+  --warning-600: #b45309;
+  --warning-700: #8a3e06;
+  --danger-100: #feecec;
+  --danger-600: #b42318;
+  --danger-700: #8b1b10;
+  --info-100: #eaf1fe;
+  --info-600: #2563eb;
+  --info-700: #1d4ed8;
 
   /* ---------------------------------------------------------------- */
   /* 2. Typography                                                     */
   /* ---------------------------------------------------------------- */
-  --font-voice: "Source Serif 4", Georgia, "Times New Roman", serif;   /* editorial: headlines, hero story, wisdom quotes */
-  --font-sans:  "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif; /* UI, body, forms */
-  --font-mono:  "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace; /* data, code, timestamps, token names */
+  --font-voice:
+    "Source Serif 4", Georgia, "Times New Roman", serif; /* editorial: headlines, hero story, wisdom quotes */
+  --font-sans: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif; /* UI, body, forms */
+  --font-mono:
+    "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace; /* data, code, timestamps, token names */
 
-  --text-xs:   0.75rem;   /* 12px / 16px  */
-  --text-sm:   0.875rem;  /* 14px / 20px  */
-  --text-base: 1rem;      /* 16px / 26px  */
-  --text-lg:   1.125rem;  /* 18px / 28px  */
-  --text-xl:   1.25rem;   /* 20px / 28px  */
-  --text-2xl:  1.5rem;    /* 24px / 32px  */
-  --text-3xl:  1.875rem;  /* 30px / 38px  */
-  --text-4xl:  2.25rem;   /* 36px / 44px  */
-  --text-5xl:  3rem;      /* 48px / 56px  */
+  --text-xs: 0.75rem; /* 12px / 16px  */
+  --text-sm: 0.875rem; /* 14px / 20px  */
+  --text-base: 1rem; /* 16px / 26px  */
+  --text-lg: 1.125rem; /* 18px / 28px  */
+  --text-xl: 1.25rem; /* 20px / 28px  */
+  --text-2xl: 1.5rem; /* 24px / 32px  */
+  --text-3xl: 1.875rem; /* 30px / 38px  */
+  --text-4xl: 2.25rem; /* 36px / 44px  */
+  --text-5xl: 3rem; /* 48px / 56px  */
 
-  --leading-xs: 1rem; --leading-sm: 1.25rem; --leading-base: 1.625rem;
-  --leading-lg: 1.75rem; --leading-xl: 1.75rem; --leading-2xl: 2rem;
-  --leading-3xl: 2.375rem; --leading-4xl: 2.75rem; --leading-5xl: 3.5rem;
+  --leading-xs: 1rem;
+  --leading-sm: 1.25rem;
+  --leading-base: 1.625rem;
+  --leading-lg: 1.75rem;
+  --leading-xl: 1.75rem;
+  --leading-2xl: 2rem;
+  --leading-3xl: 2.375rem;
+  --leading-4xl: 2.75rem;
+  --leading-5xl: 3.5rem;
 
   --weight-regular: 400;
   --weight-medium: 500;
@@ -99,50 +115,50 @@
   /*    1:1 so tokens and utility classes never disagree)              */
   /* ---------------------------------------------------------------- */
   --space-0: 0;
-  --space-1: 0.25rem;  /* 4px  */
-  --space-2: 0.5rem;   /* 8px  */
-  --space-3: 0.75rem;  /* 12px */
-  --space-4: 1rem;     /* 16px */
-  --space-5: 1.25rem;  /* 20px */
-  --space-6: 1.5rem;   /* 24px */
-  --space-8: 2rem;     /* 32px */
-  --space-10: 2.5rem;  /* 40px */
-  --space-12: 3rem;    /* 48px */
-  --space-16: 4rem;    /* 64px */
-  --space-20: 5rem;    /* 80px */
-  --space-24: 6rem;    /* 96px */
+  --space-1: 0.25rem; /* 4px  */
+  --space-2: 0.5rem; /* 8px  */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-8: 2rem; /* 32px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
+  --space-16: 4rem; /* 64px */
+  --space-20: 5rem; /* 80px */
+  --space-24: 6rem; /* 96px */
 
   /* ---------------------------------------------------------------- */
   /* 4. Grid / layout                                                  */
   /* ---------------------------------------------------------------- */
-  --container-sm: 40rem;   /* 640px  */
-  --container-md: 48rem;   /* 768px  */
-  --container-lg: 64rem;   /* 1024px */
-  --container-xl: 80rem;   /* 1280px */
-  --container-2xl: 96rem;  /* 1536px */
+  --container-sm: 40rem; /* 640px  */
+  --container-md: 48rem; /* 768px  */
+  --container-lg: 64rem; /* 1024px */
+  --container-xl: 80rem; /* 1280px */
+  --container-2xl: 96rem; /* 1536px */
   --container-reading: 45rem; /* 720px — long-form issue/article body copy,
                                   tuned for a 65–75ch editorial line length */
   --gutter-desktop: 1.5rem; /* 24px */
-  --gutter-mobile: 1rem;    /* 16px */
-  --sidebar-width: 15rem;       /* 240px expanded */
+  --gutter-mobile: 1rem; /* 16px */
+  --sidebar-width: 15rem; /* 240px expanded */
   --sidebar-width-collapsed: 4rem; /* 64px icon rail */
-  --topbar-height: 3.5rem;      /* 56px */
+  --topbar-height: 3.5rem; /* 56px */
 
   /* ---------------------------------------------------------------- */
   /* 5. Radii                                                          */
   /* ---------------------------------------------------------------- */
   --radius-none: 0;
-  --radius-sm: 0.25rem;  /* 4px  — inputs, small controls, Signal Card (print margin-note feel) */
-  --radius-md: 0.5rem;   /* 8px  — buttons, badges */
-  --radius-lg: 0.75rem;  /* 12px — standard cards */
-  --radius-xl: 1rem;     /* 16px — modals, sheets */
+  --radius-sm: 0.25rem; /* 4px  — inputs, small controls, Signal Card (print margin-note feel) */
+  --radius-md: 0.5rem; /* 8px  — buttons, badges */
+  --radius-lg: 0.75rem; /* 12px — standard cards */
+  --radius-xl: 1rem; /* 16px — modals, sheets */
   --radius-full: 9999px; /* avatars, pills */
 
   /* ---------------------------------------------------------------- */
   /* 6. Shadows — brand-tinted (navy), not pure black; used sparingly  */
   /* ---------------------------------------------------------------- */
   --shadow-sm: 0 1px 2px rgba(27, 36, 56, 0.06);
-  --shadow-md: 0 4px 12px rgba(27, 36, 56, 0.10);
+  --shadow-md: 0 4px 12px rgba(27, 36, 56, 0.1);
   --shadow-lg: 0 12px 32px rgba(27, 36, 56, 0.16);
   --shadow-focus-gold: 0 0 0 2px var(--surface-page), 0 0 0 4px var(--gold-700);
   --shadow-focus-danger: 0 0 0 2px var(--surface-page), 0 0 0 4px var(--danger-600);
@@ -159,71 +175,93 @@
   /* ---------------------------------------------------------------- */
   /* 8. Purpose tokens — LIGHT MODE (what components actually consume) */
   /* ---------------------------------------------------------------- */
-  --surface-page:   var(--neutral-25);
-  --surface-1:      var(--neutral-0);   /* cards, panels */
-  --surface-2:      var(--neutral-50);  /* table headers, subtle recessed areas */
+  --surface-page: var(--neutral-25);
+  --surface-1: var(--neutral-0); /* cards, panels */
+  --surface-2: var(--neutral-50); /* table headers, subtle recessed areas */
   --surface-sidebar: var(--navy-900);
   --surface-overlay: rgba(27, 36, 56, 0.6); /* branded modal overlay, not generic black */
 
-  --text-primary:   var(--neutral-900);
+  --text-primary: var(--neutral-900);
   --text-secondary: var(--neutral-600);
-  --text-muted:     var(--neutral-400);
-  --text-on-navy:   var(--neutral-0);
-  --text-on-gold:   var(--gold-900); /* gold-600 fails AA for small text; see a11y notes */
-  --text-link:      var(--navy-700);
+  --text-muted: var(--neutral-400);
+  --text-on-navy: var(--neutral-0);
+  --text-on-gold: var(--gold-900); /* gold-600 fails AA for small text; see a11y notes */
+  --text-link: var(--navy-700);
 
-  --border-default:  var(--neutral-200);
-  --border-strong:   var(--neutral-300);
-  --border-accent:   var(--gold-700); /* gold-600 fails 3:1 non-text contrast on white (2.94:1) — see a11y notes */
-  --border-danger:   var(--danger-600);
+  --border-default: var(--neutral-200);
+  --border-strong: var(--neutral-300);
+  --border-accent: var(
+    --gold-700
+  ); /* gold-600 fails 3:1 non-text contrast on white (2.94:1) — see a11y notes */
+  --border-danger: var(--danger-600);
 
-  --brand-primary:   var(--navy-800);
+  --brand-primary: var(--navy-800);
   --brand-primary-hover: var(--navy-700);
-  --brand-signal:    var(--gold-700); /* text/icon/border/focus on light surfaces — reserved for AI-generated content, active nav, required-field marker */
+  --brand-signal: var(
+    --gold-700
+  ); /* text/icon/border/focus on light surfaces — reserved for AI-generated content, active nav, required-field marker */
   --brand-signal-hover: var(--gold-800);
-  --brand-signal-fill: var(--gold-600); /* fill-only use (button/badge background, dark-surface accents) where a dark or white foreground provides the actual contrast */
+  --brand-signal-fill: var(
+    --gold-600
+  ); /* fill-only use (button/badge background, dark-surface accents) where a dark or white foreground provides the actual contrast */
 
-  --bg-success: var(--success-100); --text-success: var(--success-700); --border-success: var(--success-600);
-  --bg-warning: var(--warning-100); --text-warning: var(--warning-700); --border-warning: var(--warning-600);
-  --bg-danger:  var(--danger-100);  --text-danger:  var(--danger-700);  --border-danger-role: var(--danger-600);
-  --bg-info:    var(--info-100);    --text-info:    var(--info-700);    --border-info: var(--info-600);
+  --bg-success: var(--success-100);
+  --text-success: var(--success-700);
+  --border-success: var(--success-600);
+  --bg-warning: var(--warning-100);
+  --text-warning: var(--warning-700);
+  --border-warning: var(--warning-600);
+  --bg-danger: var(--danger-100);
+  --text-danger: var(--danger-700);
+  --border-danger-role: var(--danger-600);
+  --bg-info: var(--info-100);
+  --text-info: var(--info-700);
+  --border-info: var(--info-600);
 }
 
 /* ---------------------------------------------------------------------- */
 /* Dark mode — every purpose token flips; base palette stays mode-stable   */
 /* ---------------------------------------------------------------------- */
 [data-theme="dark"] {
-  --surface-page:   var(--neutral-950);
-  --surface-1:      var(--neutral-900);
-  --surface-2:      var(--neutral-800);
+  --surface-page: var(--neutral-950);
+  --surface-1: var(--neutral-900);
+  --surface-2: var(--neutral-800);
   --surface-sidebar: var(--neutral-950);
   --surface-overlay: rgba(11, 13, 18, 0.72);
 
-  --text-primary:   var(--neutral-50);
+  --text-primary: var(--neutral-50);
   --text-secondary: var(--neutral-300);
-  --text-muted:     var(--neutral-500);
-  --text-on-navy:   var(--neutral-50);
-  --text-on-gold:   var(--gold-100);
-  --text-link:      var(--navy-300);
+  --text-muted: var(--neutral-500);
+  --text-on-navy: var(--neutral-50);
+  --text-on-gold: var(--gold-100);
+  --text-link: var(--navy-300);
 
-  --border-default:  var(--neutral-700);
-  --border-strong:   var(--neutral-600);
-  --border-accent:   var(--gold-500);
-  --border-danger:   var(--danger-600);
+  --border-default: var(--neutral-700);
+  --border-strong: var(--neutral-600);
+  --border-accent: var(--gold-500);
+  --border-danger: var(--danger-600);
 
-  --brand-primary:   var(--navy-400);
+  --brand-primary: var(--navy-400);
   --brand-primary-hover: var(--navy-300);
-  --brand-signal:    var(--gold-500);
+  --brand-signal: var(--gold-500);
   --brand-signal-hover: var(--gold-400);
   --brand-signal-fill: var(--gold-600);
 
-  --bg-success: rgba(22, 121, 79, 0.18);  --text-success: #4ADE9C; --border-success: var(--success-600);
-  --bg-warning: rgba(180, 83, 9, 0.18);   --text-warning: #F5B266; --border-warning: var(--warning-600);
-  --bg-danger:  rgba(180, 35, 24, 0.18);  --text-danger:  #F29891; --border-danger-role: var(--danger-600);
-  --bg-info:    rgba(37, 99, 235, 0.18);  --text-info:    #8FB4FA; --border-info: var(--info-600);
+  --bg-success: rgba(22, 121, 79, 0.18);
+  --text-success: #4ade9c;
+  --border-success: var(--success-600);
+  --bg-warning: rgba(180, 83, 9, 0.18);
+  --text-warning: #f5b266;
+  --border-warning: var(--warning-600);
+  --bg-danger: rgba(180, 35, 24, 0.18);
+  --text-danger: #f29891;
+  --border-danger-role: var(--danger-600);
+  --bg-info: rgba(37, 99, 235, 0.18);
+  --text-info: #8fb4fa;
+  --border-info: var(--info-600);
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.32);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.40);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.48);
 }
 
@@ -234,26 +272,26 @@
 /* Design System doc Section 9 for the mapping table.                     */
 /* ---------------------------------------------------------------------- */
 :root {
-  --background: 210 27% 98%;         /* surface-page  */
-  --foreground: 222 25% 10%;         /* text-primary  */
-  --card: 0 0% 100%;                 /* surface-1     */
+  --background: 210 27% 98%; /* surface-page  */
+  --foreground: 222 25% 10%; /* text-primary  */
+  --card: 0 0% 100%; /* surface-1     */
   --card-foreground: 222 25% 10%;
   --popover: 0 0% 100%;
   --popover-foreground: 222 25% 10%;
-  --primary: 223 32% 26%;            /* navy-800      */
+  --primary: 223 32% 26%; /* navy-800      */
   --primary-foreground: 0 0% 100%;
-  --secondary: 216 27% 95%;          /* navy-50       */
+  --secondary: 216 27% 95%; /* navy-50       */
   --secondary-foreground: 223 32% 26%;
   --muted: 210 20% 96%;
   --muted-foreground: 220 12% 43%;
-  --accent: 45 100% 37%;             /* gold-600 — background tint use only */
-  --accent-foreground: 44 100% 15%;  /* gold-900 — required for AA on the accent tint above */
-  --destructive: 6 71% 39%;          /* danger-600    */
+  --accent: 45 100% 37%; /* gold-600 — background tint use only */
+  --accent-foreground: 44 100% 15%; /* gold-900 — required for AA on the accent tint above */
+  --destructive: 6 71% 39%; /* danger-600    */
   --destructive-foreground: 0 0% 100%;
   --border: 216 17% 87%;
   --input: 216 17% 87%;
-  --ring: 44 100% 27%;               /* gold-700 — gold-600 fails 3:1 focus-ring contrast, see a11y notes */
-  --radius: 0.5rem;                  /* radius-md     */
+  --ring: 44 100% 27%; /* gold-700 — gold-600 fails 3:1 focus-ring contrast, see a11y notes */
+  --radius: 0.5rem; /* radius-md     */
 }
 [data-theme="dark"] {
   --background: 220 19% 6%;
@@ -268,12 +306,12 @@
   --secondary-foreground: 210 20% 97%;
   --muted: 222 18% 16%;
   --muted-foreground: 220 12% 65%;
-  --accent: 46 84% 44%;               /* gold-500 */
+  --accent: 46 84% 44%; /* gold-500 */
   --accent-foreground: 44 100% 15%;
   --destructive: 6 62% 68%;
   --destructive-foreground: 222 25% 10%;
   --border: 222 15% 24%;
   --input: 222 15% 24%;
-  --ring: 46 84% 44%;                 /* gold-500 — passes at dark-mode luminance, see a11y notes */
+  --ring: 46 84% 44%; /* gold-500 — passes at dark-mode luminance, see a11y notes */
   --radius: 0.5rem;
 }

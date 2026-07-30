@@ -12,11 +12,25 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+} from "@/components/ui/form";
 
 const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"] as const;
 
-export function ScheduleForm({ publicationId, initial }: { publicationId: string; initial: Partial<PublishingSchedule> }) {
+export function ScheduleForm({
+  publicationId,
+  initial,
+}: {
+  publicationId: string;
+  initial: Partial<PublishingSchedule>;
+}) {
   const router = useRouter();
   const form = useForm<PublishingSchedule>({
     resolver: zodResolver(publishingScheduleSchema),
@@ -86,7 +100,10 @@ export function ScheduleForm({ publicationId, initial }: { publicationId: string
                   checked={daysOfWeek?.includes(day)}
                   onCheckedChange={(checked) => {
                     const current = form.getValues("daysOfWeek") ?? [];
-                    form.setValue("daysOfWeek", checked ? [...current, day] : current.filter((d) => d !== day));
+                    form.setValue(
+                      "daysOfWeek",
+                      checked ? [...current, day] : current.filter((d) => d !== day)
+                    );
                   }}
                 />
                 <Label htmlFor={`day-${day}`} className="text-sm font-normal capitalize">
@@ -120,7 +137,9 @@ export function ScheduleForm({ publicationId, initial }: { publicationId: string
               <FormControl>
                 <Input placeholder="America/New_York" {...field} />
               </FormControl>
-              <FormDescription>IANA timezone name. Read by the Milestone 10 scheduler, not enforced here.</FormDescription>
+              <FormDescription>
+                IANA timezone name. Read by the Milestone 10 scheduler, not enforced here.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

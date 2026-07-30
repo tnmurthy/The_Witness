@@ -19,7 +19,20 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    ignores: [".next/**", "node_modules/**", "supabase/migrations/**", "next-env.d.ts"],
+    // scripts/ holds standalone Node CLI tooling (e.g. generate-db-types.js,
+    // run directly via `node scripts/x.js`, not bundled into the Next.js
+    // app) — conventionally excluded from the application source's lint
+    // rules (like no-require-imports, which assumes ESM-only app code)
+    // the same way supabase/migrations/ is excluded from JS/TS rules
+    // above for not being JS/TS at all.
+    ignores: [
+      ".next/**",
+      "node_modules/**",
+      "supabase/migrations/**",
+      "next-env.d.ts",
+      "scripts/**",
+      "coverage/**",
+    ],
   },
   {
     rules: {
