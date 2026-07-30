@@ -63,7 +63,11 @@ function pgTypeToTs(dataType, udtName) {
 }
 
 async function main() {
-  const client = new Client({ connectionString: process.env.TYPEGEN_DB_URL });
+  const client = new Client({
+    connectionString: process.env.TYPEGEN_DB_URL,
+    ssl: { rejectUnauthorized: false },
+    family: 4,
+  });
   await client.connect();
 
   const enumsResult = await client.query(`

@@ -14,6 +14,11 @@ Write-Host "================================================" -ForegroundColor C
 Write-Host ""
 
 # ── Load .env.local ───────────────────────────────────────────────────────────
+# Note: If you get ETIMEDOUT errors connecting to Postgres, your system
+# may be trying IPv6. The scripts now use family:4 to force IPv4.
+# If the direct DB URL still fails, use the pooler URL (port 5432 session mode):
+# postgresql://postgres.qfonrbwphrlejphcaiwx:[password]@aws-0-ap-south-1.pooler.supabase.com:5432/postgres
+
 if (-not (Test-Path ".env.local")) {
     Write-Host "ERROR: .env.local not found" -ForegroundColor Red
     Write-Host "Copy .env.example to .env.local and fill in your Supabase values."

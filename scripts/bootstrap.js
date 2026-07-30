@@ -88,7 +88,11 @@ async function checkDatabase() {
     console.log(`  ${FAIL}  pg not installed - run npm install`);
     process.exit(1);
   }
-  const client = new pg.Client({ connectionString: process.env.SUPABASE_DB_URL });
+  const client = new pg.Client({
+    connectionString: process.env.SUPABASE_DB_URL,
+    ssl: { rejectUnauthorized: false },
+    family: 4,
+  });
   try {
     await client.connect();
     const { rows } = await client.query("select version()");
@@ -124,7 +128,11 @@ async function applyMigrations() {
     .sort();
   console.log(`  Found ${files.length} migration files`);
 
-  const client = new pg.Client({ connectionString: process.env.SUPABASE_DB_URL });
+  const client = new pg.Client({
+    connectionString: process.env.SUPABASE_DB_URL,
+    ssl: { rejectUnauthorized: false },
+    family: 4,
+  });
   await client.connect();
   await client.query(`
     create table if not exists public._witness_migrations (
@@ -207,7 +215,11 @@ async function verifyStorage() {
 async function verifyRealtime() {
   console.log(`\n${c.bold("Step 6: Realtime")}`);
   const pg = require("pg");
-  const client = new pg.Client({ connectionString: process.env.SUPABASE_DB_URL });
+  const client = new pg.Client({
+    connectionString: process.env.SUPABASE_DB_URL,
+    ssl: { rejectUnauthorized: false },
+    family: 4,
+  });
   await client.connect();
   for (const table of ["ai_jobs", "delivery_logs", "issues"]) {
     const { rows } = await client.query(
@@ -231,7 +243,11 @@ async function verifyRealtime() {
 async function verifyAuthTrigger() {
   console.log(`\n${c.bold("Step 7: Auth trigger and helper functions")}`);
   const pg = require("pg");
-  const client = new pg.Client({ connectionString: process.env.SUPABASE_DB_URL });
+  const client = new pg.Client({
+    connectionString: process.env.SUPABASE_DB_URL,
+    ssl: { rejectUnauthorized: false },
+    family: 4,
+  });
   await client.connect();
   const { rows } = await client.query(
     "select 1 from information_schema.triggers where trigger_name='on_auth_user_created' and event_object_schema='auth'"
