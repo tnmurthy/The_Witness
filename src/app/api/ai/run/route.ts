@@ -6,6 +6,7 @@ import { isAIFunctionId, AI_FUNCTIONS_REGISTRY } from "@/lib/ai/functions/regist
 import { AIProviderError } from "@/lib/ai/types";
 import { isProviderConfigured, getDefaultProviderId } from "@/lib/ai/registry";
 import { logger } from "@/lib/logger";
+import { getAIRateLimiter } from "@/lib/rate-limit";
 
 const requestSchema = z.object({
   functionId: z.string(),
@@ -33,6 +34,26 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // Rate limit: 10 AI requests per minute per user
+  const limiter = getAIRateLimiter();
+  if (limiter) {
+    const { success, limit, remaining, reset } = await limiter.limit(user.id);
+    if (!success) {
+      logger.warn("AI rate limit exceeded", { userId: user.id });
+      return NextResponse.json(
+        { error: "Rate limit exceeded — please wait before making another AI request" },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": String(limit),
+            "X-RateLimit-Remaining": String(remaining),
+            "X-RateLimit-Reset": String(reset),
+            "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)),
+          },
+        }
+      );
+    }
+  }
   const body = await request.json().catch(() => null);
   const parsed = requestSchema.safeParse(body);
   if (!parsed.success) {

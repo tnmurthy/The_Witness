@@ -20,7 +20,21 @@ export default async function IssueBuilderPage({ params }: { params: Promise<{ i
     .single();
   if (!issue) notFound();
 
-  const { data: profile } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name, role")
+    .eq("id", user.id)
+    .single();
+
+  const { data: membership } = await supabase
+    .from("publication_members")
+    .select("role")
+    .eq("publication_id", issue.publication_id)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  const membershipRole = (membership?.role ?? null) as
+    "editor_in_chief" | "editor" | "writer" | "researcher" | null;
 
   const { data: sections } = await supabase
     .from("sections")
@@ -56,6 +70,8 @@ export default async function IssueBuilderPage({ params }: { params: Promise<{ i
       initialBlocks={blocks}
       currentUserId={user.id}
       currentUserName={profile?.full_name || user.email || "Someone"}
+      membershipRole={membershipRole}
+      platformRole={profile?.role ?? "subscriber"}
     />
   );
 }

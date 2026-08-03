@@ -22,6 +22,7 @@ import { GenerateIssueDialog } from "@/components/ai-workspace/generate-issue-di
 import { AIAssistantSheet } from "@/components/ai-workspace/ai-assistant-sheet";
 import { WisdomRecommendationsPanel } from "@/components/wisdom/wisdom-recommendations-panel";
 import { IssueGraphPanel } from "@/components/graph/issue-graph-panel";
+import { PublishButton } from "./publish-button";
 import { ErrorBoundary } from "@/components/error/error-boundary";
 
 interface IssueBuilderShellProps {
@@ -36,6 +37,8 @@ interface IssueBuilderShellProps {
   initialBlocks: BlockRow[];
   currentUserId: string;
   currentUserName: string;
+  membershipRole: "editor_in_chief" | "editor" | "writer" | "researcher" | null;
+  platformRole: string;
 }
 
 /**
@@ -52,6 +55,8 @@ export function IssueBuilderShell({
   initialBlocks,
   currentUserId,
   currentUserName,
+  membershipRole,
+  platformRole,
 }: IssueBuilderShellProps) {
   const hydrate = useIssueBuilderStore((s) => s.hydrate);
   const applyRemoteBlockChange = useIssueBuilderStore((s) => s.applyRemoteBlockChange);
@@ -135,6 +140,14 @@ export function IssueBuilderShell({
           <IssueGraphPanel issueId={issue.id} />
           {firstSectionId && <GenerateIssueDialog issueId={issue.id} sectionId={firstSectionId} />}
           <VersionHistorySheet issueId={issue.id} />
+          <PublishButton
+            issueId={issue.id}
+            publicationId={issue.publication_id}
+            issueTitle={issue.title}
+            currentStatus={issue.status}
+            membershipRole={membershipRole}
+            platformRole={platformRole}
+          />
         </div>
       </div>
 

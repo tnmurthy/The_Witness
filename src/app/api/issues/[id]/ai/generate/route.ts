@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { canEditIssue } from "@/lib/auth/issue-permissions";
 import { runAIFunction } from "@/lib/ai/orchestrator";
+import { getAIRateLimiter } from "@/lib/rate-limit";
 import { AIProviderError } from "@/lib/ai/types";
 import { isProviderConfigured, getDefaultProviderId } from "@/lib/ai/registry";
 import type { GenerateIssueOutput } from "@/lib/ai/functions/generate-issue";
@@ -40,6 +41,25 @@ export async function POST(request: Request, { params }: RouteParams) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Rate limit: 10 AI requests per minute per user (same limit as /api/ai/run)
+  const limiter = getAIRateLimiter();
+  if (limiter) {
+    const { success, limit, remaining, reset } = await limiter.limit(user.id);
+    if (!success) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded — please wait before generating more content" },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)),
+            "X-RateLimit-Limit": String(limit),
+            "X-RateLimit-Remaining": String(remaining),
+          },
+        }
+      );
+    }
+  }
 
   if (!(await canEditIssue(supabase, issueId, user.id))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
