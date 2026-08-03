@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createWisdomEntrySchema, sourceFieldsSchemaFor } from "@/lib/validation/wisdom";
 import { upsertWisdomSourceFields } from "@/lib/wisdom/source-fields";
 import { logger } from "@/lib/logger";
+import { parsePaginationParams, buildPaginatedResponse } from "@/lib/pagination";
 
 /**
  * GET /api/wisdom-entries?search=&category=&sourceType=&reviewStatus=
@@ -24,6 +25,7 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { searchParams } = new URL(request.url);
+  const { limit } = parsePaginationParams(request.url);
   const search = searchParams.get("search");
   const categoryId = searchParams.get("category");
   const sourceType = searchParams.get("sourceType");
@@ -35,7 +37,7 @@ export async function GET(request: Request) {
       "id, title, source_type, translation, category_id, keywords, review_status, created_at, wisdom_categories(name)"
     )
     .order("created_at", { ascending: false })
-    .limit(100);
+    .limit(limit + 1);
 
   if (search) query = query.textSearch("search_vector", search, { type: "websearch" });
   if (categoryId) query = query.eq("category_id", categoryId);
@@ -49,7 +51,11 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Failed to load wisdom entries" }, { status: 500 });
   }
 
-  return NextResponse.json({ entries: data });
+  const paginated = buildPaginatedResponse(
+    (data ?? []) as unknown as Array<{ id: string; created_at: string } & Record<string, unknown>>,
+    limit
+  );
+  return NextResponse.json({ entries: paginated.data, pagination: paginated.pagination });
 }
 
 export async function POST(request: Request) {

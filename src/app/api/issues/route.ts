@@ -2,14 +2,15 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createIssueSchema } from "@/lib/validation/issue-builder";
 import { logger } from "@/lib/logger";
+import { parsePaginationParams, buildPaginatedResponse } from "@/lib/pagination";
 
 /**
- * GET  /api/issues?publicationId=X — issues for a publication the caller
- *      is a member of (defaults to every issue across every publication
- *      the caller belongs to if publicationId is omitted).
- * POST /api/issues — create an issue with one starting empty section, so
- *      the builder canvas never opens to a completely blank tree with no
- *      drop target.
+ * GET  /api/issues?publicationId=X&cursor=BASE64&limit=25
+ * POST /api/issues — create an issue with one starting empty section.
+ *
+ * Sprint 3: added keyset pagination (cursor + limit) — previously returned
+ * all issues with no limit, which becomes a correctness problem for
+ * publications with many issues.
  */
 export async function GET(request: Request) {
   const supabase = await createClient();
@@ -20,15 +21,21 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const publicationId = searchParams.get("publicationId");
+  const { limit, afterDate, afterId } = parsePaginationParams(request.url);
 
   let query = supabase
     .from("issues")
     .select(
-      "id, publication_id, title, slug, status, scheduled_at, published_at, created_by, updated_at, publications(name, slug)"
+      "id, publication_id, title, slug, status, scheduled_at, published_at, created_by, updated_at, created_at, publications(name, slug)"
     )
-    .order("updated_at", { ascending: false });
+    .order("updated_at", { ascending: false })
+    .order("id", { ascending: false })
+    .limit(limit + 1); // fetch one extra to detect hasMore
 
   if (publicationId) query = query.eq("publication_id", publicationId);
+  if (afterDate && afterId) {
+    query = query.or(`updated_at.lt.${afterDate},and(updated_at.eq.${afterDate},id.lt.${afterId})`);
+  }
 
   const { data, error } = await query;
 
@@ -37,7 +44,12 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Failed to load issues" }, { status: 500 });
   }
 
-  return NextResponse.json({ issues: data });
+  const paginated = buildPaginatedResponse(
+    (data ?? []) as Array<{ id: string; created_at: string } & Record<string, unknown>>,
+    limit
+  );
+
+  return NextResponse.json({ issues: paginated.data, pagination: paginated.pagination });
 }
 
 function slugify(value: string): string {

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createPersonSchema } from "@/lib/validation/graph";
 import { logger } from "@/lib/logger";
+import { parsePaginationParams, buildPaginatedResponse } from "@/lib/pagination";
 
 function slugify(value: string): string {
   return (
@@ -21,13 +22,14 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { searchParams } = new URL(request.url);
+  const { limit } = parsePaginationParams(request.url);
   const search = searchParams.get("search");
 
   let query = supabase
     .from("people")
     .select("id, full_name, slug, bio, avatar_url")
     .order("full_name")
-    .limit(100);
+    .limit(limit + 1);
   if (search) query = query.textSearch("search_vector", search, { type: "websearch" });
 
   const { data, error } = await query;
@@ -36,7 +38,11 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Failed to load people" }, { status: 500 });
   }
 
-  return NextResponse.json({ people: data });
+  const paginated = buildPaginatedResponse(
+    (data ?? []) as unknown as Array<{ id: string; created_at: string } & Record<string, unknown>>,
+    limit
+  );
+  return NextResponse.json({ people: paginated.data, pagination: paginated.pagination });
 }
 
 export async function POST(request: Request) {

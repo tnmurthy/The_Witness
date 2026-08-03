@@ -72,3 +72,16 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     );
   }
 }
+
+/**
+ * Simple route-level error fallback for Next.js error.tsx files.
+ * These must be "use client" components.
+ */
+export function RouteErrorFallback({ error }: { error: Error }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-24 text-center">
+      <p className="text-sm font-medium text-red-600">Something went wrong</p>
+      <p className="mt-1 text-xs text-neutral-400">{error.message}</p>
+    </div>
+  );
+}

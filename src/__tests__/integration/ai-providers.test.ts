@@ -2,7 +2,6 @@
  * Real AI provider integration tests.
  * NOT in default test suite — makes real paid API calls.
  *
-import { logger } from "@/lib/logger";
  * Run with:
  *   ANTHROPIC_API_KEY=sk-ant-... npx vitest run src/__tests__/integration/
  *   OPENAI_API_KEY=sk-...       npx vitest run src/__tests__/integration/
@@ -33,7 +32,7 @@ describe.skipIf(!hasAnthropic && !hasOpenAI)("Real AI provider calls — require
       expect(typeof result.output).toBe("string");
       expect((result.output as string).length).toBeGreaterThan(20);
       expect(result.costUsd).toBeGreaterThan(0);
-      logger.info("Anthropic rewrite output:", (result.output as string).slice(0, 100));
+      console.warn("Anthropic rewrite output:", (result.output as string).slice(0, 100));
     }, 30000);
   });
 
@@ -53,7 +52,7 @@ describe.skipIf(!hasAnthropic && !hasOpenAI)("Real AI provider calls — require
 
       expect(typeof result.output).toBe("string");
       expect((result.output as string).length).toBeGreaterThan(20);
-      logger.info("OpenAI rewrite output:", (result.output as string).slice(0, 100));
+      console.warn("OpenAI rewrite output:", (result.output as string).slice(0, 100));
     }, 30000);
   });
 });
