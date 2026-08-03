@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 
     logger.info("Unsubscribed", { subscriberId, publicationId });
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
     return NextResponse.redirect(`${siteUrl}/unsubscribed`, { status: 302 });
   } catch (err) {
     logger.error("Unsubscribe failed", { token, error: err instanceof Error ? err.message : String(err) });
