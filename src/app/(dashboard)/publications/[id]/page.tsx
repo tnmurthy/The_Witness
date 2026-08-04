@@ -17,6 +17,7 @@ import { EditorialGuidelinesForm } from "@/components/publications/editorial-gui
 import { ScheduleForm } from "@/components/publications/schedule-form";
 import { TemplatesPanel } from "@/components/publications/templates-panel";
 import { AiPromptTemplatesPanel } from "@/components/publications/ai-prompt-templates-panel";
+import { SubscribersPanel } from "@/components/publications/subscribers-panel";
 
 export const metadata = { title: "Publication settings" };
 
@@ -76,6 +77,7 @@ export default async function PublicationDetailPage({ params }: { params: Promis
           <TabsTrigger value="schedule">Publishing Schedule</TabsTrigger>
           <TabsTrigger value="templates">Templates</TabsTrigger>
           <TabsTrigger value="ai-prompts">AI Prompt Templates</TabsTrigger>
+          <TabsTrigger value="subscribers">Subscribers</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general">
@@ -112,6 +114,10 @@ export default async function PublicationDetailPage({ params }: { params: Promis
 
         <TabsContent value="ai-prompts">
           <AiPromptTemplatesPanel publicationId={id} initialTemplates={aiTemplates ?? []} />
+        </TabsContent>
+
+        <TabsContent value="subscribers">
+          <SubscribersPanel publicationId={id} />
         </TabsContent>
       </Tabs>
     </div>

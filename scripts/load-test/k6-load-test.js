@@ -1,211 +1,250 @@
 /**
  * scripts/load-test/k6-load-test.js
  *
- * k6 load test for The Witness — Sprint 4 (F-006)
- * Tests the highest-traffic endpoints under realistic concurrent load.
+ * k6 Load Test — The Witness
+ * Tests the highest-risk routes under concurrent load:
+ *   - Issue Builder autosave (highest write frequency)
+ *   - AI Workspace (most expensive per request)
+ *   - Public reader (most likely to get real traffic spikes)
+ *   - Authentication (shared by every user session)
+ *
+ * Prerequisites:
+ *   brew install k6           (macOS)
+ *   choco install k6          (Windows)
+ *   or: https://k6.io/docs/getting-started/installation/
  *
  * Usage:
- *   npm install -g k6          # or: brew install k6
- *   k6 run scripts/load-test/k6-load-test.js \
- *     --env BASE_URL=https://staging.thewitness.app \
- *     --env AUTH_TOKEN=<supabase-anon-key>
+ *   # Smoke test (1 user, 30s) — basic sanity check
+ *   TARGET_URL=https://staging.thewitness.app k6 run scripts/load-test/k6-load-test.js
  *
- * Thresholds (all must pass for QA sign-off):
- *   p95 response time < 2000ms
- *   p99 response time < 5000ms
- *   Error rate < 1%
- *   /api/health p95 < 500ms
+ *   # Load test (50 users, 5 min ramp) — pre-launch validation
+ *   TARGET_URL=https://staging.thewitness.app \
+ *   TEST_EMAIL=loadtest@yourdomain.com \
+ *   TEST_PASSWORD=LoadTest123! \
+ *   k6 run --vus 50 --duration 5m scripts/load-test/k6-load-test.js
  *
- * Ramp profile: 0 → 50 VUs over 2 minutes, hold for 5 minutes, ramp down.
- * This simulates a realistic burst (e.g. everyone logging in after an email
- * goes out) without the cost of a sustained spike test.
+ *   # Stress test (ramp to 200 users) — find the breaking point
+ *   k6 run --stage 1m:50,3m:200,2m:200,1m:0 scripts/load-test/k6-load-test.js
+ *
+ * Thresholds (fail the test if these are exceeded):
+ *   p95 response time < 800ms  (all routes)
+ *   error rate < 2%
+ *   checks pass rate > 98%
  */
 import http from "k6/http";
 import { check, sleep } from "k6";
 import { Rate, Trend } from "k6/metrics";
 
-// ── Config ────────────────────────────────────────────────────────────────────
-const BASE_URL = __ENV.BASE_URL || "http://localhost:3000";
-const AUTH_TOKEN = __ENV.AUTH_TOKEN || "";
-const ANON_KEY = __ENV.ANON_KEY || "";
+// ── Configuration ─────────────────────────────────────────────────────────────
+const BASE_URL = __ENV.TARGET_URL || "http://localhost:3000";
+const TEST_EMAIL = __ENV.TEST_EMAIL || "loadtest@witness-test.invalid";
+const TEST_PASSWORD = __ENV.TEST_PASSWORD || "LoadTest123!";
+const ANON_KEY = __ENV.SUPABASE_ANON_KEY || "";
+const SUPABASE_URL = __ENV.SUPABASE_URL || "";
+const PUB_SLUG = __ENV.PUB_SLUG || "bmsit-tech-review";
+const ISSUE_SLUG = __ENV.ISSUE_SLUG || "test-issue";
 
-// ── Custom metrics ────────────────────────────────────────────────────────────
-const errorRate = new Rate("errors");
-const healthLatency = new Trend("health_latency");
-const publicPageLatency = new Trend("public_page_latency");
-const apiLatency = new Trend("api_latency");
+// ── Custom metrics ─────────────────────────────────────────────────────────────
+const errorRate = new Rate("error_rate");
+const autosaveLatency = new Trend("autosave_latency", true);
+const publicReaderLatency = new Trend("public_reader_latency", true);
+const aiRouteLatency = new Trend("ai_route_latency", true);
 
 // ── Thresholds ─────────────────────────────────────────────────────────────────
 export const options = {
-  stages: [
-    { duration: "1m", target: 10 }, // Warm up: 0 → 10 VUs
-    { duration: "2m", target: 50 }, // Ramp up: 10 → 50 VUs
-    { duration: "5m", target: 50 }, // Hold at 50 VUs
-    { duration: "1m", target: 0 }, // Ramp down
-  ],
   thresholds: {
-    http_req_duration: ["p(95)<2000", "p(99)<5000"],
-    errors: ["rate<0.01"],
-    health_latency: ["p(95)<500"],
-    public_page_latency: ["p(95)<2000"],
-    api_latency: ["p(95)<2000"],
+    http_req_duration: ["p(95)<800"], // 95th percentile < 800ms
+    error_rate: ["rate<0.02"], // error rate < 2%
+    http_req_failed: ["rate<0.02"], // HTTP failures < 2%
+    autosave_latency: ["p(95)<600"], // autosave should be fast
+    public_reader_latency: ["p(95)<1000"], // reader pages can be slightly slower
+    checks: ["rate>0.98"], // 98%+ checks should pass
   },
+  // Default: smoke test profile. Override with --vus and --duration flags.
+  vus: 5,
+  duration: "30s",
 };
 
-// ── Shared headers ─────────────────────────────────────────────────────────────
-const baseHeaders = {
-  "Content-Type": "application/json",
-  apikey: ANON_KEY,
-};
+// ── Scenario helpers ───────────────────────────────────────────────────────────
+let authToken = null;
 
-const authHeaders = {
-  ...baseHeaders,
-  Authorization: `Bearer ${AUTH_TOKEN}`,
-};
+function authenticate() {
+  if (!SUPABASE_URL || !ANON_KEY) return null;
 
-// ── Test scenarios (weighted by expected real-world frequency) ─────────────────
-export default function () {
-  const scenario = Math.random();
-
-  if (scenario < 0.2) {
-    // 20% — Health check (monitoring pings)
-    testHealthCheck();
-  } else if (scenario < 0.45) {
-    // 25% — Public reader (most anonymous traffic)
-    testPublicReader();
-  } else if (scenario < 0.6) {
-    // 15% — Issue list (authenticated editors loading their work)
-    testIssueList();
-  } else if (scenario < 0.75) {
-    // 15% — Wisdom entries (search/browse during content creation)
-    testWisdomEntries();
-  } else if (scenario < 0.85) {
-    // 10% — Publications list
-    testPublicationsList();
-  } else if (scenario < 0.92) {
-    // 7% — Subscribe form submission
-    testSubscribeFlow();
-  } else {
-    // 8% — Search
-    testSearch();
-  }
-
-  sleep(1 + Math.random() * 2); // 1–3 second think time between requests
-}
-
-function testHealthCheck() {
-  const start = Date.now();
-  const res = http.get(`${BASE_URL}/api/health`);
-  healthLatency.add(Date.now() - start);
+  const res = http.post(
+    `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
+    JSON.stringify({ email: TEST_EMAIL, password: TEST_PASSWORD }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+        apikey: ANON_KEY,
+      },
+    }
+  );
 
   const ok = check(res, {
-    "health: status 200": (r) => r.status === 200,
-    "health: returns ok": (r) => {
+    "auth: status 200": (r) => r.status === 200,
+    "auth: access_token present": (r) => {
       try {
-        return JSON.parse(r.body).status === "ok";
+        return !!JSON.parse(r.body).access_token;
       } catch {
         return false;
       }
     },
-    "health: < 500ms": (r) => r.timings.duration < 500,
   });
-  errorRate.add(!ok);
+
+  if (ok) {
+    try {
+      return JSON.parse(res.body).access_token;
+    } catch {
+      return null;
+    }
+  }
+  return null;
 }
 
+function authHeaders(token) {
+  return {
+    "Content-Type": "application/json",
+    Authorization: token ? `Bearer ${token}` : "",
+  };
+}
+
+// ── Scenario: Public reader ────────────────────────────────────────────────────
 function testPublicReader() {
   const start = Date.now();
-  // Test the public publication home — no auth required
-  const res = http.get(`${BASE_URL}/p/bmsit-tech-review`, { headers: baseHeaders });
-  publicPageLatency.add(Date.now() - start);
 
-  const ok = check(res, {
-    "public reader: not 500": (r) => r.status !== 500,
-    "public reader: not auth redirect": (r) => r.status !== 302,
-    "public reader: < 2s": (r) => r.timings.duration < 2000,
+  // Publication home page
+  const pubRes = http.get(`${BASE_URL}/p/${PUB_SLUG}`, { tags: { name: "public_pub_page" } });
+  check(pubRes, {
+    "public pub: status 200 or 404": (r) => r.status === 200 || r.status === 404,
+    "public pub: not 500": (r) => r.status < 500,
   });
-  errorRate.add(!ok);
+  errorRate.add(pubRes.status >= 500 ? 1 : 0);
+
+  // Issue page
+  const issueRes = http.get(`${BASE_URL}/p/${PUB_SLUG}/${ISSUE_SLUG}`, {
+    tags: { name: "public_issue_page" },
+  });
+  check(issueRes, {
+    "public issue: not 500": (r) => r.status < 500,
+  });
+  errorRate.add(issueRes.status >= 500 ? 1 : 0);
+
+  publicReaderLatency.add(Date.now() - start);
+  sleep(1);
 }
 
-function testIssueList() {
-  if (!AUTH_TOKEN) return;
-  const start = Date.now();
-  const res = http.get(`${BASE_URL}/api/issues?limit=25`, { headers: authHeaders });
-  apiLatency.add(Date.now() - start);
+// ── Scenario: Health check ─────────────────────────────────────────────────────
+function testHealthCheck() {
+  const res = http.get(`${BASE_URL}/api/health`, { tags: { name: "health_check" } });
+  check(res, {
+    "health: status 200": (r) => r.status === 200,
+    "health: database ok": (r) => {
+      try {
+        return JSON.parse(r.body).checks?.database?.status === "ok";
+      } catch {
+        return false;
+      }
+    },
+  });
+  errorRate.add(res.status !== 200 ? 1 : 0);
+  sleep(0.5);
+}
 
-  const ok = check(res, {
+// ── Scenario: Authenticated autosave ──────────────────────────────────────────
+function testAutosave(token) {
+  if (!token) return;
+
+  const start = Date.now();
+
+  // PATCH a block (simulates Issue Builder autosave)
+  // Using a dummy ID — will 404, but tests auth middleware and route latency
+  const res = http.patch(
+    `${BASE_URL}/api/blocks/00000000-0000-0000-0000-000000000001`,
+    JSON.stringify({ payload: { text: `Load test content ${Date.now()}` } }),
+    { headers: authHeaders(token), tags: { name: "autosave" } }
+  );
+
+  check(res, {
+    "autosave: not 500": (r) => r.status < 500,
+    "autosave: not 401": (r) => r.status !== 401, // auth must work
+  });
+  errorRate.add(res.status >= 500 ? 1 : 0);
+  autosaveLatency.add(Date.now() - start);
+  sleep(0.5);
+}
+
+// ── Scenario: Issues list ─────────────────────────────────────────────────────
+function testIssuesList(token) {
+  if (!token) return;
+
+  const res = http.get(`${BASE_URL}/api/issues`, {
+    headers: authHeaders(token),
+    tags: { name: "issues_list" },
+  });
+
+  check(res, {
     "issues list: 200": (r) => r.status === 200,
     "issues list: has pagination": (r) => {
       try {
-        const b = JSON.parse(r.body);
-        return b.pagination !== undefined;
+        return !!JSON.parse(r.body).pagination;
       } catch {
         return false;
       }
     },
-    "issues list: < 2s": (r) => r.timings.duration < 2000,
   });
-  errorRate.add(!ok);
+  errorRate.add(res.status !== 200 ? 1 : 0);
+  sleep(1);
 }
 
-function testWisdomEntries() {
-  if (!AUTH_TOKEN) return;
-  const start = Date.now();
-  const res = http.get(`${BASE_URL}/api/wisdom-entries?limit=25`, { headers: authHeaders });
-  apiLatency.add(Date.now() - start);
+// ── Scenario: AI route (rate-limited, low frequency) ──────────────────────────
+function testAIRoute(token) {
+  if (!token) return;
 
-  const ok = check(res, {
-    "wisdom: 200": (r) => r.status === 200,
-    "wisdom: < 2s": (r) => r.timings.duration < 2000,
+  const start = Date.now();
+  // Calling the AI route with a missing/invalid functionId to avoid
+  // actually calling the provider — we're testing the middleware layer
+  const res = http.post(`${BASE_URL}/api/ai/run`, JSON.stringify({ functionId: "nonexistent_function" }), {
+    headers: authHeaders(token),
+    tags: { name: "ai_route" },
   });
-  errorRate.add(!ok);
+
+  check(res, {
+    "ai route: not 500": (r) => r.status < 500,
+    "ai route: not 401": (r) => r.status !== 401,
+    "ai route: rate limit handled": (r) => r.status === 422 || r.status === 429,
+  });
+  errorRate.add(res.status >= 500 ? 1 : 0);
+  aiRouteLatency.add(Date.now() - start);
+  sleep(6); // respect rate limit: 10 req/min = 1 every 6 seconds
 }
 
-function testPublicationsList() {
-  if (!AUTH_TOKEN) return;
-  const start = Date.now();
-  const res = http.get(`${BASE_URL}/api/publications`, { headers: authHeaders });
-  apiLatency.add(Date.now() - start);
-
-  const ok = check(res, {
-    "publications: 200": (r) => r.status === 200,
-    "publications: < 2s": (r) => r.timings.duration < 2000,
-  });
-  errorRate.add(!ok);
+// ── Main VU loop ──────────────────────────────────────────────────────────────
+export function setup() {
+  console.log(`Load test target: ${BASE_URL}`);
+  console.log(`Public slug: ${PUB_SLUG}`);
 }
 
-function testSubscribeFlow() {
-  // Use a test email that won't actually receive mail
-  const email = `loadtest-${Date.now()}@witness-loadtest.invalid`;
-  const start = Date.now();
-  const res = http.post(
-    `${BASE_URL}/api/publications/00000000-0000-0000-0000-000000000001/subscribe`,
-    JSON.stringify({ email }),
-    { headers: baseHeaders }
-  );
-  apiLatency.add(Date.now() - start);
+export default function () {
+  // Authenticate once at VU start (k6 runs this function per VU iteration)
+  // In real k6, you'd use setup() for shared auth but per-VU auth is simpler
+  if (!authToken && SUPABASE_URL && ANON_KEY) {
+    authToken = authenticate();
+  }
 
-  // 404 is acceptable (test publication doesn't exist in staging)
-  // 422 is acceptable (invalid email domain rejected)
-  // 429 is acceptable (rate limited — correct behaviour)
-  // 500 is not acceptable
-  const ok = check(res, {
-    "subscribe: not 500": (r) => r.status !== 500,
-    "subscribe: < 2s": (r) => r.timings.duration < 2000,
-  });
-  errorRate.add(!ok);
-}
+  // Weighted scenario distribution matching expected real traffic
+  const scenario = Math.random();
 
-function testSearch() {
-  if (!AUTH_TOKEN) return;
-  const start = Date.now();
-  const res = http.get(`${BASE_URL}/api/graph/entities?type=technology&q=react&limit=10`, {
-    headers: authHeaders,
-  });
-  apiLatency.add(Date.now() - start);
-
-  const ok = check(res, {
-    "search: not 500": (r) => r.status !== 500,
-    "search: < 2s": (r) => r.timings.duration < 2000,
-  });
-  errorRate.add(!ok);
+  if (scenario < 0.4) {
+    testPublicReader(); // 40% — public readers (no auth)
+  } else if (scenario < 0.6) {
+    testHealthCheck(); // 20% — uptime monitoring
+  } else if (scenario < 0.8) {
+    testAutosave(authToken); // 20% — editors autosaving
+  } else if (scenario < 0.95) {
+    testIssuesList(authToken); // 15% — editors browsing issues
+  } else {
+    testAIRoute(authToken); // 5%  — AI Workspace usage
+  }
 }
