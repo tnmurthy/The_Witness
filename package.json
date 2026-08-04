@@ -2,7 +2,7 @@
   "name": "the-witness",
   "version": "0.1.0",
   "private": true,
-  "description": "The Witness — AI-Powered Knowledge Operating System. Milestone 1: Project Foundation.",
+  "description": "The Witness \u2014 AI-Powered Knowledge Operating System. Milestone 1: Project Foundation.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -18,7 +18,10 @@
     "db:types": "TYPEGEN_DB_URL=\"$SUPABASE_DB_URL\" node scripts/generate-db-types.js > src/lib/supabase/database.types.ts",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
-    "e2e:headed": "playwright test --headed"
+    "e2e:headed": "playwright test --headed",
+    "launch:preflight": "node scripts/launch-preflight.js",
+    "launch:smoke": "SMOKE_EMAIL=your@email.com node scripts/launch-smoke-test.js",
+    "launch:smoke:dry": "DRY_RUN=true SMOKE_EMAIL=test@example.com node scripts/launch-smoke-test.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",
